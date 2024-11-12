@@ -608,6 +608,43 @@
         transform: translateY(-5px);
       }
 
+      /* Responsive Design for Mobile and Tablet Devices */
+      @media screen and (max-width: 768px) {
+        .timeline {
+          align-items: center; /* Menjaga keseluruhan konten tetap berada di tengah */
+        }
+
+        .timeline-item {
+          width: 100%; /* Menggunakan lebar penuh agar lebih mudah dikendalikan */
+          max-width: 90%; /* Menjaga margin pada kiri dan kanan */
+          display: flex;
+          flex-direction: column;
+          align-items: center; /* Mengatur isi elemen agar rata tengah */
+          text-align: center; /* Memastikan semua teks rata tengah */
+          margin: 20px 0;
+        }
+
+        .timeline-icon {
+          top: -25px;
+          font-size: 25px;
+          padding: 8px;
+          left: 50%;
+          transform: translateX(-50%); /* Menjaga ikon tetap rata tengah */
+        }
+
+        .timeline-item:before {
+          display: none; /* Menghilangkan garis tengah pada tampilan mobile */
+        }
+
+        .timeline-content {
+          text-align: center;
+          padding: 15px;
+          margin-top: 20px;
+          width: 100%; /* Membuat konten penuh untuk menjaga kesimetrisan */
+          max-width: 90%; /* Membuat ruang di kiri dan kanan */
+        }
+      }
+
       @keyframes fadeIn {
         0% {
           opacity: 0;
@@ -839,7 +876,7 @@
         <h1
           class="status-text"
           style="
-          margin-top: 20px;
+            margin-top: 20px;
             margin-bottom: 20px;
             font-size: 2rem;
             font-weight: bold;
@@ -848,7 +885,7 @@
         >
           Education & Experience
         </h1>
-        <hr style="width: 60%; margin: auto; border: 2px solid #ddd" />
+        <hr style="width: 100%; border: 2px solid #ddd" />
         <br />
         <div class="timeline">
           <!-- Timeline Item 1 -->
