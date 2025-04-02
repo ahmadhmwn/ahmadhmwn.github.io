@@ -873,12 +873,18 @@
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.outputEncoding = THREE.LinearEncoding;;
-            renderer.toneMapping = THREE.NoToneMapping;
+            renderer.outputEncoding = THREE.LinearEncoding;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 0.8;
             renderer.shadowMap.enabled = false; 
             container.appendChild(renderer.domElement);
     
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
@@ -899,7 +905,7 @@
     
             const bloomPass = new UnrealBloomPass(
                 new THREE.Vector2(window.innerWidth, window.innerHeight),
-                0.3,
+                0,
                 0.1,
                 0.1 
             );
@@ -943,7 +949,7 @@
                 {
                     name: "Hatsune Miku",
                     path: "./model/hatsune_miku.glb",
-                    thumbnail: "./assets/Project.png",
+                    thumbnail: "./assets/img/miku.jpeg",
                     scale: 3.2,
                     position: { y: -0.47 }
                 },
@@ -983,9 +989,9 @@
                                     basicMaterial.color.copy(child.material.color);
                                     if (child.material.map) basicMaterial.map = child.material.map;
                                     basicMaterial.transparent = child.material.transparent;
-                                    basicMaterial.opacity = child.material.opacity;
+                                    basicMaterial.opacity = 2.5;
                                     if (child.material.alphaMap) basicMaterial.alphaMap = child.material.alphaMap;
-                                    
+
                                     child.material = basicMaterial;
                                     child.material.needsUpdate = true;
                                 }
@@ -1041,7 +1047,6 @@
                 });
             });
     
-            // Model selector setup
             const modelSelector = document.querySelector('.model-selector');
             modelList.forEach(model => {
                 const thumbnail = document.createElement('div');
