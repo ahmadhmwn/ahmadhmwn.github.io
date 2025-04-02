@@ -183,13 +183,13 @@
 
         .content-panel {
             position: fixed;
-            top: 50%;
+            top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 85%;
             max-width: 700px;
             max-height: 75vh;
-            background: rgba(26, 26, 46, 0.95);
+            background: rgba(94, 94, 94, 0.534);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 0 40px rgba(0, 176, 255, 0.4);
@@ -245,15 +245,15 @@
         }
 
         .close-btn {
-            position: absolute;
+            position: flex;
             top: 15px;
             right: 15px;
             font-size: 1.8em;
             cursor: pointer;
             color: var(--neon-blue);
             transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -262,7 +262,7 @@
 
         .close-btn:hover {
             color: white;
-            background: rgba(255, 45, 126, 0.3);
+            background: rgba(0, 240, 255, 0.9);
             transform: rotate(90deg);
         }
 
@@ -440,7 +440,7 @@
             .menu-item {
                 flex: 1;
                 font-size: 0;
-                padding: 12px 0;
+                padding: 12px 0 12px 12px;
                 min-width: 50px;
                 position: relative;
                 transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -625,6 +625,18 @@
                 font-size: 0.8em;
             }
         }
+
+        #scene-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+        }
+
     </style>
 </head>
 
@@ -642,7 +654,7 @@
 
     <div id="home-panel" class="content-panel">
         <span class="close-btn">&times;</span>
-        <h2>Welcome to My Portfolio</h2>
+        <h2>OVERVIEW</h2>
         <div class="model-thumbnail" style="margin: 20px auto; max-width: 200px;">
             <img src="assets/img/me.png" alt="My Profile">
             <div class="model-name">Ahmad Himawan</div>
@@ -735,7 +747,7 @@
                         <div class="timeline-icon"><i class="fas fa-users"></i></div>
                         <h3>UI GreenMetrics Team</h3>
                         <p>July 2022 - January 2023</p>
-                        <p>Journal Analyst Data, Tanjungpura University</p>
+                        <p>Journal Analyst Data, Universitas Tanjungpura</p>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -745,7 +757,7 @@
                         </div>
                         <h3>Teaching Assistance</h3>
                         <p>August - November 2022</p>
-                        <p>by Ministry Education Programs MBKM</p>
+                        <p>Merdeka Belajar Kampus Merdeka (MBKM) by Ministry Education</p>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -754,9 +766,9 @@
                             <i class="fas fa-laptop-code"></i>
                         </div>
                         <h3>Lab Assistance in Courses</h3>
-                        <p>Introduction of Biology I Course (2022: 1 Semesters)</p>
-                        <p>Micology Course (2021-2022: 3 Semesters)</p>
-                        <p>Biochemistry Course (2021-2022: 2 Semesters)</p>
+                        <p>Introduction of Biology I Course (1 Semester on 2022)</p>
+                        <p>Micology Course (3 Semester on 2021-2022)</p>
+                        <p>Biochemistry Course (2 Semester on 2021-2022)</p>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -833,9 +845,7 @@
         import { EffectComposer } from 'https://esm.sh/three/examples/jsm/postprocessing/EffectComposer.js';
         import { RenderPass } from 'https://esm.sh/three/examples/jsm/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'https://esm.sh/three/examples/jsm/postprocessing/UnrealBloomPass.js';
-        import { RGBELoader } from 'https://esm.sh/three/examples/jsm/loaders/RGBELoader.js';
-
-        // Error handling function
+    
         function showError(message) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'error-message';
@@ -844,276 +854,184 @@
             setTimeout(() => errorDiv.remove(), 5000);
             console.error(message);
         }
-
+    
         const isTouchDevice = 'ontouchstart' in window;
-
+    
         try {
             const container = document.getElementById('scene-container');
             const scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a1a2e);
-
-            const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 1.5, 5);
-
+            scene.fog = new THREE.FogExp2(0x1a1a2e, 0.05);
+    
+            const camera = new THREE.PerspectiveCamera(18, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, -1.8, -2.8); 
+            camera.lookAt(0, 2.0, 0);
+            
             const renderer = new THREE.WebGLRenderer({
                 antialias: true,
                 powerPreference: "high-performance"
             });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.outputEncoding = THREE.sRGBEncoding;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.2;
+            renderer.outputEncoding = THREE.LinearEncoding;;
+            renderer.toneMapping = THREE.NoToneMapping;
+            renderer.toneMappingExposure = 0.8;
+            renderer.shadowMap.enabled = false; 
             container.appendChild(renderer.domElement);
-
-            // Enhanced lighting setup
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
-            scene.add(ambientLight);
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-            directionalLight.position.set(5, 5, 5).normalize();
-            directionalLight.castShadow = true;
-            directionalLight.shadow.mapSize.width = 1024;
-            directionalLight.shadow.mapSize.height = 1024;
-            scene.add(directionalLight);
-
-            const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.5);
-            scene.add(hemisphereLight);
-
-            // Add colorful fill lights
-            const pinkLight = new THREE.PointLight(0xff2d7e, 1.2, 8);
-            pinkLight.position.set(1.5, 1.5, 1.5);
-            scene.add(pinkLight);
-
-            const blueLight = new THREE.PointLight(0x00b0ff, 1.2, 8);
-            blueLight.position.set(-1.5, 1.5, -1.5);
-            scene.add(blueLight);
-
-            // OrbitControls with more dynamic feel
+    
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
-            controls.screenSpacePanning = false;
-            controls.maxPolarAngle = Math.PI * 0.9;
-            controls.minPolarAngle = Math.PI * 0.2;
-            controls.target.set(0, 0, 0);
-
+            controls.zoomSpeed = 0.5;
+            controls.minDistance = 2.5;
+            controls.maxDistance = 3.5;
+            controls.maxPolarAngle = Math.PI * 0.5;
+            controls.minPolarAngle = Math.PI * 0.3;
+            controls.target.set(0, 1.2, 0);
+            controls.enablePan = false;
+    
             if (isTouchDevice) {
                 controls.enableZoom = false;
-                controls.enablePan = false;
             }
-
-            // Post-processing with enhanced bloom
+    
             const composer = new EffectComposer(renderer);
             composer.addPass(new RenderPass(scene, camera));
-
+    
             const bloomPass = new UnrealBloomPass(
                 new THREE.Vector2(window.innerWidth, window.innerHeight),
-                1.2,
-                0.2,
-                0.6
+                0.3,
+                0.1,
+                0.1 
             );
             composer.addPass(bloomPass);
-
-            // Stage floor
-            const stageGeometry = new THREE.CircleGeometry(1, 32);
-            const stageMaterial = new THREE.MeshStandardMaterial({
+    
+            const groundGeometry = new THREE.CircleGeometry(2, 32);
+            const groundMaterial = new THREE.MeshStandardMaterial({
                 color: 0x1a1a2e,
-                metalness: 0.1,
-                roughness: 0.8,
-                side: THREE.DoubleSide
+                metalness: 0.3,
+                roughness: 0.7
             });
-            const stage = new THREE.Mesh(stageGeometry, stageMaterial);
-            stage.rotation.x = -Math.PI / 2;
-            stage.position.y = -0.1;
-            stage.receiveShadow = true;
-            scene.add(stage);
-
-            // Stage edge lighting
-            const stageEdgeGeometry = new THREE.RingGeometry(0.9, 1, 64);
-            const stageEdgeMaterial = new THREE.MeshBasicMaterial({
-                color: 0x00b0ff,
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: 0.2
-            });
-            const stageEdge = new THREE.Mesh(stageEdgeGeometry, stageEdgeMaterial);
-            stageEdge.rotation.x = -Math.PI / 2;
-            stageEdge.position.y = -0.09;
-            scene.add(stageEdge);
-
-            // Add some floating particles for atmosphere
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.5;
+            scene.add(ground);
+    
             const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = 500;
+            const particleCount = 1000;
             const posArray = new Float32Array(particleCount * 3);
-
             for (let i = 0; i < particleCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 20;
+                posArray[i] = (Math.random() - 0.5) * 30;
             }
-
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-            const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.05,
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.8,
-                blending: THREE.AdditiveBlending
-            });
-
-            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            const particlesMesh = new THREE.Points(
+                particlesGeometry,
+                new THREE.PointsMaterial({
+                    size: 0.2,
+                    color: 0x888888,
+                    transparent: true,
+                    opacity: 0.7,
+                    blending: THREE.AdditiveBlending
+                })
+            );
             scene.add(particlesMesh);
-
+    
             let currentModel = null;
             let mixer, clock = new THREE.Clock();
-            let gltfAnimations = [];
-
             const loader = new GLTFLoader();
-
+    
             const modelList = [
                 {
                     name: "Hatsune Miku",
                     path: "./model/hatsune_miku.glb",
-                    thumbnail: "./assets/Project,png",
-                    scale: 1.1,
-                    position: { y: -0.31 }
+                    thumbnail: "./assets/Project.png",
+                    scale: 3.2,
+                    position: { y: -0.47 }
                 },
-                {
-                    name: "Kaito",
-                    path: "./model/kaito_ps.glb",
-                    thumbnail: "./assets/Project,png",
-                    scale: 1.1,
-                    position: { y: -0.31 }
-                },
-                {
-                    name: "Miku ver 3",
-                    path: "./model/yyb_miku_ver_3_mikumikudance.glb",
-                    thumbnail: "./assets/Project,png",
-                    scale: 1.1,
-                    position: { y: -0.31 }
-                }
             ];
-
-            // Function to load a model
+    
             function loadModel(modelData) {
                 if (currentModel) {
                     scene.remove(currentModel);
-                    if (mixer) {
-                        mixer.stopAllAction();
-                        mixer = null;
-                    }
+                    if (mixer) mixer.stopAllAction();
                 }
-
-                loader.load(
-                    modelData.path,
-                    function (gltf) {
-                        try {
-                            currentModel = gltf.scene;
-                            currentModel.position.set(0, modelData.position.y || 0, 0);
-                            currentModel.scale.set(modelData.scale, modelData.scale, modelData.scale);
-                            scene.add(currentModel);
-
-                            currentModel.traverse(child => {
-                                if (child.isMesh) {
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                }
-                            });
-
-                            const box = new THREE.Box3().setFromObject(currentModel);
-                            const center = box.getCenter(new THREE.Vector3());
-                            currentModel.position.sub(center);
-
-                            const size = box.getSize(new THREE.Vector3()).length();
-                            const cameraDist = size / (2 * Math.tan((camera.fov * Math.PI / 180) / 2));
-                            camera.position.z = cameraDist * 0.2;
-                            controls.target.copy(center);
-                            controls.update();
-
-                            gltfAnimations = gltf.animations;
-
-                            if (gltfAnimations.length > 0) {
-                                mixer = new THREE.AnimationMixer(currentModel);
-                                const action = mixer.clipAction(gltfAnimations[0]);
-                                action.play();
-                            }
-
-                            const rimLight1 = new THREE.PointLight(0xff2d7e, 1, 5);
-                            rimLight1.position.set(2, 2, 2);
-                            currentModel.add(rimLight1);
-
-                            const rimLight2 = new THREE.PointLight(0x00b0ff, 1, 5);
-                            rimLight2.position.set(-2, 2, -2);
-                            currentModel.add(rimLight2);
-
-                        } catch (error) {
-                            showError('Error processing model: ' + error.message);
+    
+                loader.load(modelData.path, (gltf) => {
+                    try {
+                        currentModel = gltf.scene;
+                        currentModel.position.set(0, modelData.position.y, 0);
+                        currentModel.scale.set(modelData.scale, modelData.scale, modelData.scale);
+                        
+                        currentModel.rotation.y = Math.PI;
+                        
+                        scene.add(currentModel);
+    
+                        // Animations
+                        if (gltf.animations?.length > 0) {
+                            mixer = new THREE.AnimationMixer(currentModel);
+                            const action = mixer.clipAction(gltf.animations[0]);
+                            action.play().setLoop(THREE.LoopRepeat, Infinity);
                         }
-                    },
-                    function (xhr) {
-                        const percent = (xhr.loaded / xhr.total) * 100;
-                        document.getElementById('preloader').textContent = `Loading stage... ${percent.toFixed(1)}%`;
-                    },
-                    function (error) {
-                        showError('Failed to load model. Please try again later.');
+    
+                        currentModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.castShadow = false;
+                                child.receiveShadow = false;
+                                
+                                if (child.material) {
+                                    const basicMaterial = new THREE.MeshBasicMaterial();
+                                    
+                                    basicMaterial.color.copy(child.material.color);
+                                    if (child.material.map) basicMaterial.map = child.material.map;
+                                    basicMaterial.transparent = child.material.transparent;
+                                    basicMaterial.opacity = child.material.opacity;
+                                    if (child.material.alphaMap) basicMaterial.alphaMap = child.material.alphaMap;
+                                    
+                                    child.material = basicMaterial;
+                                    child.material.needsUpdate = true;
+                                }
+                            }
+                        });
+    
+                        const box = new THREE.Box3().setFromObject(currentModel);
+                        const center = box.getCenter(new THREE.Vector3());
+                        controls.target.copy(center).y += 0.4;
+                        
+                    } catch (error) {
+                        showError('Error processing model: ' + error.message);
                     }
-                );
-            }
-
-            if (modelList.length > 0) {
-                loadModel(modelList[0]);
-            }
-
-            // Interaction
-            let mouseX = 0, mouseY = 0;
-            if (!isTouchDevice) {
-                document.addEventListener('mousemove', (event) => {
-                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-
-                    pinkLight.position.x = mouseX * 3;
-                    pinkLight.position.z = mouseY * 3;
-                    blueLight.position.x = -mouseX * 3;
-                    blueLight.position.z = -mouseY * 3;
                 });
             }
-
+    
+            if (modelList.length > 0) loadModel(modelList[0]);
+    
+            const overlay = document.createElement('div');
+            overlay.className = 'character-overlay';
+            document.body.appendChild(overlay);
+    
             function animate() {
                 requestAnimationFrame(animate);
-
                 const delta = clock.getDelta();
-
-                if (mixer) {
-                    mixer.update(delta);
-                }
-
-                if (particlesMesh) {
-                    particlesMesh.rotation.y += delta * 0.1;
-                }
-
-                if (stageEdge) {
-                    stageEdgeMaterial.opacity = 0.4 + Math.sin(Date.now() * 0.002) * 0.1;
-                }
-
+                if (mixer) mixer.update(delta);
+                if (particlesMesh) particlesMesh.rotation.y += delta * 0.05;
                 controls.update();
                 composer.render();
             }
             animate();
-
+    
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 composer.setSize(window.innerWidth, window.innerHeight);
             });
-
+    
             const panels = {
                 home: document.getElementById('home-panel'),
                 about: document.getElementById('about-panel'),
                 skills: document.getElementById('skills-panel'),
                 achievements: document.getElementById('achievements-panel')
             };
-
+    
             // Close buttons
             document.querySelectorAll('.close-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1122,12 +1040,13 @@
                     });
                 });
             });
-
+    
+            // Model selector setup
             const modelSelector = document.querySelector('.model-selector');
             modelList.forEach(model => {
                 const thumbnail = document.createElement('div');
                 thumbnail.className = 'model-thumbnail';
-
+    
                 if (model.thumbnail) {
                     thumbnail.innerHTML = `
                         <img src="${model.thumbnail}" alt="${model.name}">
@@ -1139,20 +1058,15 @@
                         <div class="model-name">${model.name}</div>
                     `;
                 }
-
+    
                 thumbnail.addEventListener('click', () => {
                     loadModel(model);
                     panels.achievements.style.display = 'none';
-
-                    if (mixer && gltfAnimations.length > 0) {
-                        mixer.stopAllAction();
-                        const action = mixer.clipAction(gltfAnimations[0]);
-                        action.reset().play();
-                    }
                 });
                 modelSelector.appendChild(thumbnail);
             });
-
+    
+            // Menu actions
             const menuActions = {
                 home: () => {
                     panels.home.style.display = 'block';
@@ -1167,7 +1081,7 @@
                     panels.achievements.style.display = 'block';
                 }
             };
-
+    
             document.querySelectorAll('.menu-item').forEach(item => {
                 const action = item.dataset.action;
                 item.addEventListener('click', () => {
@@ -1175,17 +1089,18 @@
                     setTimeout(() => {
                         item.style.transform = 'scale(1)';
                     }, 200);
-
+    
                     Object.values(panels).forEach(panel => {
                         panel.style.display = 'none';
                     });
-
+    
                     if (menuActions[action]) {
                         menuActions[action]();
                     }
                 });
             });
-
+    
+            // Hide preloader when everything is loaded
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     document.getElementById('preloader').style.opacity = '0';
@@ -1194,10 +1109,9 @@
                     }, 500);
                 }, 1000);
             });
-
+                
         } catch (error) {
-            showError('Stage initialization error: ' + error.message);
-            document.getElementById('preloader').textContent = 'Failed to initialize stage. Please check console.';
+            showError('Initialization error: ' + error.message);
         }
     </script>
 </body>
