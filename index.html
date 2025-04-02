@@ -371,6 +371,7 @@
         }
 
         .skill h3 {
+            font-size: 1.9em;
             color: var(--neon-blue);
             margin-top: 0;
             margin-bottom: 10px;
@@ -637,6 +638,59 @@
             z-index: 1;
         }
 
+        .profile-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 176, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .profile-container:hover {
+            box-shadow: 0 0 25px rgba(0, 176, 255, 0.5);
+            border-color: rgba(0, 240, 255, 0.5);
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 6px 10px;
+                top: 15px;
+                right: 15px;
+            }
+
+            .profile-pic {
+                width: 35px;
+                height: 35px;
+            }
+
+            .profile-name {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 
@@ -655,10 +709,6 @@
     <div id="home-panel" class="content-panel">
         <span class="close-btn">&times;</span>
         <h2>OVERVIEW</h2>
-        <div class="model-thumbnail" style="margin: 20px auto; max-width: 200px;">
-            <img src="assets/img/me.png" alt="My Profile">
-            <div class="model-name">Ahmad Himawan</div>
-        </div>
         <p>Hello! I'm Ahmad Himawan, a teacher with a passion for implement an Technologies on education.</p>
         <p>I finished my studies with cross-major research in the Undergraduate level, I have a dream to study abroad
             for my future career.</p>
@@ -787,6 +837,22 @@
                 </div>
             </div>
         </div>
+
+        <div class="skill">
+            <h3>Project</h3> <br>
+            <div class="timeline-content">
+                <img src="assets/img/Project.png" alt="SIMLAB">
+            </div> <br>
+            <div class="timeline-content">
+                <img src="assets/img/Project_1.png" alt="SIMLAB">
+            </div> <br>
+            <div class="timeline-content">
+                <img src="assets/img/Project_2.png" alt="SIMLAB">
+            </div> <br>
+            <div class="timeline-content">
+                <img src="assets/img/Project_3.png" alt="SIMLAB">
+            </div>
+        </div>
     </div>
 
     <div id="skills-panel" class="content-panel">
@@ -838,6 +904,11 @@
         </div>
     </div>
 
+    <div class="profile-container">
+        <img src="assets/img/me.png" alt="Profile Picture" class="profile-pic">
+        <span class="profile-name">Ahmad Himawan</span>
+    </div>
+
     <script type="module">
         import * as THREE from 'https://esm.sh/three';
         import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
@@ -845,7 +916,7 @@
         import { EffectComposer } from 'https://esm.sh/three/examples/jsm/postprocessing/EffectComposer.js';
         import { RenderPass } from 'https://esm.sh/three/examples/jsm/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'https://esm.sh/three/examples/jsm/postprocessing/UnrealBloomPass.js';
-    
+
         function showError(message) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'error-message';
@@ -854,19 +925,19 @@
             setTimeout(() => errorDiv.remove(), 5000);
             console.error(message);
         }
-    
+
         const isTouchDevice = 'ontouchstart' in window;
-    
+
         try {
             const container = document.getElementById('scene-container');
             const scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a1a2e);
             scene.fog = new THREE.FogExp2(0x1a1a2e, 0.05);
-    
+
             const camera = new THREE.PerspectiveCamera(18, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, -1.8, -2.8); 
+            camera.position.set(0, -1.8, -2.8);
             camera.lookAt(0, 2.0, 0);
-            
+
             const renderer = new THREE.WebGLRenderer({
                 antialias: true,
                 powerPreference: "high-performance"
@@ -876,9 +947,9 @@
             renderer.outputEncoding = THREE.LinearEncoding;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 0.8;
-            renderer.shadowMap.enabled = false; 
+            renderer.shadowMap.enabled = false;
             container.appendChild(renderer.domElement);
-    
+
             const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
             scene.add(ambientLight);
 
@@ -895,22 +966,22 @@
             controls.minPolarAngle = Math.PI * 0.3;
             controls.target.set(0, 1.2, 0);
             controls.enablePan = false;
-    
+
             if (isTouchDevice) {
                 controls.enableZoom = false;
             }
-    
+
             const composer = new EffectComposer(renderer);
             composer.addPass(new RenderPass(scene, camera));
-    
+
             const bloomPass = new UnrealBloomPass(
                 new THREE.Vector2(window.innerWidth, window.innerHeight),
                 0.1,
                 0.1,
-                0.1 
+                0.1
             );
             composer.addPass(bloomPass);
-    
+
             const groundGeometry = new THREE.CircleGeometry(2, 32);
             const groundMaterial = new THREE.MeshStandardMaterial({
                 color: 0x1a1a2e,
@@ -921,7 +992,7 @@
             ground.rotation.x = -Math.PI / 2;
             ground.position.y = -0.5;
             scene.add(ground);
-    
+
             const particlesGeometry = new THREE.BufferGeometry();
             const particleCount = 1000;
             const posArray = new Float32Array(particleCount * 3);
@@ -940,11 +1011,11 @@
                 })
             );
             scene.add(particlesMesh);
-    
+
             let currentModel = null;
             let mixer, clock = new THREE.Clock();
             const loader = new GLTFLoader();
-    
+
             const modelList = [
                 {
                     name: "Hatsune Miku",
@@ -954,38 +1025,38 @@
                     position: { y: -0.47 }
                 },
             ];
-    
+
             function loadModel(modelData) {
                 if (currentModel) {
                     scene.remove(currentModel);
                     if (mixer) mixer.stopAllAction();
                 }
-    
+
                 loader.load(modelData.path, (gltf) => {
                     try {
                         currentModel = gltf.scene;
                         currentModel.position.set(0, modelData.position.y, 0);
                         currentModel.scale.set(modelData.scale, modelData.scale, modelData.scale);
-                        
+
                         currentModel.rotation.y = Math.PI;
-                        
+
                         scene.add(currentModel);
-    
+
                         // Animations
                         if (gltf.animations?.length > 0) {
                             mixer = new THREE.AnimationMixer(currentModel);
                             const action = mixer.clipAction(gltf.animations[0]);
                             action.play().setLoop(THREE.LoopRepeat, Infinity);
                         }
-    
+
                         currentModel.traverse(child => {
                             if (child.isMesh) {
                                 child.castShadow = false;
                                 child.receiveShadow = false;
-                                
+
                                 if (child.material) {
                                     const basicMaterial = new THREE.MeshBasicMaterial();
-                                    
+
                                     basicMaterial.color.copy(child.material.color);
                                     if (child.material.map) basicMaterial.map = child.material.map;
                                     basicMaterial.transparent = child.material.transparent;
@@ -997,23 +1068,23 @@
                                 }
                             }
                         });
-    
+
                         const box = new THREE.Box3().setFromObject(currentModel);
                         const center = box.getCenter(new THREE.Vector3());
                         controls.target.copy(center).y += 0.4;
-                        
+
                     } catch (error) {
                         showError('Error processing model: ' + error.message);
                     }
                 });
             }
-    
+
             if (modelList.length > 0) loadModel(modelList[0]);
-    
+
             const overlay = document.createElement('div');
             overlay.className = 'character-overlay';
             document.body.appendChild(overlay);
-    
+
             function animate() {
                 requestAnimationFrame(animate);
                 const delta = clock.getDelta();
@@ -1023,21 +1094,21 @@
                 composer.render();
             }
             animate();
-    
+
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 composer.setSize(window.innerWidth, window.innerHeight);
             });
-    
+
             const panels = {
                 home: document.getElementById('home-panel'),
                 about: document.getElementById('about-panel'),
                 skills: document.getElementById('skills-panel'),
                 achievements: document.getElementById('achievements-panel')
             };
-    
+
             // Close buttons
             document.querySelectorAll('.close-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1046,12 +1117,12 @@
                     });
                 });
             });
-    
+
             const modelSelector = document.querySelector('.model-selector');
             modelList.forEach(model => {
                 const thumbnail = document.createElement('div');
                 thumbnail.className = 'model-thumbnail';
-    
+
                 if (model.thumbnail) {
                     thumbnail.innerHTML = `
                         <img src="${model.thumbnail}" alt="${model.name}">
@@ -1063,15 +1134,32 @@
                         <div class="model-name">${model.name}</div>
                     `;
                 }
-    
+
                 thumbnail.addEventListener('click', () => {
                     loadModel(model);
                     panels.achievements.style.display = 'none';
                 });
                 modelSelector.appendChild(thumbnail);
             });
-    
-            // Menu actions
+
+            const profileContainer = document.querySelector('.profile-container');
+            if (profileContainer) {
+                profileContainer.addEventListener('click', () => {
+                    Object.values(panels).forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+                    panels.home.style.display = 'block';
+                });
+
+                profileContainer.style.cursor = 'pointer';
+                profileContainer.addEventListener('mouseenter', () => {
+                    profileContainer.style.transform = 'translateY(-2px)';
+                });
+                profileContainer.addEventListener('mouseleave', () => {
+                    profileContainer.style.transform = 'translateY(0)';
+                });
+            }
+
             const menuActions = {
                 home: () => {
                     panels.home.style.display = 'block';
@@ -1086,7 +1174,7 @@
                     panels.achievements.style.display = 'block';
                 }
             };
-    
+
             document.querySelectorAll('.menu-item').forEach(item => {
                 const action = item.dataset.action;
                 item.addEventListener('click', () => {
@@ -1094,17 +1182,17 @@
                     setTimeout(() => {
                         item.style.transform = 'scale(1)';
                     }, 200);
-    
+
                     Object.values(panels).forEach(panel => {
                         panel.style.display = 'none';
                     });
-    
+
                     if (menuActions[action]) {
                         menuActions[action]();
                     }
                 });
             });
-    
+
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     document.getElementById('preloader').style.opacity = '0';
@@ -1113,7 +1201,7 @@
                     }, 300);
                 }, 1000);
             });
-                
+
         } catch (error) {
             showError('Initialization error: ' + error.message);
         }
