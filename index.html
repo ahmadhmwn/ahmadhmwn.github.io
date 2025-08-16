@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="assets/img/icon.jpg">
     <title>Ahmad Himawan</title>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
 
         :root {
             --primary: #ff2d7e;
@@ -20,1191 +21,1035 @@
             --neon-pink: #ff2d7e;
             --neon-blue: #00f0ff;
             --neon-purple: #b388ff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         body {
-            font-family: 'Exo 2', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            height: 100vh;
-            overflow: hidden;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        #scene-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1;
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s ease;
         }
 
-        .container-menu {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 15px;
-            border-radius: 20px 20px 20px 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 -5px 30px rgba(0, 176, 255, 0.3);
-            width: 100%;
-            max-width: 800px;
-            position: fixed;
-            bottom: 0;
-            z-index: 2;
-            border-top: 2px solid var(--neon-blue);
-            border-left: 1px solid rgba(0, 240, 255, 0.3);
-            border-right: 1px solid rgba(0, 240, 255, 0.3);
-            margin-bottom: 20px;
-        }
-
-        .menu {
-            display: flex;
-            justify-content: space-around;
-            gap: 15px;
-            padding: 5px;
-        }
-
-        .menu-item {
-            font-size: 1.1em;
-            font-weight: 600;
-            padding: 12px 15px;
-            background: linear-gradient(145deg, rgba(0, 240, 255, 0.8), rgba(0, 176, 255, 0.8));
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
-            flex: 1;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
-            letter-spacing: 0.5px;
-        }
-
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(to bottom right,
-                    transparent 45%,
-                    rgba(255, 255, 255, 0.3) 50%,
-                    transparent 55%);
-            transform: rotate(30deg);
-            transition: all 0.5s ease;
-            opacity: 0;
-        }
-
-        .menu-item:hover {
-            background: linear-gradient(145deg, rgba(0, 240, 255, 1), rgba(0, 176, 255, 1));
+        .glass-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.6);
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.9);
+            box-shadow: 0 12px 40px rgba(0, 176, 255, 0.3);
+            border: 1px solid rgba(0, 240, 255, 0.4);
         }
 
-        .menu-item:hover::before {
-            opacity: 1;
-            animation: shine 1.5s infinite;
-        }
-
-        @keyframes shine {
-            0% {
-                left: -50%;
-                top: -50%;
-            }
-
-            100% {
-                left: 150%;
-                top: 150%;
-            }
-        }
-
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1a1a2e;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.8em;
-            color: white;
-        }
-
-        .preloader-text {
-            margin-top: 20px;
-            font-weight: 600;
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 5px solid rgba(0, 240, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--neon-blue);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error-message {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 15px 25px;
-            background: rgba(255, 45, 126, 0.9);
-            color: white;
-            border-radius: 50px;
-            z-index: 100;
-            box-shadow: 0 0 20px rgba(255, 45, 126, 0.5);
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .content-panel {
-            position: fixed;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 85%;
-            max-width: 700px;
-            max-height: 75vh;
-            background: rgba(94, 94, 94, 0.534);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 0 40px rgba(0, 176, 255, 0.4);
-            z-index: 10;
-            overflow-y: auto;
-            display: none;
-            color: white;
-            border: 2px solid var(--neon-blue);
-            backdrop-filter: blur(10px);
-        }
-
-        .content-panel h2 {
-            color: var(--neon-blue);
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 25px;
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.9);
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .content-panel h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 25%;
-            width: 50%;
-            height: 3px;
-            background: linear-gradient(to right, transparent, var(--neon-blue), transparent);
-            border-radius: 3px;
-        }
-
-        .content-panel p {
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .content-panel ul {
-            padding-left: 20px;
-        }
-
-        .content-panel li {
-            margin-bottom: 8px;
-            position: relative;
-            padding-left: 20px;
-        }
-
-        .content-panel li::before {
-            content: '✦';
-            position: absolute;
-            left: 0;
-            color: var(--neon-blue);
-        }
-
-        .close-btn {
-            position: flex;
-            top: 15px;
-            right: 15px;
-            font-size: 1.8em;
-            cursor: pointer;
-            color: var(--neon-blue);
-            transition: all 0.3s ease;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .close-btn:hover {
-            color: white;
-            background: rgba(0, 240, 255, 0.9);
-            transform: rotate(90deg);
-        }
-
-        .model-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .model-thumbnail {
-            width: 120px;
-            height: 120px;
-            background: rgba(0, 176, 255, 0.1);
-            border-radius: 10px;
-            cursor: pointer;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .model-thumbnail::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 45, 126, 0.3), rgba(0, 240, 255, 0.3));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .model-thumbnail:hover {
-            border-color: var(--neon-pink);
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 5px 20px rgba(255, 45, 126, 0.5);
-        }
-
-        .model-thumbnail:hover::before {
-            opacity: 1;
-        }
-
-        .model-thumbnail img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
-
-        .model-name {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(26, 26, 46, 0.8);
-            padding: 5px;
-            text-align: center;
-            font-size: 0.9em;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .model-thumbnail:hover .model-name {
-            transform: translateY(0);
-        }
-
-        .card-footer {
-            background: rgba(26, 26, 46, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 20px;
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 176, 255, 0.2),
-                inset 0 0 15px rgba(0, 240, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .card-footer:hover {
-            box-shadow: 0 0 30px rgba(0, 176, 255, 0.4),
-                inset 0 0 20px rgba(0, 240, 255, 0.2);
-            border-color: rgba(0, 240, 255, 0.5);
-        }
-
-        .social-icon {
-            transition: all 0.3s ease;
-            filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.5));
-        }
-
-        .social-icon:hover {
-            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.8));
-            transform: translateY(-3px);
-        }
-
-        .skill {
-            background: rgba(0, 176, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--neon-pink);
-        }
-
-        .skill h3 {
-            font-size: 1.9em;
-            color: var(--neon-blue);
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
-        .bg-element {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.15;
-            z-index: 0;
-        }
-
-        .bg-element-1 {
-            width: 300px;
-            height: 300px;
-            background: var(--neon-pink);
-            top: -100px;
-            left: -100px;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        .bg-element-2 {
-            width: 400px;
-            height: 400px;
-            background: var(--neon-blue);
-            bottom: -150px;
-            right: -100px;
-            animation: float 18s infinite ease-in-out reverse;
-        }
-
-        .bg-element-3 {
-            width: 200px;
-            height: 200px;
-            background: var(--neon-purple);
-            top: 40%;
-            right: 20%;
-            animation: float 12s infinite ease-in-out;
-        }
-
+        /* Floating animation */
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translate(0, 0);
-            }
-
-            25% {
-                transform: translate(50px, 50px);
-            }
-
-            50% {
-                transform: translate(0, 100px);
-            }
-
-            75% {
-                transform: translate(-50px, 50px);
-            }
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
         }
 
-        @media (max-width: 768px) {
-            .menu {
-                flex-wrap: nowrap;
-                gap: 5px;
-            }
-
-            .menu-item {
-                flex: 1;
-                font-size: 0;
-                padding: 12px 0 12px 12px;
-                min-width: 50px;
-                position: relative;
-                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            }
-
-            .menu-item::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-family: 'Font Awesome 6 Free';
-                font-weight: 900;
-                font-size: 1.2rem;
-            }
-
-            .menu-item[data-action="home"]::after {
-                content: '\f015';
-            }
-
-            .menu-item[data-action="about"]::after {
-                content: '\f129';
-            }
-
-            .menu-item[data-action="skills"]::after {
-                content: '\f085';
-            }
-
-            .menu-item[data-action="achievements"]::after {
-                content: '\f024';
-            }
-
-            .menu-item:hover::after {
-                text-shadow: 0 0 12px rgba(0, 240, 255, 0.9);
-            }
+        .floating {
+            animation: float 6s ease-in-out infinite;
         }
 
-        @media (max-width: 480px) {
-            .menu-item {
-                min-width: 40px;
-                padding: 10px 0;
-                transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            }
-
-            .menu-item::after {
-                font-size: 1rem;
-            }
+        /* Pulse animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        .timeline {
-            position: relative;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px 0;
+        .pulse {
+            animation: pulse 3s ease infinite;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            width: 4px;
-            background: linear-gradient(to bottom, var(--neon-pink), var(--neon-blue));
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -2px;
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
         }
 
-        .timeline-item {
-            padding: 10px 40px;
-            position: relative;
-            width: 50%;
-            box-sizing: border-box;
-            margin-bottom: 30px;
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--neon-pink), var(--neon-blue));
+            border-radius: 10px;
         }
 
-        .timeline-item:nth-child(odd) {
+        /* 3D tilt effect */
+        .tilt-effect {
+            transition: transform 0.5s ease;
+        }
+
+        .tilt-effect:hover {
+            transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.03);
+        }
+
+        /* Neon glow */
+        .neon-glow {
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+            transition: text-shadow 0.3s ease;
+        }
+
+        .neon-glow:hover {
+            text-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 45px var(--neon-blue);
+        }
+
+        /* Particle background */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
             left: 0;
+            z-index: -1;
         }
 
-        .timeline-item:nth-child(even) {
-            left: 50%;
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .glass-card {
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+            }
         }
 
-        .timeline-content {
-            padding: 20px;
-            background: rgba(26, 26, 46, 0.7);
-            backdrop-filter: blur(5px);
-            border-radius: 15px;
-            border-left: 3px solid var(--neon-blue);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3),
-                inset 0 0 10px rgba(0, 240, 255, 0.1);
-            transition: all 0.3s ease;
+        .glass-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .modal {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .timeline-content:hover {
+        .nav-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 176, 255, 0.4),
-                inset 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .experience-container {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .experience-item {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 60px;
         }
 
         .timeline-icon {
             position: absolute;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 176, 255, 0.2);
+            left: 0;
+            width: 45px;
+            height: 45px;
+            background-color: #2c3e50;
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--neon-blue);
-            font-size: 1.2em;
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-            right: -20px;
-            top: 15px;
-            z-index: 1;
-            border: 2px solid var(--neon-blue);
+            font-size: 18px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16);
         }
 
-        .timeline-item:nth-child(even) .timeline-icon {
-            left: -20px;
+        .experience-details {
+            background: white;
+            opacity: 70%;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            border-left: 3px solid #2c3e50;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .timeline-content h3 {
-            color: var(--neon-blue);
+        .experience-details:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .experience-details h3 {
             margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.2rem;
             margin-bottom: 10px;
-            font-size: 1.3em;
         }
 
-        .timeline-content p {
-            margin: 5px 0;
+        .experience-details .date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .experience-details .description {
+            color: #34495e;
             line-height: 1.5;
-            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
         }
 
-        .timeline-content hr {
-            border: none;
-            height: 1px;
-            background: linear-gradient(to right, transparent, var(--neon-pink), transparent);
-            margin: 10px 0;
-        }
+        /* Variasi warna untuk ikon berbeda */
+        .experience-item:nth-child(1) .timeline-icon { background-color: #16a085; }
+        .experience-item:nth-child(2) .timeline-icon { background-color: #2980b9; }
+        .experience-item:nth-child(3) .timeline-icon { background-color: #8e44ad; }
+        .experience-item:nth-child(4) .timeline-icon { background-color: #e74c3c; }
+        .experience-item:nth-child(5) .timeline-icon { background-color: #f39c12; }
 
-        @media (max-width: 768px) {
-            .timeline::before {
-                left: 20px;
-            }
-
-            .timeline-item {
-                width: 100%;
-                padding-left: 50px;
-                padding-right: 15px;
-            }
-
-            .timeline-item:nth-child(even) {
-                left: 0;
-            }
-
-            .timeline-icon {
-                left: 0 !important;
-                right: auto;
-                width: 30px;
-                height: 30px;
-                font-size: 1em;
-                transform: translateX(-50%);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .timeline::before {
-                left: 15px;
-            }
-
-            .timeline-item {
-                padding-left: 40px;
-            }
-
-            .timeline-icon {
-                width: 25px;
-                height: 25px;
-                font-size: 0.8em;
-            }
-        }
-
-        #scene-container {
+        /* Garis penghubung antar item */
+        .experience-item:not(:last-child)::after {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100vw;
-            height: 100vh;
+            left: 22.5px;
+            top: 45px;
+            height: calc(100% + 10px);
+            width: 2px;
+            background-color: #bdc3c7;
+        }
+
+        .home-nav{
+            background-color: #bdc3c7;
+        }
+
+        #miku-container {
+            position: relative;
+            border-radius: 0.5rem;
             overflow: hidden;
-            z-index: 1;
+            background: #1a1a2e;
         }
 
-        .profile-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 100;
-            background: rgba(26, 26, 46, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 8px 15px;
-            border-radius: 50px;
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            box-shadow: 0 0 15px rgba(0, 176, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .profile-container:hover {
-            box-shadow: 0 0 25px rgba(0, 176, 255, 0.5);
-            border-color: rgba(0, 240, 255, 0.5);
-        }
-
-        .profile-pic {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-        }
-
-        .profile-name {
-            font-weight: 600;
-            color: white;
-            text-shadow: 0 0 8px rgba(0, 240, 255, 0.7);
-        }
-
-        @media (max-width: 768px) {
-            .profile-container {
-                padding: 6px 10px;
-                top: 15px;
-                right: 15px;
-            }
-
-            .profile-pic {
-                width: 35px;
-                height: 35px;
-            }
-
-            .profile-name {
-                font-size: 0.9em;
-            }
+        #miku-container canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
 
 <body>
-    <div class="bg-element bg-element-1"></div>
-    <div class="bg-element bg-element-2"></div>
-    <div class="bg-element bg-element-3"></div>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
 
-    <div id="preloader">
-        <div class="spinner"></div>
-        <div class="preloader-text">Loading Portfolio...</div>
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
+        <div class="spinner w-16 h-16 border-4 border-t-neon-blue border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+        <div class="preloader-text mt-5 text-xl font-semibold text-neon-blue">Loading Portfolio...</div>
     </div>
 
-    <div id="scene-container"></div>
-
-    <div id="home-panel" class="content-panel">
-        <span class="close-btn">&times;</span>
-        <h2>OVERVIEW</h2>
-        <p>Hello! I'm Ahmad Himawan, a teacher with a passion for implement an Technologies on education.</p>
-        <p>I finished my studies with cross-major research in the Undergraduate level, I have a dream to study abroad
-            for my future career.</p>
-        <p>If you want to make collaborative research, you can contact me to email: ahmadhimawan16@gmail.com</p>
-
-        <div class="card-footer">
-            <div class="social-links flex justify-center items-center gap-4 py-3">
-                <a href="https://instagram.com/ahmadhmwn" target="_blank"
-                    class="social-icon hover:scale-110 transition-transform duration-300">
-                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584] hover:[&>svg]:fill-[#ff2d7e]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path
-                                d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
-                        </svg>
-                    </span>
-                </a>
-                <a href="https://github.com/ahmadhmwn" target="_blank"
-                    class="social-icon hover:scale-110 transition-transform duration-300">
-                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-gray-800 hover:[&>svg]:fill-[#00b0ff]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" />
-                            <path
-                                d="M9 19c-4.286 1.35-4.286-2.55-6-3m12 5v-3.5c0-1 .099-1.405-.5-2 2.791-.3 5.5-1.366 5.5-6.04a4.567 4.567 0 0 0 -1.333 -3.21 4.192 4.192 0 00-.08-3.227s-1.05-.3-3.476 1.267a12.334 12.334 0 0 0 -6.222 0C6.462 2.723 5.413 3.023 5.413 3.023a4.192 4.192 0 0 0 -.08 3.227A4.566 4.566 0 004 9.486c0 4.64 2.709 5.68 5.5 6.014-.591.589-.56 1.183-.5 2V21" />
-                        </svg>
-                    </span>
-                </a>
-                <a href="http://linkedin.com/in/ahmad-himawan-b43a101aa" target="_blank"
-                    class="social-icon hover:scale-110 transition-transform duration-300">
-                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#0077b5] hover:[&>svg]:fill-[#00f0ff]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path
-                                d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z" />
-                        </svg>
-                    </span>
-                </a>
-                <a href="https://youtube.com/@ahmadhmwn" target="_blank"
-                    class="social-icon hover:scale-110 transition-transform duration-300">
-                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#ff0000] hover:[&>svg]:fill-[#ff2d7e]">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                            <path
-                                d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
-                        </svg>
-                    </span>
-                </a>
-                <a href="https://twitter.com/ahmadhmwn" target="_blank"
-                    class="social-icon hover:scale-110 transition-transform duration-300">
-                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-black hover:[&>svg]:fill-[#b388ff]">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512">
-                            <path
-                                d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
-                        </svg>
-                    </span>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div id="about-panel" class="content-panel">
-        <span class="close-btn">&times;</span>
-        <h2>About me</h2>
-        <p>I specialize in creating interactive 3D experiences & application by web-based, combining coding and
-            education.</p>
-
-        <div class="skill">
-            <h3>Background</h3>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-icon">
-                            <i class="fas fa-graduation-cap"></i>
+    <!-- Main Content -->
+    <div class="min-h-screen flex flex-col">
+        <!-- Hero Section -->
+        <section class="flex-grow flex items-center justify-center px-4 py-20">
+            <div class="text-center max-w-4xl">
+                <h2 class="text-4xl md:text-4xl font-bold mb-6 gradient-text neon-glow">Ahmad Himawan</h2>
+                <p class="text-1xl font-bold mb-8 text-center gradient-text" id="textContent">Educator & Technology in Education Enthusiast</p>
+                
+                <div class="glass-card inline-block px-8 py-3 mb-12">
+                    <p class="text-3xl text-lg">"Implementing technology in education to create better learning experiences"</p>
+                </div>
+                
+                <div class="flex justify-center gap-4">
+                    <a href="#about" class="btn-primary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:shadow-lg">
+                        Explore Portfolio
+                    </a>
+                    
+                    <a href="#" onclick="showContactModal()" class="btn-secondary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:shadow-lg">
+                        Contact Me
+                    </a>
+                    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+                        <div class="glass-card bg-gradient-to-br from-gray-800/90 to-gray-900/90 border border-gray-700/50 rounded-xl p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl shadow-blue-500/20">
+                            <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
+                                <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Contact Me</h2>
+                                <button onclick="closeContactModal()" class="text-gray-400 hover:text-cyan-400 transition-colors duration-200 p-1 rounded-full hover:bg-gray-700/50">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="text-gray-300">
+                                <p class="mb-3"><i class="fas fa-envelope mr-2 text-cyan-400"></i> ahmadhimawan16@gmail.com</p>
+                                <div class="home-nav">
+                                    <div class="social-links flex justify-center gap-4 mt-6">
+                                        <a href="https://instagram.com/ahmadhmwn" target="_blank"
+                                            class="social-icon hover:scale-110 transition-transform duration-300">
+                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584] hover:[&>svg]:fill-[#ff2d7e]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path
+                                                        d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                        <a href="https://github.com/ahmadhmwn" target="_blank"
+                                            class="social-icon hover:scale-110 transition-transform duration-300">
+                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-gray-800 hover:[&>svg]:fill-[#00b0ff]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
+                                                    stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                                    <path
+                                                        d="M9 19c-4.286 1.35-4.286-2.55-6-3m12 5v-3.5c0-1 .099-1.405-.5-2 2.791-.3 5.5-1.366 5.5-6.04a4.567 4.567 0 0 0 -1.333 -3.21 4.192 4.192 0 00-.08-3.227s-1.05-.3-3.476 1.267a12.334 12.334 0 0 0 -6.222 0C6.462 2.723 5.413 3.023 5.413 3.023a4.192 4.192 0 0 0 -.08 3.227A4.566 4.566 0 004 9.486c0 4.64 2.709 5.68 5.5 6.014-.591.589-.56 1.183-.5 2V21" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                        <a href="http://linkedin.com/in/ahmad-himawan-b43a101aa" target="_blank"
+                                            class="social-icon hover:scale-110 transition-transform duration-300">
+                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#0077b5] hover:[&>svg]:fill-[#00f0ff]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                    <path
+                                                        d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                        <a href="https://youtube.com/@ahmadhmwn" target="_blank"
+                                            class="social-icon hover:scale-110 transition-transform duration-300">
+                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#ff0000] hover:[&>svg]:fill-[#ff2d7e]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                                                    <path
+                                                        d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                        <a href="https://twitter.com/ahmadhmwn" target="_blank"
+                                            class="social-icon hover:scale-110 transition-transform duration-300">
+                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-black hover:[&>svg]:fill-[#b388ff]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512">
+                                                    <path
+                                                        d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <h3>Undergraduate</h3>
-                        <p>Biology Education 2019-2023</p>
-                        <p>Graduated with a study period of 3 years 10 months at Universitas Tanjungpura</p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="skill">
-            <h3>Experiences</h3>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-icon"><i class="fas fa-users"></i></div>
-                        <h3>UI GreenMetrics Team</h3>
-                        <p>July 2022 - January 2023</p>
-                        <p>Journal Analyst Data, Universitas Tanjungpura</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-icon">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                        </div>
-                        <h3>Teaching Assistance</h3>
-                        <p>August - November 2022</p>
-                        <p>Merdeka Belajar Kampus Merdeka (MBKM) by Ministry Education</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-icon">
-                            <i class="fas fa-laptop-code"></i>
-                        </div>
-                        <h3>Lab Assistance in Courses</h3>
-                        <p>Introduction of Biology I Course (1 Semester on 2022)</p>
-                        <p>Micology Course (3 Semester on 2021-2022)</p>
-                        <p>Biochemistry Course (2 Semester on 2021-2022)</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-icon"><i class="fas fa-users-cog"></i></div>
-                        <h3>Head of Secretarial Affairs</h3>
-                        <p>Organization Experience (HIMBIO FKIP UNTAN | 2021-2022)</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <div class="timeline-icon"><i class="fas fa-briefcase"></i></div>
-                        <h3>Staff of Student Activity Units</h3>
-                        <p>Organization Experience (Ldsi At-Tarbawi FKIP UNTAN | 2020-2021)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="skill">
-            <h3>Project</h3> <br>
-            <div class="timeline-content">
-                <img src="assets/img/Project.png" alt="SIMLAB">
-            </div> <br>
-            <div class="timeline-content">
-                <img src="assets/img/Project_1.png" alt="SIMLAB">
-            </div> <br>
-            <div class="timeline-content">
-                <img src="assets/img/Project_2.png" alt="SIMLAB">
-            </div> <br>
-            <div class="timeline-content">
-                <img src="assets/img/Project_3.png" alt="SIMLAB">
-            </div>
-        </div>
-    </div>
-
-    <div id="skills-panel" class="content-panel">
-        <span class="close-btn">&times;</span>
-        <h2>My Skills</h2>
-
-        <div class="skill">
-            <h3>Web Development</h3>
-            <ul>
-                <li>JavaScript, HTML, CSS, PHP</li>
-                <li>React</li>
-                <li>Blender and 3D modeling</li>
-            </ul>
-        </div>
-
-        <div class="skill">
-            <h3>Other Skills</h3>
-            <ul>
-                <li>Ms.Office</li>
-                <li>Digital Designing</li>
-                <li>Video Editing</li>
-                <li>Analysis Data: R-Studio, Mendeley, Publish or Perish, VosViewer, SPSS, Bibliometrix</li>
-            </ul>
-        </div>
-
-        <div class="skill">
-            <h3>Language</h3>
-            <ul>
-                <li>Indonesian Native</li>
-                <li>English</li>
-                <li>Japanese (N4)</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="achievements-panel" class="content-panel">
-        <span class="close-btn">&times;</span>
-        <h2>Characters</h2>
-        <p>Click on any characters to view it on the stage!</p>
-        <div class="model-selector"></div>
-    </div>
-
-    <div class="container-menu">
-        <div class="menu">
-            <div class="menu-item" data-action="home">Home</div>
-            <div class="menu-item" data-action="about">About</div>
-            <div class="menu-item" data-action="skills">Skills</div>
-            <div class="menu-item" data-action="achievements">Characters</div>
-        </div>
-    </div>
-
-    <div class="profile-container">
-        <img src="assets/img/me.png" alt="Profile Picture" class="profile-pic">
-        <span class="profile-name">Ahmad Himawan</span>
-    </div>
-
-    <script type="module">
-        import * as THREE from 'https://esm.sh/three';
-        import { GLTFLoader } from 'https://esm.sh/three/examples/jsm/loaders/GLTFLoader.js';
-        import { OrbitControls } from 'https://esm.sh/three/examples/jsm/controls/OrbitControls.js';
-        import { EffectComposer } from 'https://esm.sh/three/examples/jsm/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'https://esm.sh/three/examples/jsm/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'https://esm.sh/three/examples/jsm/postprocessing/UnrealBloomPass.js';
-
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.textContent = message;
-            document.body.appendChild(errorDiv);
-            setTimeout(() => errorDiv.remove(), 5000);
-            console.error(message);
-        }
-
-        const isTouchDevice = 'ontouchstart' in window;
-
-        try {
-            const container = document.getElementById('scene-container');
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x1a1a2e);
-            scene.fog = new THREE.FogExp2(0x1a1a2e, 0.05);
-
-            const camera = new THREE.PerspectiveCamera(18, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, -1.8, -2.8);
-            camera.lookAt(0, 2.0, 0);
-
-            const renderer = new THREE.WebGLRenderer({
-                antialias: true,
-                powerPreference: "high-performance"
-            });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.outputEncoding = THREE.LinearEncoding;
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 0.8;
-            renderer.shadowMap.enabled = false;
-            container.appendChild(renderer.domElement);
-
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
-            scene.add(ambientLight);
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-            directionalLight.position.set(1, 1, 1);
-            scene.add(directionalLight);
-            const controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.zoomSpeed = 0.5;
-            controls.minDistance = 2.5;
-            controls.maxDistance = 3.5;
-            controls.maxPolarAngle = Math.PI * 0.5;
-            controls.minPolarAngle = Math.PI * 0.3;
-            controls.target.set(0, 1.2, 0);
-            controls.enablePan = false;
-
-            if (isTouchDevice) {
-                controls.enableZoom = false;
-            }
-
-            const composer = new EffectComposer(renderer);
-            composer.addPass(new RenderPass(scene, camera));
-
-            const bloomPass = new UnrealBloomPass(
-                new THREE.Vector2(window.innerWidth, window.innerHeight),
-                0.1,
-                0.1,
-                0.1
-            );
-            composer.addPass(bloomPass);
-
-            const groundGeometry = new THREE.CircleGeometry(2, 32);
-            const groundMaterial = new THREE.MeshStandardMaterial({
-                color: 0x1a1a2e,
-                metalness: 0.3,
-                roughness: 0.7
-            });
-            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.y = -0.5;
-            scene.add(ground);
-
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = 1000;
-            const posArray = new Float32Array(particleCount * 3);
-            for (let i = 0; i < particleCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 30;
-            }
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particlesMesh = new THREE.Points(
-                particlesGeometry,
-                new THREE.PointsMaterial({
-                    size: 0.2,
-                    color: 0x888888,
-                    transparent: true,
-                    opacity: 0.7,
-                    blending: THREE.AdditiveBlending
-                })
-            );
-            scene.add(particlesMesh);
-
-            let currentModel = null;
-            let mixer, clock = new THREE.Clock();
-            const loader = new GLTFLoader();
-
-            const modelList = [
-                {
-                    name: "Hatsune Miku",
-                    path: "./model/hatsune_miku.glb",
-                    thumbnail: "./assets/img/miku.jpeg",
-                    scale: 3.2,
-                    position: { y: -0.47 }
-                },
-            ];
-
-            function loadModel(modelData) {
-                if (currentModel) {
-                    scene.remove(currentModel);
-                    if (mixer) mixer.stopAllAction();
-                }
-
-                loader.load(modelData.path, (gltf) => {
-                    try {
-                        currentModel = gltf.scene;
-                        currentModel.position.set(0, modelData.position.y, 0);
-                        currentModel.scale.set(modelData.scale, modelData.scale, modelData.scale);
-
-                        currentModel.rotation.y = Math.PI;
-
-                        scene.add(currentModel);
-
-                        // Animations
-                        if (gltf.animations?.length > 0) {
-                            mixer = new THREE.AnimationMixer(currentModel);
-                            const action = mixer.clipAction(gltf.animations[0]);
-                            action.play().setLoop(THREE.LoopRepeat, Infinity);
+                    <script>
+                        function showContactModal() {
+                            document.getElementById('contact-modal').classList.remove('hidden');
+                            document.body.style.overflow = 'hidden'; 
                         }
 
-                        currentModel.traverse(child => {
-                            if (child.isMesh) {
-                                child.castShadow = false;
-                                child.receiveShadow = false;
+                        function closeContactModal() {
+                            document.getElementById('contact-modal').classList.add('hidden');
+                            document.body.style.overflow = ''; 
+                        }
 
-                                if (child.material) {
-                                    const basicMaterial = new THREE.MeshBasicMaterial();
-
-                                    basicMaterial.color.copy(child.material.color);
-                                    if (child.material.map) basicMaterial.map = child.material.map;
-                                    basicMaterial.transparent = child.material.transparent;
-                                    basicMaterial.opacity = 2.5;
-                                    if (child.material.alphaMap) basicMaterial.alphaMap = child.material.alphaMap;
-
-                                    child.material = basicMaterial;
-                                    child.material.needsUpdate = true;
-                                }
+                        // Close modal when clicking outside content
+                        document.getElementById('contact-modal').addEventListener('click', function(e) {
+                            if (e.target === this) {
+                                closeContactModal();
                             }
                         });
 
-                        const box = new THREE.Box3().setFromObject(currentModel);
-                        const center = box.getCenter(new THREE.Vector3());
-                        controls.target.copy(center).y += 0.4;
+                        // Close modal with Escape key
+                        document.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape') {
+                                closeContactModal();
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </section>
 
-                    } catch (error) {
-                        showError('Error processing model: ' + error.message);
-                    }
-                });
+        <!-- Floating Navigation -->
+        <nav class="fixed bottom-5 left-0 right-0 flex justify-center z-40">
+            <div class="glass-card flex rounded-full p-2 shadow-xl space-x-2">
+                <!-- Navigation Buttons -->
+                <button onclick="openModal('home')" class="nav-btn bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-blue-500/30">
+                    <i class="fas fa-home"></i>
+                </button>
+                
+                <button onclick="openModal('about')" class="nav-btn bg-gradient-to-br from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-teal-500/30">
+                    <i class="fas fa-user"></i>
+                </button>
+                
+                <button onclick="openModal('skills')" class="nav-btn bg-gradient-to-br from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-purple-500/30">
+                    <i class="fas fa-code"></i>
+                </button>
+                
+                <button onclick="openModal('projects')" class="nav-btn bg-gradient-to-br from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-pink-500/30">
+                    <i class="fas fa-project-diagram"></i>
+                </button>
+                
+                <a href="game.html" class="nav-btn bg-gradient-to-br from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-cyan-500/30">
+                    <i class="fas fa-gamepad"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Modal Container -->
+        <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+            <div class="glass-card bg-gradient-to-br from-gray-800/90 to-gray-900/90 border border-gray-700/50 rounded-xl p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl shadow-blue-500/20">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
+                    <h2 id="modal-title" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400"></h2>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-cyan-400 transition-colors duration-200 p-1 rounded-full hover:bg-gray-700/50">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="modal-content" class="text-gray-300">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Sections -->
+        <div class="hidden">
+            <section id="home-content">
+                <div id="miku-container" class="w-full h-96 rounded-lg overflow-hidden bg-gray-100"></div>
+
+                <h1 class="text-2xl text-center font-bold mb-4">Follow for more about me!</h1>
+                <div class="home-nav">
+                    <div class="social-links flex justify-center gap-4 mt-6">
+                        <a href="https://instagram.com/ahmadhmwn" target="_blank"
+                            class="social-icon hover:scale-110 transition-transform duration-300">
+                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584] hover:[&>svg]:fill-[#ff2d7e]">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                    <path
+                                        d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="https://github.com/ahmadhmwn" target="_blank"
+                            class="social-icon hover:scale-110 transition-transform duration-300">
+                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-gray-800 hover:[&>svg]:fill-[#00b0ff]">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" />
+                                    <path
+                                        d="M9 19c-4.286 1.35-4.286-2.55-6-3m12 5v-3.5c0-1 .099-1.405-.5-2 2.791-.3 5.5-1.366 5.5-6.04a4.567 4.567 0 0 0 -1.333 -3.21 4.192 4.192 0 00-.08-3.227s-1.05-.3-3.476 1.267a12.334 12.334 0 0 0 -6.222 0C6.462 2.723 5.413 3.023 5.413 3.023a4.192 4.192 0 0 0 -.08 3.227A4.566 4.566 0 004 9.486c0 4.64 2.709 5.68 5.5 6.014-.591.589-.56 1.183-.5 2V21" />
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="http://linkedin.com/in/ahmad-himawan-b43a101aa" target="_blank"
+                            class="social-icon hover:scale-110 transition-transform duration-300">
+                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#0077b5] hover:[&>svg]:fill-[#00f0ff]">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                    <path
+                                        d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z" />
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="https://youtube.com/@ahmadhmwn" target="_blank"
+                            class="social-icon hover:scale-110 transition-transform duration-300">
+                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#ff0000] hover:[&>svg]:fill-[#ff2d7e]">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                                    <path
+                                        d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="https://twitter.com/ahmadhmwn" target="_blank"
+                            class="social-icon hover:scale-110 transition-transform duration-300">
+                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-black hover:[&>svg]:fill-[#b388ff]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512">
+                                    <path
+                                        d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+                                </svg>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="about-content">
+                <h1 class="text-2xl font-bold mb-4">Achievement</h1>
+                <div class="glass-card">
+                    <div class="timeline">
+                        <div class="timeline-item glass-card p-4 mb-4">
+                            <h4 class="font-bold text-neon-blue">Bronze Medalist Biology Olympiad</h4>
+                            <p class="text-sm text-gray-300">National Student Competition (2021) by POSI</p>
+                        </div>
+                        <div class="timeline-item glass-card p-4 mb-4">
+                            <h4 class="font-bold text-neon-blue">Bronze Medalist Biology Olympiad</h4>
+                            <p class="text-sm text-gray-300">National Education Day (2021) by POSI</p>
+                        </div>
+                        <div class="timeline-item glass-card p-4 mb-4">
+                            <h4 class="font-bold text-neon-blue">Delegates</h4>
+                            <p class="text-sm text-gray-300">Japan International Autumn (2024)</p>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <h1 class="text-2xl font-bold mb-4">Research & Publication</h1>
+                <div class="glass-card">
+                    
+                </div>
+                <br>
+                <h1 class="text-2xl font-bold mb-4">Experience</h1>
+                <div class="experience-container">
+                    <div class="experience-item">
+                        <div class="timeline-icon"><i class="fas fa-users"></i></div>
+                        <div class="experience-details">
+                            <h3>UI GreenMetrics Team</h3>
+                            <p class="date">July 2022 - January 2023</p>
+                            <p class="description">Journal Analyst Data, Universitas Tanjungpura</p>
+                        </div>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="timeline-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                        <div class="experience-details">
+                            <h3>Teaching Assistance</h3>
+                            <p class="date">August - November 2022</p>
+                            <p class="description">Merdeka Belajar Kampus Merdeka (MBKM) by Ministry Education</p>
+                        </div>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="timeline-icon"><i class="fas fa-laptop-code"></i></div>
+                        <div class="experience-details">
+                            <h3>Lab Assistance in Courses</h3>
+                            <p class="date">Introduction of Biology I Course (1 Semester on 2022)</p>
+                            <p class="date">Micology Course (3 Semester on 2021-2022)</p>
+                            <p class="date">Biochemistry Course (2 Semester on 2021-2022)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="timeline-icon"><i class="fas fa-users-cog"></i></div>
+                        <div class="experience-details">
+                            <h3>Head of Secretarial Affairs</h3>
+                            <p class="date">Organization Experience (HIMBIO FKIP UNTAN | 2021-2022)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="experience-item">
+                        <div class="timeline-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="experience-details">
+                            <h3>Staff of Student Activity Units</h3>
+                            <p class="date">Organization Experience (Ldsi At-Tarbawi FKIP UNTAN | 2020-2021)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="skills-content">
+                <ul class="list-disc pl-5">
+                    <h2 class="text-2xl font-bold mb-4">Web Development</h2>
+                    <div class="glass-card p-4 inline-block">
+                        <p class="text-sm text-gray-300">
+                            <li>JavaScript, HTML, CSS, PHP</li>
+                            <li>Blender and 3D modeling</li>
+                        </p>
+                    </div> <br>
+                    <h2 class="text-2xl font-bold mt-4 mb-4">Other skills</h2>
+                    <div class="glass-card p-4 inline-block">
+                        <p class="text-sm text-gray-300">
+                            <li>Ms.Office</li>
+                            <li>Digital Designing</li>
+                            <li>Video Editing</li>
+                            <li>Analysis Data: R-Studio, Mendeley, Publish or Perish, VosViewer, SPSS, Bibliometrix</li>
+                        </p>
+                    </div> <br>
+                    <h2 class="text-2xl font-bold mt-4 mb-4">Language</h2>
+                    <div class="glass-card p-4 inline-block">
+                        <p class="text-sm text-gray-300">
+                            <li>Indonesian Native</li>
+                            <li>English</li>
+                            <li>Japanese (N4)</li>
+                        </p>
+                    </div> <br>
+                </ul>
+            </section>
+            
+            <section id="projects-content">
+                <ul class="list-disc pl-5">
+                    <div class="experience-item">
+                        <img src="assets/img/Project.png" alt="PJ">
+                    </div> <br>
+                    <div class="experience-item">
+                        <img src="assets/img/Project_1.png" alt="PJ1">
+                    </div> <br>
+                    <div class="experience-item">
+                        <img src="assets/img/Project_2.png" alt="PJ2">
+                    </div> <br>
+                    <div class="experience-item">
+                        <img src="assets/img/Project_3.png" alt="PJ3">
+                    </div>
+                    <div class="experience-item">
+                    </div>
+                </ul>
+            </section>
+            
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl font-bold mb-16 text-center gradient-text">About Me</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="glass-card p-8 floating tilt-effect">
+                    <h3 class="text-2xl font-bold mb-4 text-neon-blue">Overview</h3>
+                    <p class="mb-6">Hello! I'm Ahmad Himawan, a educator with a passion for implementing technologies in education.</p>
+                    <p class="mb-6">I finished my studies with cross-major research in the Undergraduate level, I have a dream to study abroad for my future career.</p>
+                    <p>If you want to make collaborative research, you can contact me to email: ahmadhimawan16@gmail.com</p>
+                </div>
+                
+                <div class="glass-card p-8">
+                    <div class="timeline">
+                        <!-- Timeline items here -->
+                        <div class="timeline-item glass-card p-4 mb-4">
+                            <h3 class="text-2xl font-bold mb-4 text-neon-blue">Background</h3>
+                            <h4 class="font-bold text-neon-blue">Undergraduate</h4>
+                            <p class="text-sm text-gray-300">Biology Education 2019-2023</p>
+                            <p>Study Time: 3 years 10 months - Universitas Tanjungpura</p>
+                        </div>
+                        <!-- More timeline items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Model Viewer -->
+    <div id="model-viewer" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex items-center justify-center">
+        <button id="close-model" class="absolute top-4 right-4 text-3xl text-white z-50">&times;</button>
+        <div id="scene-container" class="w-full h-full"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/three@0.132.2/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Particles.js configuration
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#00f0ff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: "#00b0ff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" }
+                }
             }
+        });
 
-            if (modelList.length > 0) loadModel(modelList[0]);
+        // Hatsune Miku 3D Model Viewer (NEW)
+        let mikuScene, mikuCamera, mikuRenderer, mikuControls, mikuModel;
+        let mikuMixer, mikuClock;
 
-            const overlay = document.createElement('div');
-            overlay.className = 'character-overlay';
-            document.body.appendChild(overlay);
+        function initMikuViewer() {
+            const container = document.getElementById('miku-container');
+            if (!container || mikuRenderer) return;
 
+            // 1. Create scene
+            mikuScene = new THREE.Scene();
+            mikuScene.background = new THREE.Color(0x1a1a2e);
+            
+            // 2. Create camera
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            mikuCamera = new THREE.PerspectiveCamera(18, width/height, 0.1, 1000);
+            mikuCamera.position.set(0, -1.8, -2.8);
+            mikuCamera.lookAt(0, 2.0, 0);
+
+            // 3. Create renderer
+            mikuRenderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                powerPreference: "high-performance"
+            });
+            mikuRenderer.setSize(width, height);
+            mikuRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(mikuRenderer.domElement);
+
+            // 4. Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
+            mikuScene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            directionalLight.position.set(1, 1, 1);
+            mikuScene.add(directionalLight);
+
+            // 5. Add controls
+            mikuControls = new THREE.OrbitControls(mikuCamera, mikuRenderer.domElement);
+            mikuControls.enableDamping = true;
+            mikuControls.dampingFactor = 0.05;
+            mikuControls.minDistance = 2.5;
+            mikuControls.maxDistance = 3.5;
+            mikuControls.target.set(0, 1.2, 0);
+
+            // 6. Load model
+            mikuClock = new THREE.Clock();
+            const loader = new THREE.GLTFLoader();
+            
+            loader.load(
+                './model/hatsune_miku.glb',
+                (gltf) => {
+                    try {
+                        mikuModel = gltf.scene;
+                        mikuModel.position.set(0, -0.47, 0);
+                        mikuModel.scale.set(3.2, 3.2, 3.2);
+                        mikuModel.rotation.y = Math.PI;
+                        mikuScene.add(mikuModel);
+
+                        // Handle animations
+                        if (gltf.animations?.length > 0) {
+                            mikuMixer = new THREE.AnimationMixer(mikuModel);
+                            const action = mikuMixer.clipAction(gltf.animations[0]);
+                            action.play();
+                        }
+
+                        // Adjust materials
+                        mikuModel.traverse(child => {
+                            if (child.isMesh) {
+                                child.material = new THREE.MeshBasicMaterial({
+                                    map: child.material.map,
+                                    transparent: true
+                                });
+                            }
+                        });
+
+                        animateMiku();
+                    } catch (error) {
+                        console.error('Error processing Miku model:', error);
+                    }
+                },
+                undefined,
+                (error) => {
+                    console.error('Error loading Miku model:', error);
+                }
+            );
+
+            // Handle resize
+            window.addEventListener('resize', handleMikuResize);
+        }
+
+        function animateMiku() {
+            requestAnimationFrame(animateMiku);
+            const delta = mikuClock.getDelta();
+            
+            if (mikuMixer) mikuMixer.update(delta);
+            if (mikuControls) mikuControls.update();
+            if (mikuRenderer) mikuRenderer.render(mikuScene, mikuCamera);
+        }
+
+        function handleMikuResize() {
+            const container = document.getElementById('miku-container');
+            if (!container || !mikuRenderer || !mikuCamera) return;
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            
+            mikuCamera.aspect = width / height;
+            mikuCamera.updateProjectionMatrix();
+            mikuRenderer.setSize(width, height);
+        }
+
+        function cleanupMikuViewer() {
+            if (mikuRenderer) {
+                mikuRenderer.dispose();
+                mikuRenderer = null;
+            }
+            window.removeEventListener('resize', handleMikuResize);
+        }
+
+
+        // Hide preloader when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('preloader').style.display = 'none';
+                }, 500);
+            }, 1200);
+        });
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 3D Model Viewer
+        let scene, camera, renderer, model;
+        
+        function init3DViewer() {
+            // Set up Three.js scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+            
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('scene-container').appendChild(renderer.domElement);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(1, 1, 1);
+            scene.add(directionalLight);
+            
+            // Add controls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            
+            // Load model
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                'model/hatsune_miku.glb',
+                function(gltf) {
+                    model = gltf.scene;
+                    model.scale.set(0.5, 0.5, 0.5);
+                    scene.add(model);
+                },
+                undefined,
+                function(error) {
+                    console.error('Error loading model:', error);
+                }
+            );
+            
+            // Animation loop
             function animate() {
                 requestAnimationFrame(animate);
-                const delta = clock.getDelta();
-                if (mixer) mixer.update(delta);
-                if (particlesMesh) particlesMesh.rotation.y += delta * 0.05;
                 controls.update();
-                composer.render();
+                renderer.render(scene, camera);
             }
             animate();
-
+            
+            // Handle window resize
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                composer.setSize(window.innerWidth, window.innerHeight);
             });
-
-            const panels = {
-                home: document.getElementById('home-panel'),
-                about: document.getElementById('about-panel'),
-                skills: document.getElementById('skills-panel'),
-                achievements: document.getElementById('achievements-panel')
-            };
-
-            // Close buttons
-            document.querySelectorAll('.close-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    Object.values(panels).forEach(panel => {
-                        panel.style.display = 'none';
-                    });
-                });
-            });
-
-            const modelSelector = document.querySelector('.model-selector');
-            modelList.forEach(model => {
-                const thumbnail = document.createElement('div');
-                thumbnail.className = 'model-thumbnail';
-
-                if (model.thumbnail) {
-                    thumbnail.innerHTML = `
-                        <img src="${model.thumbnail}" alt="${model.name}">
-                        <div class="model-name">${model.name}</div>
-                    `;
-                } else {
-                    thumbnail.innerHTML = `
-                        <div style="padding: 10px; text-align: center;">${model.name}</div>
-                        <div class="model-name">${model.name}</div>
-                    `;
-                }
-
-                thumbnail.addEventListener('click', () => {
-                    loadModel(model);
-                    panels.achievements.style.display = 'none';
-                });
-                modelSelector.appendChild(thumbnail);
-            });
-
-            const profileContainer = document.querySelector('.profile-container');
-            if (profileContainer) {
-                profileContainer.addEventListener('click', () => {
-                    Object.values(panels).forEach(panel => {
-                        panel.style.display = 'none';
-                    });
-                    panels.home.style.display = 'block';
-                });
-
-                profileContainer.style.cursor = 'pointer';
-                profileContainer.addEventListener('mouseenter', () => {
-                    profileContainer.style.transform = 'translateY(-2px)';
-                });
-                profileContainer.addEventListener('mouseleave', () => {
-                    profileContainer.style.transform = 'translateY(0)';
-                });
-            }
-
-            const menuActions = {
-                home: () => {
-                    panels.home.style.display = 'block';
-                },
-                about: () => {
-                    panels.about.style.display = 'block';
-                },
-                skills: () => {
-                    panels.skills.style.display = 'block';
-                },
-                achievements: () => {
-                    panels.achievements.style.display = 'block';
-                }
-            };
-
-            document.querySelectorAll('.menu-item').forEach(item => {
-                const action = item.dataset.action;
-                item.addEventListener('click', () => {
-                    item.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        item.style.transform = 'scale(1)';
-                    }, 200);
-
-                    Object.values(panels).forEach(panel => {
-                        panel.style.display = 'none';
-                    });
-
-                    if (menuActions[action]) {
-                        menuActions[action]();
-                    }
-                });
-            });
-
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    document.getElementById('preloader').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('preloader').style.display = 'none';
-                    }, 300);
-                }, 1000);
-            });
-
-        } catch (error) {
-            showError('Initialization error: ' + error.message);
         }
+        
+        // Toggle 3D model viewer
+        document.querySelectorAll('.view-3d-model').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('model-viewer').style.display = 'flex';
+                init3DViewer();
+            });
+        });
+        
+        document.getElementById('close-model').addEventListener('click', () => {
+            document.getElementById('model-viewer').style.display = 'none';
+            // Clean up Three.js
+            if (renderer) {
+                renderer.dispose();
+            }
+        });
+
+        // Tooltip functionality
+        document.querySelectorAll('[data-tooltip]').forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = this.getAttribute('data-tooltip');
+                document.body.appendChild(tooltip);
+                
+                const rect = this.getBoundingClientRect();
+                tooltip.style.left = `${rect.left + rect.width/2 - tooltip.offsetWidth/2}px`;
+                tooltip.style.top = `${rect.top - 40}px`;
+                
+                this.addEventListener('mouseleave', () => {
+                    tooltip.remove();
+                });
+            });
+        });
+
+        // Interactive cursor effect
+        const cursor = document.createElement('div');
+        cursor.className = 'custom-cursor';
+        document.body.appendChild(cursor);
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
+        
+        document.querySelectorAll('a, button, .interactive').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('cursor-hover');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('cursor-hover');
+            });
+        });
+
+        //Modal Navigasi
+        function openModal(section) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            
+            // Get the content for the selected section
+            const content = document.getElementById(`${section}-content`).cloneNode(true);
+            
+            // Set modal title based on section
+            const titles = {
+                'home': 'Home',
+                'about': 'About Me',
+                'skills': 'My Skills',
+                'projects': 'My Projects',
+                'contact': 'Contact Me'
+            };
+            
+            modalTitle.textContent = titles[section];
+            modalContent.innerHTML = '';
+            modalContent.appendChild(content);
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside content
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        const textElement = document.getElementById('textContent');
+        const texts = [
+            { en: "Educator and Tech in Edu Enthusiast", jp: ""},
+            { en: "教育者と教育における技術", jp: "教育者" }
+        ];
+
+        let currentIndex = 0;
+        let isAnimating = false;
+        let animationFrame;
+
+        function randomChar() {
+            const chars = "教育者";
+            return chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        function animateTextChange(newText, duration = 2000) {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            const startTime = performance.now();
+            const originalText = textElement.textContent;
+            const length = Math.max(originalText.length, newText.length);
+            
+            function update(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                let output = '';
+                for (let i = 0; i < length; i++) {
+                    if (progress < 0.5) {
+                        // Fase pertama: ubah ke karakter acak
+                        if (i < originalText.length) {
+                            const r = Math.random();
+                            if (r < progress * 1) {
+                                output += randomChar();
+                            } else {
+                                output += originalText[i];
+                            }
+                        }
+                    } else {
+                        // Fase kedua: ubah ke teks baru
+                        const r = Math.random();
+                        if (r < (progress - 0.5) * 0,5) {
+                            if (i < newText.length) {
+                                output += newText[i];
+                            }
+                        } else {
+                            output += randomChar();
+                        }
+                    }
+                }
+                
+                textElement.textContent = output;
+                
+                if (progress < 1) {
+                    animationFrame = requestAnimationFrame(update);
+                } else {
+                    textElement.textContent = newText;
+                    isAnimating = false;
+                    setTimeout(() => changeText(), 3000); 
+                }
+            }
+            
+            animationFrame = requestAnimationFrame(update);
+        }
+
+        function changeText() {
+            currentIndex = (currentIndex + 1) % texts.length;
+            const currentPair = texts[currentIndex];
+            
+            // Alternatif antara English dan Jepang
+            const newText = textElement.textContent === currentPair.en ? currentPair.jp : currentPair.en;
+            
+            animateTextChange(newText);
+        }
+
+        // Inisialisasi
+        textElement.textContent = texts[0].en;
+
+        // Mulai animasi setelah 2 detik
+        setTimeout(() => changeText(), 2000);
     </script>
 </body>
 
