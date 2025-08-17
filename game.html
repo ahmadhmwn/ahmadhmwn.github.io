@@ -397,313 +397,379 @@
   <audio id="music" src="https://ia800905.us.archive.org/19/items/miku-hand-in-hand/01%20Hatsune%20Miku%20-%20Hand%20in%20Hand.mp3"></audio>
   
   <script>
-    // Hand in Hand rhythm chart (BPM: 150, offset: 0)
-    const notes = [
-      // Intro (8 beats)
-      { time: 800, lane: 3, duration: 0 },
-      { time: 1200, lane: 1, duration: 0 },
-      { time: 1600, lane: 5, duration: 0 },
-      
-      // Verse 1
-      { time: 2400, lane: 2, duration: 0 }, // "Te" (手)
-      { time: 2800, lane: 4, duration: 0 }, // "o" (を)
-      { time: 3200, lane: 3, duration: 0 }, // "tsu" (つ)
-      { time: 3600, lane: 1, duration: 0 }, // "na" (な)
-      { time: 4000, lane: 5, duration: 0 }, // "gi" (ぎ)
-      { time: 4400, lane: 2, duration: 0 }, // "ta" (た)
-      { time: 4800, lane: 4, duration: 0 }, // "ra" (ら)
-      
-      // Chorus
-      { time: 5600, lane: 1, duration: 0 }, // "Ha" (は)
-      { time: 6000, lane: 3, duration: 0 }, // "nd" (ん)
-      { time: 6400, lane: 5, duration: 0 }, // "in" (ど)
-      { time: 6800, lane: 2, duration: 0 }, // "Ha" (は)
-      { time: 7200, lane: 4, duration: 0 }, // "nd" (ん)
-      { time: 7600, lane: 1, duration: 200 }, // Hold for "Hand in Hand"
-      { time: 8000, lane: 3, duration: 0 },
-      { time: 8400, lane: 5, duration: 0 },
-      
-      // Verse 2
-      { time: 9600, lane: 2, duration: 0 },
-      { time: 10000, lane: 4, duration: 0 },
-      { time: 10400, lane: 3, duration: 0 },
-      { time: 10800, lane: 1, duration: 0 },
-      { time: 11200, lane: 5, duration: 0 },
-      { time: 11600, lane: 2, duration: 0 },
-      { time: 12000, lane: 4, duration: 0 },
-      
-      // Chorus repeat with more intensity
-      { time: 12800, lane: 1, duration: 0 },
-      { time: 13200, lane: 3, duration: 0 },
-      { time: 13600, lane: 5, duration: 0 },
-      { time: 14000, lane: 2, duration: 0 },
-      { time: 14400, lane: 4, duration: 0 },
-      { time: 14800, lane: 1, duration: 200 },
-      { time: 15200, lane: 3, duration: 0 },
-      { time: 15600, lane: 5, duration: 0 },
-      { time: 16000, lane: 2, duration: 0 },
-      { time: 16400, lane: 4, duration: 0 },
-      { time: 16800, lane: 1, duration: 0 },
-      { time: 17200, lane: 3, duration: 0 },
-      { time: 17600, lane: 5, duration: 0 },
-      
-      // Final chorus
-      { time: 18400, lane: 1, duration: 0 },
-      { time: 18800, lane: 3, duration: 0 },
-      { time: 19200, lane: 5, duration: 0 },
-      { time: 19600, lane: 2, duration: 0 },
-      { time: 20000, lane: 4, duration: 0 },
-      { time: 20400, lane: 1, duration: 200 },
-      { time: 20800, lane: 3, duration: 0 },
-      { time: 21200, lane: 5, duration: 0 },
-      { time: 21600, lane: 2, duration: 0 },
-      { time: 22000, lane: 4, duration: 0 },
-      { time: 22400, lane: 1, duration: 0 },
-      { time: 22800, lane: 3, duration: 0 },
-      { time: 23200, lane: 5, duration: 0 },
-      
-      // Ending
-      { time: 24000, lane: 3, duration: 0 }
-    ];
-    
-    const lanePositions = [10, 25, 40, 55, 70];
-    const APPROACH_RATE = 1.8; 
-    const HIT_POSITION = 120; 
-    const NOTE_SPEED = 200; 
-    const BPM = 150;
-    const OFFSET = 0; 
-    
-    let score = 0;
-    let combo = 0;
-    let maxCombo = 0;
-    let currentNote = 0;
-    let gameStarted = false;
-    let startTime = 0;
-    let activeNotes = [];
-    let songDuration = 25000; // 25 seconds for demo
-    
-    function createNote(noteData) {
-      const note = document.createElement('div');
-      note.className = `note lane-${noteData.lane}`;
-      if (noteData.duration > 0) note.classList.add('hold-note');
-      
-      // Position based on lane
-      const lanePos = lanePositions[noteData.lane - 1];
-      note.style.left = `calc(${lanePos}% - 35px)`;
-      
-      // For hold notes
-      if (noteData.duration > 0) {
-        note.style.height = `${(noteData.duration / 1000) * NOTE_SPEED * APPROACH_RATE}px`;
-      }
-      
-      note.dataset.time = noteData.time;
-      note.dataset.lane = noteData.lane;
-      note.dataset.duration = noteData.duration;
-      
-      note.addEventListener('click', () => handleNoteClick(note));
-      
-      document.getElementById('game-area').appendChild(note);
-      activeNotes.push({
-        element: note,
-        time: noteData.time,
-        lane: noteData.lane,
-        duration: noteData.duration,
-        hit: false
-      });
-      
-      return note;
-    }
-    
-    function createNoteEffect(x, y, color) {
-      const effect = document.createElement('div');
-      effect.className = 'note-effect';
-      effect.style.left = `${x - 40}px`;
-      effect.style.top = `${y - 40}px`;
-      effect.style.background = `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`;
-      document.getElementById('game-area').appendChild(effect);
-      
-      // Animate effect
-      setTimeout(() => {
-        effect.style.transform = 'scale(1.5)';
-        effect.style.opacity = '0.8';
-      }, 10);
-      
-      setTimeout(() => {
-        effect.style.transform = 'scale(2.5)';
-        effect.style.opacity = '0';
-        setTimeout(() => effect.remove(), 300);
-      }, 100);
-    }
-    
-    function handleNoteClick(note) {
-      if (!gameStarted) return;
-      
-      const noteTime = parseInt(note.dataset.time);
-      const currentGameTime = performance.now() - startTime;
-      const diff = Math.abs(currentGameTime - noteTime);
-      
-      let judgement = '';
-      let points = 0;
-      let judgementClass = '';
-      
-      if (diff < 50) {
-        judgement = 'PERFECT';
-        judgementClass = 'perfect';
-        points = 300;
-        combo++;
-      } else if (diff < 100) {
-        judgement = 'GREAT';
-        judgementClass = 'great';
-        points = 200;
-        combo++;
-      } else if (diff < 150) {
-        judgement = 'GOOD';
-        judgementClass = 'good';
-        points = 100;
-        combo++;
-      } else {
-        judgement = 'BAD';
-        judgementClass = 'bad';
-        points = 50;
-        combo = 0;
-      }
-      
-      score += points;
-      if (combo > maxCombo) maxCombo = combo;
-      
-      updateScore();
-      showJudgement(judgement, judgementClass);
-      
-      // Create tap effect
-      const rect = note.getBoundingClientRect();
-      const color = getComputedStyle(note).backgroundColor;
-      createNoteEffect(rect.left + rect.width/2, rect.top + rect.height/2, color);
-      
-      // Remove the note
-      const noteIndex = activeNotes.findIndex(n => n.element === note);
-      if (noteIndex !== -1) {
-        activeNotes[noteIndex].hit = true;
-        animateNoteRemoval(note);
-      }
-    }
-    
-    function animateNoteRemoval(note) {
-      note.style.transform = 'scale(1.2)';
-      note.style.opacity = '0';
-      setTimeout(() => note.remove(), 200);
-    }
-    
-    function showJudgement(judgement, judgementClass) {
-      const judgementEl = document.getElementById('judgement');
-      judgementEl.textContent = judgement;
-      judgementEl.className = judgementClass;
-      judgementEl.style.opacity = '1';
-      judgementEl.style.transform = 'translateX(-50%) scale(1.2)';
-      
-      // Show combo if > 0
-      if (combo > 0) {
-        const comboEl = document.getElementById('combo-display');
-        comboEl.textContent = `${combo}`;
-        comboEl.style.opacity = '1';
-      }
-      
-      setTimeout(() => {
-        judgementEl.style.opacity = '0';
-        judgementEl.style.transform = 'translateX(-50%) scale(1)';
+      // Hand in Hand rhythm chart (BPM: 150, offset: 0)
+      const notes = [
+        { time: 800, lane: 3, duration: 0 },
+        { time: 1200, lane: 1, duration: 0 },
+        { time: 1600, lane: 5, duration: 0 },
         
-        if (combo === 0) {
-          document.getElementById('combo-display').style.opacity = '0';
+        // Verse 1
+        { time: 2400, lane: 2, duration: 0 }, // "Te" (手)
+        { time: 2800, lane: 4, duration: 0 }, // "o" (を)
+        { time: 3200, lane: 3, duration: 0 }, // "tsu" (つ)
+        { time: 3600, lane: 1, duration: 0 }, // "na" (な)
+        { time: 4000, lane: 5, duration: 0 }, // "gi" (ぎ)
+        { time: 4400, lane: 2, duration: 0 }, // "ta" (た)
+        { time: 4800, lane: 4, duration: 0 }, // "ra" (ら)
+        
+        // Chorus
+        { time: 5600, lane: 1, duration: 0 }, // "Ha" (は)
+        { time: 6000, lane: 3, duration: 0 }, // "nd" (ん)
+        { time: 6400, lane: 5, duration: 0 }, // "in" (ど)
+        { time: 6800, lane: 2, duration: 0 }, // "Ha" (は)
+        { time: 7200, lane: 4, duration: 0 }, // "nd" (ん)
+        { time: 7600, lane: 1, duration: 200 }, // Hold for "Hand in Hand"
+        { time: 8000, lane: 3, duration: 0 },
+        { time: 8400, lane: 5, duration: 0 },
+        
+        // Verse 2
+        { time: 9600, lane: 2, duration: 0 },
+        { time: 10000, lane: 4, duration: 0 },
+        { time: 10400, lane: 3, duration: 0 },
+        { time: 10800, lane: 1, duration: 0 },
+        { time: 11200, lane: 5, duration: 0 },
+        { time: 11600, lane: 2, duration: 0 },
+        { time: 12000, lane: 4, duration: 0 },
+        
+        // Chorus repeat with more intensity
+        { time: 12800, lane: 1, duration: 0 },
+        { time: 13200, lane: 3, duration: 0 },
+        { time: 13600, lane: 5, duration: 0 },
+        { time: 14000, lane: 2, duration: 0 },
+        { time: 14400, lane: 4, duration: 0 },
+        { time: 14800, lane: 1, duration: 200 },
+        { time: 15200, lane: 3, duration: 0 },
+        { time: 15600, lane: 5, duration: 0 },
+        { time: 16000, lane: 2, duration: 0 },
+        { time: 16400, lane: 4, duration: 0 },
+        { time: 16800, lane: 1, duration: 0 },
+        { time: 17200, lane: 3, duration: 0 },
+        { time: 17600, lane: 5, duration: 0 },
+        
+        // Final chorus
+        { time: 18400, lane: 1, duration: 0 },
+        { time: 18800, lane: 3, duration: 0 },
+        { time: 19200, lane: 5, duration: 0 },
+        { time: 19600, lane: 2, duration: 0 },
+        { time: 20000, lane: 4, duration: 0 },
+        { time: 20400, lane: 1, duration: 200 },
+        { time: 20800, lane: 3, duration: 0 },
+        { time: 21200, lane: 5, duration: 0 },
+        { time: 21600, lane: 2, duration: 0 },
+        { time: 22000, lane: 4, duration: 0 },
+        { time: 22400, lane: 1, duration: 0 },
+        { time: 22800, lane: 3, duration: 0 },
+        { time: 23200, lane: 5, duration: 0 },
+        
+        // Ending
+        { time: 24000, lane: 3, duration: 0 }
+      ];
+      
+      const lanePositions = [10, 25, 40, 55, 70];
+      const APPROACH_RATE = 1.8; 
+      const HIT_POSITION = 120; 
+      const NOTE_SPEED = 200; 
+      const BPM = 150;
+      const OFFSET = 0; 
+      
+      let score = 0;
+      let combo = 0;
+      let maxCombo = 0;
+      let currentNote = 0;
+      let gameStarted = false;
+      let startTime = 0;
+      let activeNotes = [];
+      let songDuration = 25000; // 25 seconds for demo
+      let animationFrameId = null;
+      let musicStarted = false;
+      
+      function createNote(noteData) {
+        const note = document.createElement('div');
+        note.className = `note lane-${noteData.lane}`;
+        if (noteData.duration > 0) note.classList.add('hold-note');
+        
+        // Position based on lane
+        const lanePos = lanePositions[noteData.lane - 1];
+        note.style.left = `${lanePos}%`;
+        
+        // For hold notes
+        if (noteData.duration > 0) {
+          note.style.height = `${(noteData.duration / 1000) * NOTE_SPEED * APPROACH_RATE}px`;
         }
-      }, 500);
-    }
-    
-    function updateScore() {
-      document.getElementById('score-display').textContent = score.toLocaleString();
-    }
-    
-    function startGame() {
-      document.getElementById('start-screen').style.display = 'none';
-      
-      score = 0;
-      combo = 0;
-      currentNote = 0;
-      gameStarted = true;
-      startTime = performance.now() + OFFSET;
-      activeNotes = [];
-      
-      document.querySelectorAll('.note').forEach(n => n.remove());
-      
-      updateScore();
-      document.getElementById('progress-bar').style.width = '0%';
-      
-      const music = document.getElementById('music');
-      music.currentTime = 0;
-      music.play();
-      
-      gameLoop();
-    }
-    
-    function gameLoop() {
-      if (!gameStarted) return;
-      
-      const currentGameTime = performance.now() - startTime;
-      
-      const progress = Math.min(100, (currentGameTime / songDuration) * 100);
-      document.getElementById('progress-bar').style.width = `${progress}%`;
-      
-      while (currentNote < notes.length && currentGameTime >= notes[currentNote].time - (1000 * APPROACH_RATE)) {
-        if (!activeNotes.some(n => n.time === notes[currentNote].time && n.lane === notes[currentNote].lane)) {
-          createNote(notes[currentNote]);
-        }
-        currentNote++;
+        
+        note.dataset.time = noteData.time;
+        note.dataset.lane = noteData.lane;
+        note.dataset.duration = noteData.duration;
+        
+        note.addEventListener('click', () => handleNoteClick(note));
+        
+        document.getElementById('game-area').appendChild(note);
+        activeNotes.push({
+          element: note,
+          time: noteData.time,
+          lane: noteData.lane,
+          duration: noteData.duration,
+          hit: false
+        });
+        
+        return note;
       }
       
-      // Move notes from top to bottom
-      activeNotes.forEach(note => {
-        if (!note.hit) {
-          const noteElement = note.element;
-          const noteTopPos = ((currentGameTime - note.time) / 1000) * NOTE_SPEED * APPROACH_RATE;
-          
-          if (note.duration > 0) {
-            noteElement.style.top = `${noteTopPos}px`;
-          } else {
-            noteElement.style.top = `${noteTopPos}px`;
+      function createNoteEffect(x, y, color) {
+        const effect = document.createElement('div');
+        effect.className = 'note-effect';
+        effect.style.left = `${x - 40}px`;
+        effect.style.top = `${y - 40}px`;
+        effect.style.background = `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`;
+        document.getElementById('game-area').appendChild(effect);
+        
+        // Animate effect
+        setTimeout(() => {
+          effect.style.transform = 'scale(1.5)';
+          effect.style.opacity = '0.8';
+        }, 10);
+        
+        setTimeout(() => {
+          effect.style.transform = 'scale(2.5)';
+          effect.style.opacity = '0';
+          setTimeout(() => effect.remove(), 300);
+        }, 100);
+      }
+      
+      function handleNoteClick(note) {
+        if (!gameStarted) return;
+        
+        const noteTime = parseInt(note.dataset.time);
+        const currentGameTime = performance.now() - startTime;
+        const diff = Math.abs(currentGameTime - noteTime);
+        
+        let judgement = '';
+        let points = 0;
+        let judgementClass = '';
+        
+        if (diff < 50) {
+          judgement = 'PERFECT';
+          judgementClass = 'perfect';
+          points = 300;
+          combo++;
+        } else if (diff < 100) {
+          judgement = 'GREAT';
+          judgementClass = 'great';
+          points = 200;
+          combo++;
+        } else if (diff < 150) {
+          judgement = 'GOOD';
+          judgementClass = 'good';
+          points = 100;
+          combo++;
+        } else if (diff < 200) {
+          judgement = 'BAD';
+          judgementClass = 'bad';
+          points = 50;
+          combo = 0;
+        } else {
+          // Too early or too late - miss
+          return;
+        }
+        
+        score += points;
+        if (combo > maxCombo) maxCombo = combo;
+        
+        updateScore();
+        showJudgement(judgement, judgementClass);
+        
+        // Create tap effect
+        const rect = note.getBoundingClientRect();
+        const color = getComputedStyle(note).backgroundColor;
+        createNoteEffect(rect.left + rect.width/2, rect.top + rect.height/2, color);
+        
+        // Remove the note
+        const noteIndex = activeNotes.findIndex(n => n.element === note);
+        if (noteIndex !== -1) {
+          activeNotes[noteIndex].hit = true;
+          animateNoteRemoval(note);
+        }
+      }
+      
+      function animateNoteRemoval(note) {
+        note.style.transform = 'scale(1.2)';
+        note.style.opacity = '0';
+        setTimeout(() => {
+          if (note.parentNode) {
+            note.remove();
           }
+        }, 200);
+      }
+      
+      function showJudgement(judgement, judgementClass) {
+        const judgementEl = document.getElementById('judgement');
+        judgementEl.textContent = judgement;
+        judgementEl.className = judgementClass;
+        judgementEl.style.opacity = '1';
+        judgementEl.style.transform = 'translateX(-50%) scale(1.2)';
+        
+        // Show combo if > 0
+        if (combo > 0) {
+          const comboEl = document.getElementById('combo-display');
+          comboEl.textContent = `${combo}`;
+          comboEl.style.opacity = '1';
+        }
+        
+        setTimeout(() => {
+          judgementEl.style.opacity = '0';
+          judgementEl.style.transform = 'translateX(-50%) scale(1)';
           
-          // Remove notes that are past the hit line without being hit
-          const noteBottomPos = noteTopPos + (note.duration > 0 ? 
-            (note.duration / 1000) * NOTE_SPEED * APPROACH_RATE : 
-            30);
+          if (combo === 0) {
+            document.getElementById('combo-display').style.opacity = '0';
+          }
+        }, 500);
+      }
+      
+      function updateScore() {
+        document.getElementById('score-display').textContent = score.toLocaleString();
+      }
+      
+      function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        
+        score = 0;
+        combo = 0;
+        maxCombo = 0;
+        currentNote = 0;
+        gameStarted = true;
+        startTime = performance.now() + OFFSET;
+        activeNotes = [];
+        
+        // Clear existing notes
+        const gameArea = document.getElementById('game-area');
+        while (gameArea.firstChild) {
+          gameArea.removeChild(gameArea.firstChild);
+        }
+        
+        updateScore();
+        document.getElementById('progress-bar').style.width = '0%';
+        document.getElementById('combo-display').textContent = '0';
+        document.getElementById('combo-display').style.opacity = '0';
+        
+        const music = document.getElementById('music');
+        music.currentTime = 0;
+        music.play().catch(e => {
+          console.error("Audio playback failed:", e);
+          // Fallback: start game without audio
+          musicStarted = false;
+          gameLoop();
+        });
+        musicStarted = true;
+        
+        gameLoop();
+      }
+      
+      function gameLoop() {
+        if (!gameStarted) return;
+        
+        const currentGameTime = performance.now() - startTime;
+        
+        // Update progress bar
+        const progress = Math.min(100, (currentGameTime / songDuration) * 100);
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+        
+        // Spawn new notes
+        while (currentNote < notes.length && currentGameTime >= notes[currentNote].time - (1000 * APPROACH_RATE)) {
+          if (!activeNotes.some(n => n.time === notes[currentNote].time && n.lane === notes[currentNote].lane)) {
+            createNote(notes[currentNote]);
+          }
+          currentNote++;
+        }
+        
+        // Move notes from top to bottom
+        activeNotes.forEach(note => {
+          if (!note.hit) {
+            const noteElement = note.element;
+            const noteTopPos = ((currentGameTime - note.time) / 1000) * NOTE_SPEED * APPROACH_RATE;
             
-          if (noteBottomPos > (document.getElementById('game-area').offsetHeight - HIT_POSITION + 30) && !note.hit) {
-            note.hit = true;
-            combo = 0;
-            updateScore();
-            showJudgement('BAD', 'bad');
-            animateNoteRemoval(noteElement);
+            if (note.duration > 0) {
+              // Hold note
+              noteElement.style.top = `${noteTopPos}px`;
+            } else {
+              // Regular note
+              noteElement.style.top = `${noteTopPos}px`;
+            }
+            
+            // Remove notes that are past the hit line without being hit
+            const noteBottomPos = noteTopPos + (note.duration > 0 ? 
+              (note.duration / 1000) * NOTE_SPEED * APPROACH_RATE : 
+              30);
+              
+            if (noteBottomPos > (document.getElementById('game-area').offsetHeight - HIT_POSITION + 30) && !note.hit) {
+              note.hit = true;
+              combo = 0;
+              updateScore();
+              showJudgement('MISS', 'miss');
+              animateNoteRemoval(noteElement);
+            }
           }
+        });
+        
+        // Clean up hit notes
+        activeNotes = activeNotes.filter(n => !n.hit);
+        
+        // Check game end condition
+        if (currentGameTime >= songDuration && activeNotes.length === 0) {
+          endGame();
+        } else {
+          animationFrameId = requestAnimationFrame(gameLoop);
         }
-      });
-      
-      activeNotes = activeNotes.filter(n => !n.hit);
-      
-      if (currentGameTime >= songDuration && activeNotes.length === 0) {
-        endGame();
-      } else {
-        requestAnimationFrame(gameLoop);
       }
-    }
-    
-    function endGame() {
-      gameStarted = false;
-      setTimeout(() => {
-        alert(`Song Complete!\nFinal Score: ${score.toLocaleString()}\nMax Combo: ${maxCombo}\nAccuracy: ${Math.round((score / (notes.length * 300)) * 100)}%`);
-        document.getElementById('start-screen').style.display = 'flex';
-      }, 1000);
-    }
-    
-    document.getElementById('start-button').addEventListener('click', startGame);
+      
+      function endGame() {
+        gameStarted = false;
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        
+        const music = document.getElementById('music');
+        if (musicStarted) {
+          music.pause();
+        }
+        
+        setTimeout(() => {
+          const accuracy = notes.length > 0 ? Math.round((score / (notes.length * 300)) * 100) : 0;
+          alert(`Song Complete!\nFinal Score: ${score.toLocaleString()}\nMax Combo: ${maxCombo}\nAccuracy: ${accuracy}%`);
+          document.getElementById('start-screen').style.display = 'flex';
+        }, 1000);
+      }
+      
+      // Initialize game
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('start-button').addEventListener('click', startGame);
+        
+        // Add keyboard controls
+        document.addEventListener('keydown', (e) => {
+          if (!gameStarted) return;
+          
+          let lane = 0;
+          switch(e.key) {
+            case 'd': lane = 1; break;
+            case 'f': lane = 2; break;
+            case ' ': lane = 3; break;
+            case 'j': lane = 4; break;
+            case 'k': lane = 5; break;
+            default: return;
+          }
+          
+          // Find the closest note in this lane
+          const currentGameTime = performance.now() - startTime;
+          const closestNote = activeNotes
+            .filter(n => !n.hit && n.lane === lane)
+            .sort((a, b) => Math.abs(a.time - currentGameTime) - Math.abs(b.time - currentGameTime))[0];
+          
+          if (closestNote) {
+            handleNoteClick(closestNote.element);
+          }
+        });
+      });
   </script>
 </body>
 
 </html>
+
