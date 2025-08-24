@@ -1,775 +1,773 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio | Game</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
-    
-    :root {
-      --lane-1: #FF5C8D;
-      --lane-2: #5C8DFF;
-      --lane-3: #5CFF8D;
-      --lane-4: #FFD15C;
-      --lane-5: #D15CFF;
-      --bg-gradient: linear-gradient(135deg, #2b2b4b 0%, #1a1a2e 100%);
-      --judgement-perfect: #FFD700;
-      --judgement-great: #FF8C42;
-      --judgement-good: #6BCB77;
-      --judgement-bad: #FF6B6B;
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Noto Sans JP', sans-serif;
-      background: var(--bg-gradient);
-      color: white;
-      overflow: hidden;
-      height: 100vh;
-      user-select: none;
-    }
-    
-    #game-container {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    #header {
-      height: 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 100;
-    }
-    
-    #logo {
-      height: 40px;
-      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-    }
-    
-    #song-info {
-      text-align: center;
-      flex-grow: 1;
-      margin: 0 20px;
-    }
-    
-    #song-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 2px;
-      color: #fff;
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-    }
-    
-    #song-difficulty {
-      font-size: 14px;
-      color: #ccc;
-    }
-    
-    #game-ui {
-      display: flex;
-      flex-direction: column;
-      height: calc(100% - 60px);
-      position: relative;
-    }
-    
-    #game-area {
-      flex-grow: 1;
-      position: relative;
-      overflow: hidden;
-      background: url('assets/img/miku-bg.jpg') center/cover;
-      background-color: rgba(0, 0, 0, 0.5);
-      background-blend-mode: overlay;
-    }
-    
-    #lanes {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-    }
-    
-    .lane {
-      width: 80px;
-      height: 100%;
-      position: relative;
-      margin: 0 5px;
-    }
-    
-    .lane::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
-      pointer-events: none;
-    }
-    
-    .lane-1 { background-color: rgba(255, 92, 141, 0.1); }
-    .lane-2 { background-color: rgba(92, 141, 255, 0.1); }
-    .lane-3 { background-color: rgba(92, 255, 141, 0.1); }
-    .lane-4 { background-color: rgba(255, 209, 92, 0.1); }
-    .lane-5 { background-color: rgba(209, 92, 255, 0.1); }
-    
-    .hit-line {
-      position: absolute;
-      bottom: 120px;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: white;
-      box-shadow: 0 0 10px white, 0 0 20px white;
-      z-index: 10;
-    }
-    
-    .note {
-      position: absolute;
-      width: 70px;
-      height: 30px;
-      border-radius: 5px;
-      top: -30px;
-      transform-origin: center;
-      z-index: 5;
-      will-change: transform;
-      pointer-events: auto;
-    }
-    
-    .note.lane-1 { background: var(--lane-1); box-shadow: 0 0 10px var(--lane-1); }
-    .note.lane-2 { background: var(--lane-2); box-shadow: 0 0 10px var(--lane-2); }
-    .note.lane-3 { background: var(--lane-3); box-shadow: 0 0 10px var(--lane-3); }
-    .note.lane-4 { background: var(--lane-4); box-shadow: 0 0 10px var(--lane-4); }
-    .note.lane-5 { background: var(--lane-5); box-shadow: 0 0 10px var(--lane-5); }
-    
-    .hold-note {
-      height: 0;
-      border-radius: 5px 5px 0 0;
-    }
-    
-    .note-effect {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-      border-radius: 50%;
-      transform: scale(0);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 6;
-    }
-    
-    #judgement {
-      position: absolute;
-      top: 30%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 48px;
-      font-weight: 700;
-      color: white;
-      text-shadow: 0 0 10px currentColor;
-      opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      z-index: 20;
-    }
-    
-    .perfect { color: var(--judgement-perfect); }
-    .great { color: var(--judgement-great); }
-    .good { color: var(--judgement-good); }
-    .bad { color: var(--judgement-bad); }
-    
-    #combo-display {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 36px;
-      font-weight: 700;
-      color: white;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 20;
-    }
-    
-    #score-display {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 24px;
-      font-weight: 700;
-      color: white;
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-      z-index: 100;
-    }
-    
-    #progress-container {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.2);
-      z-index: 100;
-    }
-    
-    #progress-bar {
-      height: 100%;
-      background: linear-gradient(to right, #FF5C8D, #5C8DFF, #5CFF8D, #FFD15C, #D15CFF);
-      width: 0%;
-      transition: width 0.1s;
-    }
-    
-    #start-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 200;
-    }
-    
-    #start-button {
-      background: linear-gradient(135deg, #FF5C8D 0%, #D15CFF 100%);
-      border: none;
-      color: white;
-      padding: 15px 50px;
-      font-size: 24px;
-      font-weight: 700;
-      border-radius: 50px;
-      cursor: pointer;
-      margin-top: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    #start-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-    
-    #start-button:active {
-      transform: translateY(1px);
-    }
-
-    .back-button {
-      background: linear-gradient(135deg, #ff96b5 0%, #74caff 100%);
-      border: none;
-      color: white;
-      padding: 15px 50px;
-      font-size: 24px;
-      font-weight: 700;
-      border-radius: 50px;
-      cursor: pointer;
-      margin-top: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .back-button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    }
-    
-    .back-button:active {
-      transform: translateY(1px);
-    }
-    
-    #character-display {
-      position: absolute;
-      bottom: 150px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      z-index: 1;
-    }
-    
-    .character {
-      width: 120px;
-      height: 120px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: bottom;
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-      opacity: 0.8;
-    }
-  </style>
-
-    <audio id="music" preload="auto">
-    <source src="https://ia800905.us.archive.org/19/items/miku-hand-in-hand/01%20Hatsune%20Miku%20-%20Hand%20in%20Hand.mp3" type="audio/mpeg">
-    </audio>
-
-    <script>
-    function startGame() {
-    document.getElementById('start-screen').style.display = 'none';
-    
-    score = 0;
-    combo = 0;
-    currentNote = 0;
-    gameStarted = true;
-    startTime = performance.now();
-    activeNotes = [];
-    
-    document.querySelectorAll('.note').forEach(n => n.remove());
-    
-    updateScore();
-    document.getElementById('progress-bar').style.width = '0%';
-    
-    const music = document.getElementById('music');
-    music.currentTime = 0;
-    music.volume = 0.7; 
-    music.play().catch(e => {
-        alert("Silakan klik tombol Start lagi untuk memutar musik");
-        document.getElementById('start-screen').style.display = 'flex';
-        gameStarted = false;
-        return;
-    });
-    
-    startTime = performance.now() - 200;
-    
-    gameLoop();
-    }
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Rhythm Hand in Hand</title>
+    <style>
+        /* CSS yang sudah ada */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #1a1a2e, #16213e);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f0f1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: #4df9ff;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        
+        #game-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        #score-board {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        #game-area {
+            width: 90%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hit-line {
+            position: absolute;
+            bottom: 100px;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .lane {
+            position: absolute;
+            height: 100%;
+            width: 16%;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .lane-1 { left: 10%; }
+        .lane-2 { left: 28%; }
+        .lane-3 { left: 46%; }
+        .lane-4 { left: 64%; }
+        .lane-5 { left: 82%; }
+        
+        .note {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(to bottom, #4facfe, #00f2fe);
+            border-radius: 5px 5px 10px 10px;
+            transform: translateX(-50%);
+            top: -20px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.7);
+        }
+        
+        .hold-note {
+            height: 0;
+            border-radius: 5px;
+            background: linear-gradient(to bottom, #ff758c, #ff7eb3);
+            box-shadow: 0 0 10px rgba(255, 117, 140, 0.7);
+        }
+        
+        .note-effect {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        
+        #controls {
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .key {
+            width: 16%;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            transition: all 0.1s;
+            border: 2px solid transparent;
+        }
+        
+        .key.active {
+            background: rgba(79, 172, 254, 0.3);
+            border-color: #4facfe;
+            transform: scale(0.95);
+        }
+        
+        #judgement {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .perfect { color: #ffeb3b; }
+        .great { color: #4caf50; }
+        .good { color: #2196f3; }
+        .bad { color: #ff9800; }
+        .miss { color: #f44336; }
+        
+        #combo-display {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: #ffeb3b;
+        }
+        
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        #start-button {
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        #back-button {
+            background: linear-gradient(to right, #ff64e8, #00f2fe);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        
+        #volume-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #volume-up, #volume-down {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        
+        #progress-container {
+            width: 90%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            transition: width 0.1s;
+        }
+    </style>
 </head>
 <body>
-  <div id="game-container">
-    <div id="header">
-      <img id="logo" src="assets/img/icon.jpg" alt="Game in Portfolio">
-      <div id="song-info">
-        <div id="song-title">Hand in Hand</div>
-        <div id="song-difficulty">Level HARD</div>
-      </div>
-      <div id="score-display">0</div>
+    <div id="preloader">
+        <div class="loader"></div>
     </div>
     
-    <div id="game-ui">
-      <div id="game-area">
-        <div id="character-display">
-          <div class="character" src="assets/img/miku-bg.jpg"></div>
+    <audio id="music" loop>
+        <source src="assets/music/Hand_in_Hand_Magical_Mirai.m4a" type="audio/mpeg">
+    </audio>
+    
+    <div id="game-container">
+        <div id="score-board">
+            <div>Score: <span id="score-display">0</span></div>
+            <div>Combo: <span id="combo-value">0</span></div>
+            <div>Max Combo: <span id="max-combo">0</span></div>
         </div>
         
-        <div id="lanes">
-          <div class="lane lane-1"></div>
-          <div class="lane lane-2"></div>
-          <div class="lane lane-3"></div>
-          <div class="lane lane-4"></div>
-          <div class="lane lane-5"></div>
-          <div class="hit-line"></div>
+        <div id="game-area">
+            <div class="hit-line"></div>
+            <div class="lane lane-1"></div>
+            <div class="lane lane-2"></div>
+            <div class="lane lane-3"></div>
+            <div class="lane lane-4"></div>
+            <div class="lane lane-5"></div>
+            
+            <div id="judgement"></div>
+            <div id="combo-display"></div>
         </div>
         
-        <div id="judgement"></div>
-        <div id="combo-display"></div>
-      </div>
-      
-      <div id="progress-container">
-        <div id="progress-bar"></div>
-      </div>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <div id="controls">
+            <div class="key">D</div>
+            <div class="key">F</div>
+            <div class="key">SPACE</div>
+            <div class="key">J</div>
+            <div class="key">K</div>
+        </div>
+    </div>
+    
+    <div id="volume-controls">
+        <button id="volume-up">+</button>
+        <button id="volume-down">-</button>
     </div>
     
     <div id="start-screen">
-      <h1 style="font-size: 48px; color: #fff; margin-bottom: 20px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);">Let's Rhythm!</h1>
-      <button id="start-button">START</button>
-      <a class="back-button" href="index.html">Back</a>
+        <h1>Rhythm Game</h1>
+        <p>This game promoted by Hatsune Miku</p>
+        <button id="start-button">Start Game</button>
+        <a id="back-button" href="index.html">Back</a>
+        
     </div>
-  </div>
-  
-  <audio id="music" src="https://ia800905.us.archive.org/19/items/miku-hand-in-hand/01%20Hatsune%20Miku%20-%20Hand%20in%20Hand.mp3"></audio>
-  
-  <script>
-      // Hand in Hand rhythm chart (BPM: 150, offset: 0)
-      const notes = [
-        { time: 800, lane: 3, duration: 0 },
-        { time: 1200, lane: 1, duration: 0 },
-        { time: 1600, lane: 5, duration: 0 },
-        
-        // Verse 1
-        { time: 2400, lane: 2, duration: 0 }, // "Te" (手)
-        { time: 2800, lane: 4, duration: 0 }, // "o" (を)
-        { time: 3200, lane: 3, duration: 0 }, // "tsu" (つ)
-        { time: 3600, lane: 1, duration: 0 }, // "na" (な)
-        { time: 4000, lane: 5, duration: 0 }, // "gi" (ぎ)
-        { time: 4400, lane: 2, duration: 0 }, // "ta" (た)
-        { time: 4800, lane: 4, duration: 0 }, // "ra" (ら)
-        
-        // Chorus
-        { time: 5600, lane: 1, duration: 0 }, // "Ha" (は)
-        { time: 6000, lane: 3, duration: 0 }, // "nd" (ん)
-        { time: 6400, lane: 5, duration: 0 }, // "in" (ど)
-        { time: 6800, lane: 2, duration: 0 }, // "Ha" (は)
-        { time: 7200, lane: 4, duration: 0 }, // "nd" (ん)
-        { time: 7600, lane: 1, duration: 200 }, // Hold for "Hand in Hand"
-        { time: 8000, lane: 3, duration: 0 },
-        { time: 8400, lane: 5, duration: 0 },
-        
-        // Verse 2
-        { time: 9600, lane: 2, duration: 0 },
-        { time: 10000, lane: 4, duration: 0 },
-        { time: 10400, lane: 3, duration: 0 },
-        { time: 10800, lane: 1, duration: 0 },
-        { time: 11200, lane: 5, duration: 0 },
-        { time: 11600, lane: 2, duration: 0 },
-        { time: 12000, lane: 4, duration: 0 },
-        
-        // Chorus repeat with more intensity
-        { time: 12800, lane: 1, duration: 0 },
-        { time: 13200, lane: 3, duration: 0 },
-        { time: 13600, lane: 5, duration: 0 },
-        { time: 14000, lane: 2, duration: 0 },
-        { time: 14400, lane: 4, duration: 0 },
-        { time: 14800, lane: 1, duration: 200 },
-        { time: 15200, lane: 3, duration: 0 },
-        { time: 15600, lane: 5, duration: 0 },
-        { time: 16000, lane: 2, duration: 0 },
-        { time: 16400, lane: 4, duration: 0 },
-        { time: 16800, lane: 1, duration: 0 },
-        { time: 17200, lane: 3, duration: 0 },
-        { time: 17600, lane: 5, duration: 0 },
-        
-        // Final chorus
-        { time: 18400, lane: 1, duration: 0 },
-        { time: 18800, lane: 3, duration: 0 },
-        { time: 19200, lane: 5, duration: 0 },
-        { time: 19600, lane: 2, duration: 0 },
-        { time: 20000, lane: 4, duration: 0 },
-        { time: 20400, lane: 1, duration: 200 },
-        { time: 20800, lane: 3, duration: 0 },
-        { time: 21200, lane: 5, duration: 0 },
-        { time: 21600, lane: 2, duration: 0 },
-        { time: 22000, lane: 4, duration: 0 },
-        { time: 22400, lane: 1, duration: 0 },
-        { time: 22800, lane: 3, duration: 0 },
-        { time: 23200, lane: 5, duration: 0 },
-        
-        // Ending
-        { time: 24000, lane: 3, duration: 0 }
-      ];
-      
-      const lanePositions = [10, 25, 40, 55, 70];
-      const APPROACH_RATE = 1.8; 
-      const HIT_POSITION = 120; 
-      const NOTE_SPEED = 200; 
-      const BPM = 150;
-      const OFFSET = 0; 
-      
-      let score = 0;
-      let combo = 0;
-      let maxCombo = 0;
-      let currentNote = 0;
-      let gameStarted = false;
-      let startTime = 0;
-      let activeNotes = [];
-      let songDuration = 25000; // 25 seconds for demo
-      let animationFrameId = null;
-      let musicStarted = false;
-      
-      function createNote(noteData) {
-        const note = document.createElement('div');
-        note.className = `note lane-${noteData.lane}`;
-        if (noteData.duration > 0) note.classList.add('hold-note');
-        
-        // Position based on lane
-        const lanePos = lanePositions[noteData.lane - 1];
-        note.style.left = `${lanePos}%`;
-        
-        // For hold notes
-        if (noteData.duration > 0) {
-          note.style.height = `${(noteData.duration / 1000) * NOTE_SPEED * APPROACH_RATE}px`;
-        }
-        
-        note.dataset.time = noteData.time;
-        note.dataset.lane = noteData.lane;
-        note.dataset.duration = noteData.duration;
-        
-        note.addEventListener('click', () => handleNoteClick(note));
-        
-        document.getElementById('game-area').appendChild(note);
-        activeNotes.push({
-          element: note,
-          time: noteData.time,
-          lane: noteData.lane,
-          duration: noteData.duration,
-          hit: false
-        });
-        
-        return note;
-      }
-      
-      function createNoteEffect(x, y, color) {
-        const effect = document.createElement('div');
-        effect.className = 'note-effect';
-        effect.style.left = `${x - 40}px`;
-        effect.style.top = `${y - 40}px`;
-        effect.style.background = `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`;
-        document.getElementById('game-area').appendChild(effect);
-        
-        // Animate effect
-        setTimeout(() => {
-          effect.style.transform = 'scale(1.5)';
-          effect.style.opacity = '0.8';
-        }, 10);
-        
-        setTimeout(() => {
-          effect.style.transform = 'scale(2.5)';
-          effect.style.opacity = '0';
-          setTimeout(() => effect.remove(), 300);
-        }, 100);
-      }
-      
-      function handleNoteClick(note) {
-        if (!gameStarted) return;
-        
-        const noteTime = parseInt(note.dataset.time);
-        const currentGameTime = performance.now() - startTime;
-        const diff = Math.abs(currentGameTime - noteTime);
-        
-        let judgement = '';
-        let points = 0;
-        let judgementClass = '';
-        
-        if (diff < 50) {
-          judgement = 'PERFECT';
-          judgementClass = 'perfect';
-          points = 300;
-          combo++;
-        } else if (diff < 100) {
-          judgement = 'GREAT';
-          judgementClass = 'great';
-          points = 200;
-          combo++;
-        } else if (diff < 150) {
-          judgement = 'GOOD';
-          judgementClass = 'good';
-          points = 100;
-          combo++;
-        } else if (diff < 200) {
-          judgement = 'BAD';
-          judgementClass = 'bad';
-          points = 50;
-          combo = 0;
-        } else {
-          // Too early or too late - miss
-          return;
-        }
-        
-        score += points;
-        if (combo > maxCombo) maxCombo = combo;
-        
-        updateScore();
-        showJudgement(judgement, judgementClass);
-        
-        // Create tap effect
-        const rect = note.getBoundingClientRect();
-        const color = getComputedStyle(note).backgroundColor;
-        createNoteEffect(rect.left + rect.width/2, rect.top + rect.height/2, color);
-        
-        // Remove the note
-        const noteIndex = activeNotes.findIndex(n => n.element === note);
-        if (noteIndex !== -1) {
-          activeNotes[noteIndex].hit = true;
-          animateNoteRemoval(note);
-        }
-      }
-      
-      function animateNoteRemoval(note) {
-        note.style.transform = 'scale(1.2)';
-        note.style.opacity = '0';
-        setTimeout(() => {
-          if (note.parentNode) {
-            note.remove();
-          }
-        }, 200);
-      }
-      
-      function showJudgement(judgement, judgementClass) {
-        const judgementEl = document.getElementById('judgement');
-        judgementEl.textContent = judgement;
-        judgementEl.className = judgementClass;
-        judgementEl.style.opacity = '1';
-        judgementEl.style.transform = 'translateX(-50%) scale(1.2)';
-        
-        // Show combo if > 0
-        if (combo > 0) {
-          const comboEl = document.getElementById('combo-display');
-          comboEl.textContent = `${combo}`;
-          comboEl.style.opacity = '1';
-        }
-        
-        setTimeout(() => {
-          judgementEl.style.opacity = '0';
-          judgementEl.style.transform = 'translateX(-50%) scale(1)';
-          
-          if (combo === 0) {
-            document.getElementById('combo-display').style.opacity = '0';
-          }
-        }, 500);
-      }
-      
-      function updateScore() {
-        document.getElementById('score-display').textContent = score.toLocaleString();
-      }
-      
-      function startGame() {
-        document.getElementById('start-screen').style.display = 'none';
-        
-        score = 0;
-        combo = 0;
-        maxCombo = 0;
-        currentNote = 0;
-        gameStarted = true;
-        startTime = performance.now() + OFFSET;
-        activeNotes = [];
-        
-        // Clear existing notes
-        const gameArea = document.getElementById('game-area');
-        while (gameArea.firstChild) {
-          gameArea.removeChild(gameArea.firstChild);
-        }
-        
-        updateScore();
-        document.getElementById('progress-bar').style.width = '0%';
-        document.getElementById('combo-display').textContent = '0';
-        document.getElementById('combo-display').style.opacity = '0';
-        
-        const music = document.getElementById('music');
-        music.currentTime = 0;
-        music.play().catch(e => {
-          console.error("Audio playback failed:", e);
-          // Fallback: start game without audio
-          musicStarted = false;
-          gameLoop();
-        });
-        musicStarted = true;
-        
-        gameLoop();
-      }
-      
-      function gameLoop() {
-        if (!gameStarted) return;
-        
-        const currentGameTime = performance.now() - startTime;
-        
-        // Update progress bar
-        const progress = Math.min(100, (currentGameTime / songDuration) * 100);
-        document.getElementById('progress-bar').style.width = `${progress}%`;
-        
-        // Spawn new notes
-        while (currentNote < notes.length && currentGameTime >= notes[currentNote].time - (1000 * APPROACH_RATE)) {
-          if (!activeNotes.some(n => n.time === notes[currentNote].time && n.lane === notes[currentNote].lane)) {
-            createNote(notes[currentNote]);
-          }
-          currentNote++;
-        }
-        
-        // Move notes from top to bottom
-        activeNotes.forEach(note => {
-          if (!note.hit) {
-            const noteElement = note.element;
-            const noteTopPos = ((currentGameTime - note.time) / 1000) * NOTE_SPEED * APPROACH_RATE;
+
+    <script>
+        // Preloader functionality
+        window.addEventListener('load', () => {
+            // Preload music
+            const music = document.getElementById('music');
+            music.volume = 0.7;
             
-            if (note.duration > 0) {
-              // Hold note
-              noteElement.style.top = `${noteTopPos}px`;
+            setTimeout(() => {
+                document.getElementById('preloader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('preloader').style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+
+        // Hand in Hand rhythm chart (BPM: 150, offset: 0)
+        const notes = [
+            { time: 1000, lane: 3, duration: 0 },
+            { time: 1500, lane: 1, duration: 0 },
+            { time: 2000, lane: 5, duration: 0 },
+            
+            // Verse 1
+            { time: 3000, lane: 2, duration: 0 },
+            { time: 3500, lane: 4, duration: 0 },
+            { time: 4000, lane: 3, duration: 0 },
+            { time: 4500, lane: 1, duration: 0 },
+            { time: 5000, lane: 5, duration: 0 },
+            { time: 5500, lane: 2, duration: 0 },
+            { time: 6000, lane: 4, duration: 0 },
+            
+            // Chorus
+            { time: 7000, lane: 1, duration: 0 },
+            { time: 7500, lane: 3, duration: 0 },
+            { time: 8000, lane: 5, duration: 0 },
+            { time: 8500, lane: 2, duration: 0 },
+            { time: 9000, lane: 4, duration: 0 },
+            { time: 9500, lane: 1, duration: 200 },
+            { time: 10000, lane: 3, duration: 0 },
+            { time: 10500, lane: 5, duration: 0 },
+            
+            // Verse 2
+            { time: 12000, lane: 2, duration: 0 },
+            { time: 12500, lane: 4, duration: 0 },
+            { time: 13000, lane: 3, duration: 0 },
+            { time: 13500, lane: 1, duration: 0 },
+            { time: 14000, lane: 5, duration: 0 },
+            { time: 14500, lane: 2, duration: 0 },
+            { time: 15000, lane: 4, duration: 0 },
+            
+            // Chorus repeat with more intensity
+            { time: 16000, lane: 1, duration: 0 },
+            { time: 16500, lane: 3, duration: 0 },
+            { time: 17000, lane: 5, duration: 0 },
+            { time: 17500, lane: 2, duration: 0 },
+            { time: 18000, lane: 4, duration: 0 },
+            { time: 18500, lane: 1, duration: 200 },
+            { time: 19000, lane: 3, duration: 0 },
+            { time: 19500, lane: 5, duration: 0 },
+            { time: 20000, lane: 2, duration: 0 },
+            { time: 20500, lane: 4, duration: 0 },
+            { time: 21000, lane: 1, duration: 0 },
+            { time: 21500, lane: 3, duration: 0 },
+            { time: 22000, lane: 5, duration: 0 },
+            
+            // Final chorus
+            { time: 23000, lane: 1, duration: 0 },
+            { time: 23500, lane: 3, duration: 0 },
+            { time: 24000, lane: 5, duration: 0 },
+            { time: 24500, lane: 2, duration: 0 },
+            { time: 25000, lane: 4, duration: 0 },
+            { time: 25500, lane: 1, duration: 200 },
+            { time: 26000, lane: 3, duration: 0 },
+            { time: 26500, lane: 5, duration: 0 },
+            { time: 27000, lane: 2, duration: 0 },
+            { time: 27500, lane: 4, duration: 0 },
+            { time: 28000, lane: 1, duration: 0 },
+            { time: 28500, lane: 3, duration: 0 },
+            { time: 29000, lane: 5, duration: 0 },
+            
+            // Ending
+            { time: 30000, lane: 3, duration: 0 }
+        ];
+        
+        const APPROACH_RATE = 1.5; 
+        const HIT_POSITION = 100; 
+        const NOTE_SPEED = 2.5; 
+        
+        let score = 0;
+        let combo = 0;
+        let maxCombo = 0;
+        let currentNote = 0;
+        let gameStarted = false;
+        let startTime = 0;
+        let activeNotes = [];
+        let songDuration = 35000; // 35 seconds
+        let animationFrameId = null;
+        let keyState = {};
+        let musicVolume = 0.7;
+        
+        function createNote(noteData) {
+            const note = document.createElement('div');
+            note.className = `note lane-${noteData.lane}`;
+            if (noteData.duration > 0) note.classList.add('hold-note');
+            
+            // Position based on lane
+            const laneIndex = noteData.lane - 1;
+            const lanePos = 10 + (laneIndex * 18); // Calculate lane position
+            note.style.left = `${lanePos}%`;
+            
+            // For hold notes
+            if (noteData.duration > 0) {
+                note.style.height = `${(noteData.duration / 1000) * 200}px`;
+            }
+            
+            note.dataset.time = noteData.time;
+            note.dataset.lane = noteData.lane;
+            note.dataset.duration = noteData.duration;
+            
+            note.addEventListener('click', () => handleNoteClick(note));
+            
+            document.getElementById('game-area').appendChild(note);
+            activeNotes.push({
+                element: note,
+                time: noteData.time,
+                lane: noteData.lane,
+                duration: noteData.duration,
+                hit: false
+            });
+            
+            return note;
+        }
+        
+        function createNoteEffect(x, y, color) {
+            const effect = document.createElement('div');
+            effect.className = 'note-effect';
+            effect.style.left = `${x - 40}px`;
+            effect.style.top = `${y - 40}px`;
+            effect.style.background = `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`;
+            document.getElementById('game-area').appendChild(effect);
+            
+            // Animate effect
+            setTimeout(() => {
+                effect.style.transform = 'scale(1.5)';
+                effect.style.opacity = '0.8';
+            }, 10);
+            
+            setTimeout(() => {
+                effect.style.transform = 'scale(2.5)';
+                effect.style.opacity = '0';
+                setTimeout(() => effect.remove(), 300);
+            }, 100);
+        }
+        
+        function handleNoteClick(note) {
+            if (!gameStarted) return;
+            
+            const noteTime = parseInt(note.dataset.time);
+            const currentGameTime = performance.now() - startTime;
+            const diff = Math.abs(currentGameTime - noteTime);
+            
+            let judgement = '';
+            let points = 0;
+            let judgementClass = '';
+            
+            if (diff < 50) {
+                judgement = 'PERFECT';
+                judgementClass = 'perfect';
+                points = 300;
+                combo++;
+            } else if (diff < 100) {
+                judgement = 'GREAT';
+                judgementClass = 'great';
+                points = 200;
+                combo++;
+            } else if (diff < 150) {
+                judgement = 'GOOD';
+                judgementClass = 'good';
+                points = 100;
+                combo++;
+            } else if (diff < 200) {
+                judgement = 'BAD';
+                judgementClass = 'bad';
+                points = 50;
+                combo = 0;
             } else {
-              // Regular note
-              noteElement.style.top = `${noteTopPos}px`;
+                // Too early or too late - miss
+                return;
             }
             
-            // Remove notes that are past the hit line without being hit
-            const noteBottomPos = noteTopPos + (note.duration > 0 ? 
-              (note.duration / 1000) * NOTE_SPEED * APPROACH_RATE : 
-              30);
-              
-            if (noteBottomPos > (document.getElementById('game-area').offsetHeight - HIT_POSITION + 30) && !note.hit) {
-              note.hit = true;
-              combo = 0;
-              updateScore();
-              showJudgement('MISS', 'miss');
-              animateNoteRemoval(noteElement);
+            score += points;
+            if (combo > maxCombo) maxCombo = combo;
+            
+            updateScore();
+            showJudgement(judgement, judgementClass);
+            
+            // Create tap effect
+            const rect = note.getBoundingClientRect();
+            const color = getComputedStyle(note).backgroundImage;
+            createNoteEffect(rect.left + rect.width/2, rect.top + rect.height/2, color);
+            
+            // Remove the note
+            const noteIndex = activeNotes.findIndex(n => n.element === note);
+            if (noteIndex !== -1) {
+                activeNotes[noteIndex].hit = true;
+                animateNoteRemoval(note);
             }
-          }
+        }
+        
+        function animateNoteRemoval(note) {
+            note.style.transform = 'scale(1.2)';
+            note.style.opacity = '0';
+            setTimeout(() => {
+                if (note.parentNode) {
+                    note.remove();
+                }
+            }, 200);
+        }
+        
+        function showJudgement(judgement, judgementClass) {
+            const judgementEl = document.getElementById('judgement');
+            judgementEl.textContent = judgement;
+            judgementEl.className = judgementClass;
+            judgementEl.style.opacity = '1';
+            judgementEl.style.transform = 'translateX(-50%) scale(1.2)';
+            
+            // Show combo if > 0
+            if (combo > 0) {
+                const comboEl = document.getElementById('combo-display');
+                comboEl.textContent = `${combo} COMBO!`;
+                comboEl.style.opacity = '1';
+                
+                // Update combo value display
+                document.getElementById('combo-value').textContent = combo;
+                document.getElementById('max-combo').textContent = maxCombo;
+            }
+            
+            setTimeout(() => {
+                judgementEl.style.opacity = '0';
+                judgementEl.style.transform = 'translateX(-50%) scale(1)';
+                
+                if (combo === 0) {
+                    document.getElementById('combo-display').style.opacity = '0';
+                }
+            }, 500);
+        }
+        
+        function updateScore() {
+            document.getElementById('score-display').textContent = score.toLocaleString();
+        }
+        
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            currentNote = 0;
+            gameStarted = true;
+            startTime = performance.now();
+            activeNotes = [];
+            
+            // Clear existing notes
+            const gameArea = document.getElementById('game-area');
+            const notesToRemove = gameArea.querySelectorAll('.note');
+            notesToRemove.forEach(note => note.remove());
+            
+            updateScore();
+            document.getElementById('combo-value').textContent = '0';
+            document.getElementById('max-combo').textContent = '0';
+            document.getElementById('progress-bar').style.width = '0%';
+            document.getElementById('combo-display').textContent = '0';
+            document.getElementById('combo-display').style.opacity = '0';
+            
+            // Start music
+            const music = document.getElementById('music');
+            music.currentTime = 0;
+            music.play().catch(error => {
+                console.log('Audio play failed:', error);
+                // Continue game even if audio fails
+                gameLoop();
+            });
+            
+            // MODIFIKASI: Panggil spawnNotes untuk menampilkan not yang sudah seharusnya muncul
+            spawnNotes();
+            gameLoop();
+        }
+        
+        // MODIFIKASI: Fungsi baru untuk menampilkan not yang sudah seharusnya muncul
+        function spawnNotes() {
+            if (!gameStarted) return;
+            
+            const currentGameTime = performance.now() - startTime;
+            
+            // Spawn new notes
+            while (currentNote < notes.length && notes[currentNote].time <= currentGameTime + 2000) {
+                if (!activeNotes.some(n => n.time === notes[currentNote].time && n.lane === notes[currentNote].lane)) {
+                    const note = createNote(notes[currentNote]);
+                    
+                    // Atur posisi awal not berdasarkan waktu saat ini
+                    const noteTopPos = ((currentGameTime - notes[currentNote].time) / 1000) * 300;
+                    note.style.top = `${400 - noteTopPos}px`;
+                }
+                currentNote++;
+            }
+        }
+        
+        function gameLoop() {
+            if (!gameStarted) return;
+            
+            const currentGameTime = performance.now() - startTime;
+            
+            // Update progress bar
+            const progress = Math.min(100, (currentGameTime / songDuration) * 100);
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // MODIFIKASI: Pindahkan spawn notes ke fungsi terpisah yang sudah dipanggil di startGame
+            // Panggil spawnNotes untuk menampilkan not-not baru
+            spawnNotes();
+            
+            // Move notes from top to bottom
+            activeNotes.forEach(note => {
+                if (!note.hit) {
+                    const noteElement = note.element;
+                    const noteTopPos = ((currentGameTime - note.time) / 1000) * 300;
+                    
+                    if (note.duration > 0) {
+                        // Hold note
+                        noteElement.style.top = `${400 - noteTopPos}px`;
+                    } else {
+                        // Regular note
+                        noteElement.style.top = `${400 - noteTopPos}px`;
+                    }
+                    
+                    // Remove notes that are past the hit line without being hit
+                    if (400 - noteTopPos > 500 && !note.hit) {
+                        note.hit = true;
+                        combo = 0;
+                        document.getElementById('combo-value').textContent = '0';
+                        updateScore();
+                        showJudgement('MISS', 'miss');
+                        animateNoteRemoval(noteElement);
+                    }
+                }
+            });
+            
+            // Clean up hit notes
+            activeNotes = activeNotes.filter(n => !n.hit);
+            
+            // Check game end condition
+            if (currentGameTime >= songDuration && activeNotes.length === 0) {
+                endGame();
+            } else {
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        function endGame() {
+            gameStarted = false;
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            
+            // Stop music
+            const music = document.getElementById('music');
+            music.pause();
+            
+            setTimeout(() => {
+                const accuracy = notes.length > 0 ? Math.round((score / (notes.length * 300)) * 100) : 0;
+                
+                // Create a custom alert/result screen
+                const resultScreen = document.createElement('div');
+                resultScreen.style.position = 'fixed';
+                resultScreen.style.top = '0';
+                resultScreen.style.left = '0';
+                resultScreen.style.width = '100%';
+                resultScreen.style.height = '100%';
+                resultScreen.style.background = 'rgba(0, 0, 0, 0.9)';
+                resultScreen.style.display = 'flex';
+                resultScreen.style.flexDirection = 'column';
+                resultScreen.style.justifyContent = 'center';
+                resultScreen.style.alignItems = 'center';
+                resultScreen.style.zIndex = '1000';
+                resultScreen.style.color = 'white';
+                
+                resultScreen.innerHTML = `
+                    <h2 style="font-size: 3rem; margin-bottom: 30px; color: #4df9ff;">Song Complete!</h2>
+                    <div style="font-size: 1.5rem; margin-bottom: 15px;">Final Score: ${score.toLocaleString()}</div>
+                    <div style="font-size: 1.5rem; margin-bottom: 15px;">Max Combo: ${maxCombo}</div>
+                    <div style="font-size: 1.5rem; margin-bottom: 30px;">Accuracy: ${accuracy}%</div>
+                    <button id="restart-button" style="background: linear-gradient(to right, #4facfe, #00f2fe); border: none; padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; color: white; cursor: pointer;">Play Again</button>
+                `;
+                
+                document.body.appendChild(resultScreen);
+                
+                document.getElementById('restart-button').addEventListener('click', () => {
+                    resultScreen.remove();
+                    document.getElementById('start-screen').style.display = 'flex';
+                });
+            }, 1000);
+        }
+        
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('start-button').addEventListener('click', startGame);
+            
+            // Volume controls
+            document.getElementById('volume-up').addEventListener('click', () => {
+                const music = document.getElementById('music');
+                musicVolume = Math.min(1, musicVolume + 0.1);
+                music.volume = musicVolume;
+            });
+            
+            document.getElementById('volume-down').addEventListener('click', () => {
+                const music = document.getElementById('music');
+                musicVolume = Math.max(0, musicVolume - 0.1);
+                music.volume = musicVolume;
+            });
+            
+            // Add keyboard controls
+            document.addEventListener('keydown', (e) => {
+                if (!gameStarted) return;
+                
+                // Prevent key repeat
+                if (keyState[e.key]) return;
+                keyState[e.key] = true;
+                
+                let lane = 0;
+                switch(e.key) {
+                    case 'd': lane = 1; break;
+                    case 'f': lane = 2; break;
+                    case ' ': lane = 3; break;
+                    case 'j': lane = 4; break;
+                    case 'k': lane = 5; break;
+                    default: return;
+                }
+                
+                // Visual feedback for key press
+                const keys = document.querySelectorAll('.key');
+                if (lane > 0) {
+                    keys[lane-1].classList.add('active');
+                }
+                
+                // Find the closest note in this lane
+                const currentGameTime = performance.now() - startTime;
+                const closestNote = activeNotes
+                    .filter(n => !n.hit && n.lane === lane)
+                    .sort((a, b) => Math.abs(a.time - currentGameTime) - Math.abs(b.time - currentGameTime))[0];
+                
+                if (closestNote) {
+                    handleNoteClick(closestNote.element);
+                }
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                keyState[e.key] = false;
+                
+                // Remove visual feedback
+                const keys = document.querySelectorAll('.key');
+                keys.forEach(key => key.classList.remove('active'));
+            });
         });
-        
-        // Clean up hit notes
-        activeNotes = activeNotes.filter(n => !n.hit);
-        
-        // Check game end condition
-        if (currentGameTime >= songDuration && activeNotes.length === 0) {
-          endGame();
-        } else {
-          animationFrameId = requestAnimationFrame(gameLoop);
-        }
-      }
-      
-      function endGame() {
-        gameStarted = false;
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-        
-        const music = document.getElementById('music');
-        if (musicStarted) {
-          music.pause();
-        }
-        
-        setTimeout(() => {
-          const accuracy = notes.length > 0 ? Math.round((score / (notes.length * 300)) * 100) : 0;
-          alert(`Song Complete!\nFinal Score: ${score.toLocaleString()}\nMax Combo: ${maxCombo}\nAccuracy: ${accuracy}%`);
-          document.getElementById('start-screen').style.display = 'flex';
-        }, 1000);
-      }
-      
-      // Initialize game
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('start-button').addEventListener('click', startGame);
-        
-        // Add keyboard controls
-        document.addEventListener('keydown', (e) => {
-          if (!gameStarted) return;
-          
-          let lane = 0;
-          switch(e.key) {
-            case 'd': lane = 1; break;
-            case 'f': lane = 2; break;
-            case ' ': lane = 3; break;
-            case 'j': lane = 4; break;
-            case 'k': lane = 5; break;
-            default: return;
-          }
-          
-          // Find the closest note in this lane
-          const currentGameTime = performance.now() - startTime;
-          const closestNote = activeNotes
-            .filter(n => !n.hit && n.lane === lane)
-            .sort((a, b) => Math.abs(a.time - currentGameTime) - Math.abs(b.time - currentGameTime))[0];
-          
-          if (closestNote) {
-            handleNoteClick(closestNote.element);
-          }
-        });
-      });
-  </script>
+    </script>
 </body>
-
 </html>
-
