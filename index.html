@@ -19,7 +19,7 @@
             --dark: #1a1a2e;
             --light: #f8f9fa;
             --neon-pink: #ff2d7e;
-            --neon-blue: #00f0ff;
+            --neon-blue: #00eeff;
             --neon-purple: #b388ff;
             --glass-bg: rgba(255, 255, 255, 0.1);
             --glass-border: rgba(255, 255, 255, 0.2);
@@ -35,6 +35,20 @@
             overflow-x: hidden;
         }
 
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a2e; 
+            opacity: 70%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
@@ -115,7 +129,6 @@
             text-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue), 0 0 45px var(--neon-blue);
         }
 
-        /* Particle background */
         #particles-js {
             position: fixed;
             width: 100%;
@@ -253,6 +266,222 @@
             width: 100% !important;
             height: 100% !important;
         }
+
+        /* Music */
+        /* Music Player - Diperkecil */
+        .audio-player {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(var(--dark), var(--neon-blue));
+            padding: 8px 12px;
+            border-radius: 40px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            transform: scale(0.85);
+        }
+
+        .audio-player:hover {
+            transform: scale(0.85) translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 195, 255, 0.3);
+        }
+
+        .audio-player button {
+            background: #6b6b6b;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 12px;
+        }
+
+        .audio-player button:hover {
+            background: #00a0ff;
+            transform: scale(1.1);
+        }
+
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .album-art {
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
+            background: linear-gradient(45deg, #5184ac, #ff65e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .track-details {
+            text-align: left;
+        }
+
+        .track-name {
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .artist-name {
+            font-size: 10px;
+            color: #aaa;
+        }
+
+        .progress-container {
+            flex-grow: 1;
+            max-width: 120px;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 30%;
+            background: #00c3ff;
+            border-radius: 2px;
+        }
+
+        .time {
+            font-size: 9px;
+            color: #aaa;
+            margin-top: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .volume-slider {
+            width: 60px;
+            -webkit-appearance: none;
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00c3ff;
+            cursor: pointer;
+        }
+
+        /* Features - Diperkecil */
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            width: 160px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature i {
+            font-size: 1.6rem;
+            color: #00c3ff;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .feature p {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        /* Responsivitas */
+        @media (max-width: 768px) {
+            .audio-player {
+                top: 10px;
+                right: 10px;
+                transform: scale(0.75);
+            }
+            
+            .audio-player:hover {
+                transform: scale(0.75) translateY(-5px);
+            }
+            
+            .feature-list {
+                gap: 10px;
+            }
+            
+            .feature {
+                width: 140px;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .audio-player {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 20px;
+                width: 90%;
+                max-width: 350px;
+                transform: scale(1);
+            }
+            
+            .audio-player:hover {
+                transform: translateY(-5px);
+            }
+            
+            .feature-list {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feature {
+                width: 80%;
+            }
+        }
     </style>
 </head>
 
@@ -268,10 +497,32 @@
 
     <!-- Main Content -->
     <div class="min-h-screen flex flex-col">
+            <!-- Audio Music -->
+            <div class="audio-player">
+            <button id="play-pause">
+                <i class="fas fa-play"></i>
+            </button>
+            
+            <div class="track-info">
+                <div class="album-art">
+                    <i class="fas fa-music"></i>
+                </div>
+            </div>
+            
+            <div class="volume-control">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" class="volume-slider" min="0" max="100" value="80">
+            </div>
+        </div>
+
+        <audio id="audio-element">
+            <source src="assets/music/吉祥寺.m4a" type="audio/mpeg">
+            Browser Anda tidak mendukung elemen audio.
+        </audio>
         <!-- Hero Section -->
         <section class="flex-grow flex items-center justify-center px-4 py-20">
             <div class="text-center max-w-4xl">
-                <h2 class="text-4xl md:text-4xl font-bold mb-6 gradient-text neon-glow">Ahmad Himawan</h2>
+                <h2 class="text-4xl md:text-4xl mb-6 gradient-text neon-glow">Ahmad Himawan</h2>
                 <p class="text-1xl font-bold mb-8 text-center gradient-text" id="textContent">Educator & Technology in Education Enthusiast</p>
                 
                 <div class="glass-card inline-block px-8 py-3 mb-12">
@@ -417,7 +668,6 @@
                 </div>
                 
                 <div id="modal-content" class="text-gray-300">
-                    <!-- Content will be loaded here -->
                 </div>
             </div>
         </div>
@@ -677,125 +927,22 @@
             }
         });
 
-        // Hatsune Miku 3D Model Viewer (NEW)
-        let mikuScene, mikuCamera, mikuRenderer, mikuControls, mikuModel;
-        let mikuMixer, mikuClock;
-
-        function initMikuViewer() {
-            const container = document.getElementById('miku-container');
-            if (!container || mikuRenderer) return;
-
-            // 1. Create scene
-            mikuScene = new THREE.Scene();
-            mikuScene.background = new THREE.Color(0x1a1a2e);
-            
-            // 2. Create camera
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            mikuCamera = new THREE.PerspectiveCamera(18, width/height, 0.1, 1000);
-            mikuCamera.position.set(0, -1.8, -2.8);
-            mikuCamera.lookAt(0, 2.0, 0);
-
-            // 3. Create renderer
-            mikuRenderer = new THREE.WebGLRenderer({ 
-                antialias: true,
-                powerPreference: "high-performance"
-            });
-            mikuRenderer.setSize(width, height);
-            mikuRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            container.appendChild(mikuRenderer.domElement);
-
-            // 4. Add lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
-            mikuScene.add(ambientLight);
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-            directionalLight.position.set(1, 1, 1);
-            mikuScene.add(directionalLight);
-
-            // 5. Add controls
-            mikuControls = new THREE.OrbitControls(mikuCamera, mikuRenderer.domElement);
-            mikuControls.enableDamping = true;
-            mikuControls.dampingFactor = 0.05;
-            mikuControls.minDistance = 2.5;
-            mikuControls.maxDistance = 3.5;
-            mikuControls.target.set(0, 1.2, 0);
-
-            // 6. Load model
-            mikuClock = new THREE.Clock();
-            const loader = new THREE.GLTFLoader();
-            
-            loader.load(
-                './model/hatsune_miku.glb',
-                (gltf) => {
-                    try {
-                        mikuModel = gltf.scene;
-                        mikuModel.position.set(0, -0.47, 0);
-                        mikuModel.scale.set(3.2, 3.2, 3.2);
-                        mikuModel.rotation.y = Math.PI;
-                        mikuScene.add(mikuModel);
-
-                        // Handle animations
-                        if (gltf.animations?.length > 0) {
-                            mikuMixer = new THREE.AnimationMixer(mikuModel);
-                            const action = mikuMixer.clipAction(gltf.animations[0]);
-                            action.play();
-                        }
-
-                        // Adjust materials
-                        mikuModel.traverse(child => {
-                            if (child.isMesh) {
-                                child.material = new THREE.MeshBasicMaterial({
-                                    map: child.material.map,
-                                    transparent: true
-                                });
-                            }
-                        });
-
-                        animateMiku();
-                    } catch (error) {
-                        console.error('Error processing Miku model:', error);
-                    }
-                },
-                undefined,
-                (error) => {
-                    console.error('Error loading Miku model:', error);
-                }
-            );
-
-            // Handle resize
-            window.addEventListener('resize', handleMikuResize);
-        }
-
-        function animateMiku() {
-            requestAnimationFrame(animateMiku);
-            const delta = mikuClock.getDelta();
-            
-            if (mikuMixer) mikuMixer.update(delta);
-            if (mikuControls) mikuControls.update();
-            if (mikuRenderer) mikuRenderer.render(mikuScene, mikuCamera);
-        }
-
-        function handleMikuResize() {
-            const container = document.getElementById('miku-container');
-            if (!container || !mikuRenderer || !mikuCamera) return;
-            
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            
-            mikuCamera.aspect = width / height;
-            mikuCamera.updateProjectionMatrix();
-            mikuRenderer.setSize(width, height);
-        }
-
-        function cleanupMikuViewer() {
-            if (mikuRenderer) {
-                mikuRenderer.dispose();
-                mikuRenderer = null;
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.THREE) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js';
+                script.onload = () => {
+                    const controlsScript = document.createElement('script');
+                    controlsScript.src = 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js';
+                    controlsScript.onload = initMikuViewer;
+                    document.head.appendChild(controlsScript);
+                };
+                document.head.appendChild(script);
+            } else {
+                initMikuViewer();
             }
-            window.removeEventListener('resize', handleMikuResize);
-        }
-
+        });
 
         // Hide preloader when page loads
         window.addEventListener('load', () => {
@@ -803,8 +950,16 @@
                 document.getElementById('preloader').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('preloader').style.display = 'none';
+                    
+                    // Optional: Enable scrolling after preloader hides
+                    document.body.style.overflow = 'auto';
                 }, 500);
             }, 1200);
+        });
+
+        // Prevent scrolling during preloader
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.style.overflow = 'hidden';
         });
 
         // Smooth scrolling for navigation
@@ -818,19 +973,28 @@
         });
 
         // 3D Model Viewer
-        let scene, camera, renderer, model;
-        
+        let scene, camera, renderer, model, controls;
+        let isViewerInitialized = false;
+
         function init3DViewer() {
+            // Only initialize once
+            if (isViewerInitialized) {
+                resetCamera();
+                return;
+            }
+
             // Set up Three.js scene
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x1a1a2e);
             
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            // Use container dimensions instead of window
+            const container = document.getElementById('miku-container');
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
             camera.position.z = 5;
             
             renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('scene-container').appendChild(renderer.domElement);
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
             
             // Add lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -841,7 +1005,7 @@
             scene.add(directionalLight);
             
             // Add controls
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
             
@@ -853,10 +1017,16 @@
                     model = gltf.scene;
                     model.scale.set(0.5, 0.5, 0.5);
                     scene.add(model);
+                    
+                    // Center the model
+                    const box = new THREE.Box3().setFromObject(model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    model.position.sub(center);
                 },
                 undefined,
                 function(error) {
                     console.error('Error loading model:', error);
+                    container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Model failed to load</div>';
                 }
             );
             
@@ -868,28 +1038,117 @@
             }
             animate();
             
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
+            // Handle container resize
+            const resizeObserver = new ResizeObserver(() => {
+                const container = document.getElementById('miku-container');
+                camera.aspect = container.clientWidth / container.clientHeight;
                 camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setSize(container.clientWidth, container.clientHeight);
             });
+            resizeObserver.observe(document.getElementById('miku-container'));
+            
+            isViewerInitialized = true;
         }
-        
-        // Toggle 3D model viewer
-        document.querySelectorAll('.view-3d-model').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.getElementById('model-viewer').style.display = 'flex';
-                init3DViewer();
+
+        function resetCamera() {
+            if (camera) {
+                camera.position.z = 5;
+            }
+            if (controls) {
+                controls.reset();
+            }
+        }
+
+        function cleanup3DViewer() {
+            const container = document.getElementById('miku-container');
+            if (container && renderer) {
+                const canvas = container.querySelector('canvas');
+                if (canvas) {
+                    container.removeChild(canvas);
+                }
+            }
+        }
+
+        // Audio / Music
+        document.addEventListener('DOMContentLoaded', function() {
+            const audio = document.getElementById('audio-element');
+            const playPauseBtn = document.getElementById('play-pause');
+            const playIcon = playPauseBtn.querySelector('i');
+            const volumeSlider = document.querySelector('.volume-slider');
+            const progressBar = document.querySelector('.progress');
+            const currentTimeEl = document.querySelector('.time span:first-child');
+            const durationEl = document.querySelector('.time span:last-child');
+            
+            // Update waktu total ketika metadata audio dimuat
+            audio.addEventListener('loadedmetadata', function() {
+                const duration = audio.duration;
+                const minutes = Math.floor(duration / 60);
+                const seconds = Math.floor(duration % 60);
+                durationEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            });
+            
+            // Perbarui progress bar
+            audio.addEventListener('timeupdate', function() {
+                const currentTime = audio.currentTime;
+                const duration = audio.duration;
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                
+                const minutes = Math.floor(currentTime / 60);
+                const seconds = Math.floor(currentTime % 60);
+                currentTimeEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            });
+            
+            // Tombol play/pause
+            playPauseBtn.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    playIcon.classList.remove('fa-play');
+                    playIcon.classList.add('fa-pause');
+                } else {
+                    audio.pause();
+                    playIcon.classList.remove('fa-pause');
+                    playIcon.classList.add('fa-play');
+                }
+            });
+            
+            // Kontrol volume
+            volumeSlider.addEventListener('input', function() {
+                audio.volume = this.value / 100;
+            });
+            
+            // Klik pada progress bar untuk mengubah posisi pemutaran
+            document.querySelector('.progress-bar').addEventListener('click', function(e) {
+                const progressBar = this;
+                const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
+                const progressBarWidth = progressBar.offsetWidth;
+                const clickPercentage = clickPosition / progressBarWidth;
+                audio.currentTime = clickPercentage * audio.duration;
             });
         });
-        
+
+        // Toggle 3D model viewer in modal
+        document.querySelectorAll('.view-3d-model').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modal = document.getElementById('model-viewer');
+                modal.style.display = 'flex';
+                
+                // Small delay to allow modal to render before initializing
+                setTimeout(() => {
+                    init3DViewer();
+                }, 50);
+            });
+        });
+
         document.getElementById('close-model').addEventListener('click', () => {
             document.getElementById('model-viewer').style.display = 'none';
-            // Clean up Three.js
-            if (renderer) {
-                renderer.dispose();
-            }
+            cleanup3DViewer();
+        });
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            init3DViewer();
+            cleanup3DViewer(); 
         });
 
         // Tooltip functionality
@@ -971,8 +1230,10 @@
 
         const textElement = document.getElementById('textContent');
         const texts = [
-            { en: "Educator and Tech in Edu Enthusiast", jp: ""},
-            { en: "教育者と教育における技術", jp: "" }
+            { en: "Educator / Teacher", jp: ""},            
+            { en: "教育者", jp: "" },
+            { en: "Tech in Edu Enthusiast", jp: ""},
+            { en: "教育における技術", jp: "" }
         ];
 
         let currentIndex = 0;
@@ -1054,4 +1315,3 @@
 </body>
 
 </html>
-
