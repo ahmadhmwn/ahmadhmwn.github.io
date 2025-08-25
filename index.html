@@ -436,6 +436,48 @@
             color: #ccc;
         }
         
+        /* Model 3D*/
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: Arial, sans-serif;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #home-content {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        #model-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-size: 18px;
+            z-index: 10;
+        }
+        
+        .controls-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -451,8 +493,8 @@
 
     <!-- Main Content -->
     <div class="min-h-screen flex flex-col">
-            <!-- Audio Music -->
-            <div class="audio-player">
+        <!-- Audio Music -->
+        <div class="audio-player">
             <button id="play-pause">
                 <i class="fas fa-play"></i>
             </button>
@@ -470,7 +512,7 @@
         </div>
 
         <audio id="audio-element">
-            <source src="assets/music/吉祥寺.m4a" type="audio/mpeg">
+            <source src="assets/music/I_Love_You_More(128k).m4a" type="audio/mpeg">
             Browser Anda tidak mendukung elemen audio.
         </audio>
         <!-- Hero Section -->
@@ -629,7 +671,15 @@
         <!-- Page Sections -->
         <div class="hidden">
             <section id="home-content">
-                <div id="miku-container" class="w-full h-96 rounded-lg overflow-hidden bg-gray-100"></div>
+                <!-- Hatsune Miku -->
+                <div id="loading">Memuat Hatsune Miku...</div>
+                <div id="model-container"></div>
+                <div class="controls-info">
+                    Gunakan mouse untuk menggerakkan kamera: <br>
+                    - Kiri: Rotate <br>
+                    - Scroll: Zoom <br>
+                    - Kanan: Pan
+                </div>
 
                 <h1 class="text-2xl text-center font-bold mb-4">Follow for more about me!</h1>
                 <div class="home-nav">
@@ -699,14 +749,14 @@
                         </div>
                         <div class="timeline-item glass-card p-4 mb-4">
                             <h4 class="font-bold text-neon-blue">Delegates</h4>
-                            <p class="text-sm text-gray-300">Japan International Autumn (2024)</p>
+                            <p class="text-sm text-gray-300">Japan International Autumn Summit (2024)</p>
                         </div>
                     </div>
                 </div>
                 <br>
                 <h1 class="text-2xl font-bold mb-4">Research & Publication</h1>
                 <div class="glass-card">
-                    
+                    <a href="https://orcid.org/0009-0008-8452-2872">ORCID ID</a>
                 </div>
                 <br>
                 <h1 class="text-2xl font-bold mb-4">Experience</h1>
@@ -852,6 +902,9 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     
     <script>
         // Initialize AOS animations
@@ -927,99 +980,211 @@
         });
 
         // 3D Model Viewer
-        let scene, camera, renderer, model, controls;
-        let isViewerInitialized = false;
-
-        function init3DViewer() {
-            // Only initialize once
-            if (isViewerInitialized) {
-                resetCamera();
-                return;
+        class MikuViewer {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.controls = null;
+                this.model = null;
+                this.container = null;
+                
+                this.init();
             }
-
-            // Set up Three.js scene
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x1a1a2e);
             
-            // Use container dimensions instead of window
-            const container = document.getElementById('miku-container');
-            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.z = 5;
-            
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-            
-            // Add lights
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            scene.add(ambientLight);
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(1, 1, 1);
-            scene.add(directionalLight);
-            
-            // Add controls
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            
-            // Load model
-            const loader = new THREE.GLTFLoader();
-            loader.load(
-                'model/hatsune_miku.glb',
-                function(gltf) {
-                    model = gltf.scene;
-                    model.scale.set(0.5, 0.5, 0.5);
-                    scene.add(model);
-                    
-                    // Center the model
-                    const box = new THREE.Box3().setFromObject(model);
-                    const center = box.getCenter(new THREE.Vector3());
-                    model.position.sub(center);
-                },
-                undefined,
-                function(error) {
-                    console.error('Error loading model:', error);
-                    container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Model failed to load</div>';
+            init() {
+                // Tunggu hingga DOM siap
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => this.setup());
+                } else {
+                    this.setup();
                 }
-            );
-            
-            // Animation loop
-            function animate() {
-                requestAnimationFrame(animate);
-                controls.update();
-                renderer.render(scene, camera);
             }
-            animate();
             
-            // Handle container resize
-            const resizeObserver = new ResizeObserver(() => {
-                const container = document.getElementById('miku-container');
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
-            });
-            resizeObserver.observe(document.getElementById('miku-container'));
+            setup() {
+                // Dapatkan container
+                this.container = document.getElementById('model-container');
+                if (!this.container) {
+                    console.error('Container tidak ditemukan!');
+                    return;
+                }
+                
+                // Setup Three.js
+                this.setupScene();
+                this.setupCamera();
+                this.setupRenderer();
+                this.setupLights();
+                this.setupControls();
+                
+                // Load model
+                this.loadModel();
+                
+                // Event listeners
+                this.setupEventListeners();
+                
+                // Start animation
+                this.animate();
+            }
             
-            isViewerInitialized = true;
+            setupScene() {
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x000000); // Background hitam
+            }
+            
+            setupCamera() {
+                const aspect = this.container.clientWidth / this.container.clientHeight;
+                this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
+                this.camera.position.set(0, 1.5, 3);
+            }
+            
+            setupRenderer() {
+                this.renderer = new THREE.WebGLRenderer({ 
+                    antialias: true,
+                    alpha: true // Untuk background transparan
+                });
+                
+                this.renderer.setSize(
+                    this.container.clientWidth, 
+                    this.container.clientHeight
+                );
+                
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.outputEncoding = THREE.sRGBEncoding;
+                
+                // Bersihkan container sebelumnya dan tambahkan renderer
+                this.container.innerHTML = '';
+                this.container.appendChild(this.renderer.domElement);
+            }
+            
+            setupLights() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+                
+                // Directional light (matahari)
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(5, 10, 7.5);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+                
+                // Point light untuk efek lebih dramatis
+                const pointLight = new THREE.PointLight(0xff6ec7, 0.5, 10);
+                pointLight.position.set(2, 3, 2);
+                this.scene.add(pointLight);
+            }
+            
+            setupControls() {
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.minDistance = 1;
+                this.controls.maxDistance = 10;
+            }
+            
+            loadModel() {
+                const loader = new THREE.GLTFLoader();
+                
+                loader.load(
+                    './model/hatsune_miku.glb', // Path ke model Anda
+                    (gltf) => {
+                        this.model = gltf.scene;
+                        this.scene.add(this.model);
+                        
+                        // Setup model
+                        this.setupModel();
+                        
+                        // Sembunyikan loading
+                        document.getElementById('loading').style.display = 'none';
+                        
+                        console.log('Hatsune Miku berhasil dimuat!');
+                    },
+                    (xhr) => {
+                        const percent = (xhr.loaded / xhr.total * 100);
+                        document.getElementById('loading').textContent = 
+                            `Memuat Hatsune Miku... ${percent.toFixed(1)}%`;
+                    },
+                    (error) => {
+                        console.error('Error loading model:', error);
+                        document.getElementById('loading').textContent = 
+                            'Error memuat model!';
+                    }
+                );
+            }
+            
+            setupModel() {
+                if (!this.model) return;
+                
+                // Center model
+                const box = new THREE.Box3().setFromObject(this.model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                
+                this.model.position.sub(center);
+                
+                // Scale model jika diperlukan
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 2.5 / maxDim;
+                this.model.scale.set(scale, scale, scale);
+                
+                // Enable shadows
+                this.model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+            }
+            
+            setupEventListeners() {
+                window.addEventListener('resize', () => this.onWindowResize());
+            }
+            
+            onWindowResize() {
+                const width = this.container.clientWidth;
+                const height = this.container.clientHeight;
+                
+                this.camera.aspect = width / height;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(width, height);
+            }
+            
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                // Update controls
+                if (this.controls) {
+                    this.controls.update();
+                }
+                
+                // Rotasi model perlahan (opsional)
+                if (this.model) {
+                    this.model.rotation.y += 0.005;
+                }
+                
+                // Render scene
+                this.renderer.render(this.scene, this.camera);
+            }
+            
+            // Method untuk menampilkan/menyembunyikan viewer
+            show() {
+                document.getElementById('home-content').style.display = 'block';
+                this.onWindowResize(); // Reset size
+            }
+            
+            hide() {
+                document.getElementById('home-content').style.display = 'none';
+            }
         }
 
-        function resetCamera() {
-            if (camera) {
-                camera.position.z = 5;
-            }
-            if (controls) {
-                controls.reset();
-            }
-        }
+        // Inisialisasi viewer
+        let mikuViewer = null;
 
-        function cleanup3DViewer() {
-            const container = document.getElementById('miku-container');
-            if (container && renderer) {
-                const canvas = container.querySelector('canvas');
-                if (canvas) {
-                    container.removeChild(canvas);
-                }
+        // Fungsi untuk memulai viewer ketika section ditampilkan
+        function initMikuViewer() {
+            if (!mikuViewer) {
+                mikuViewer = new MikuViewer();
+            } else {
+                mikuViewer.show();
             }
         }
 
