@@ -605,6 +605,15 @@
 
             .side-panel {
                 width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .song-card,
+            .character-card,
+            .lyric-card {
+                min-height: auto;
             }
 
             .main-panel {
@@ -613,29 +622,263 @@
 
             #game-container {
                 width: 100%;
+                padding: 12px 10px 8px;
             }
         }
 
         @media (max-width: 640px) {
+            body {
+                background:
+                    radial-gradient(circle at top, rgba(88, 155, 255, 0.24), transparent 35%),
+                    linear-gradient(180deg, #070b14 0%, #0d1320 100%);
+            }
+
+            #game-shell {
+                padding: 10px 10px 18px;
+                gap: 12px;
+            }
+
+            .side-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .song-card,
+            .character-card,
+            .lyric-card {
+                padding: 12px 12px 14px;
+                border-radius: 18px;
+                border-color: rgba(255,255,255,0.12);
+                background: linear-gradient(180deg, rgba(15, 22, 38, 0.9), rgba(11, 18, 28, 0.8));
+            }
+
+            .song-card {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding-right: 14px;
+            }
+
+            .song-badge {
+                font-size: 0.6rem;
+                padding: 5px 8px;
+                border-radius: 999px;
+                letter-spacing: 0.14em;
+            }
+
+            .song-title {
+                font-size: 1.3rem;
+                letter-spacing: 0.04em;
+            }
+
+            .song-meta {
+                font-size: 0.68rem;
+                opacity: 0.8;
+            }
+
+            .character-card {
+                min-height: 96px;
+                padding: 10px;
+            }
+
+            .character-avatar {
+                height: 110px;
+                border-radius: 16px;
+                background-size: cover;
+                background-position: center;
+            }
+
+            .lyric-card {
+                min-height: 90px;
+            }
+
+            .lyric-label {
+                font-size: 0.62rem;
+                letter-spacing: 0.15em;
+            }
+
+            #lyric-text {
+                font-size: 0.82rem;
+                line-height: 1.45;
+                min-height: 42px;
+            }
+
+            #score-board {
+                position: relative;
+                top: auto;
+                left: auto;
+                display: flex;
+                justify-content: space-between;
+                gap: 8px;
+                font-size: 0.72rem;
+                padding: 10px 12px;
+                border-radius: 14px;
+                background: rgba(11, 17, 29, 0.72);
+                border: 1px solid rgba(255,255,255,0.1);
+                box-shadow: 0 8px 24px rgba(11, 17, 29, 0.35);
+                margin-bottom: 10px;
+            }
+
+            #game-area {
+                width: 100%;
+                height: 420px;
+                border-radius: 20px;
+                border: 1.5px solid rgba(115, 220, 255, 0.28);
+                box-shadow: inset 0 0 22px rgba(77, 249, 255, 0.08), 0 12px 26px rgba(0, 0, 0, 0.28);
+                overflow: hidden;
+            }
+
+            .lane {
+                width: 20%;
+                border-right: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .lane-1 { left: 0%; }
+            .lane-2 { left: 20%; }
+            .lane-3 { left: 40%; }
+            .lane-4 { left: 60%; }
+            .lane-5 { left: 80%; }
+
+            .hit-line {
+                border-radius: 999px;
+                box-shadow: 0 0 18px rgba(77, 249, 255, 0.8);
+            }
+
+            .note {
+                width: 54px;
+                height: 20px;
+                border-radius: 10px 10px 12px 12px;
+                box-shadow: 0 0 16px rgba(74, 141, 255, 0.9), 0 0 24px rgba(122, 231, 255, 0.45);
+            }
+
+            .hold-note {
+                border-radius: 10px;
+            }
+
             #controls {
                 display: none;
             }
 
             #touch-controls {
                 display: flex;
+                gap: 8px;
+                margin-top: 10px;
             }
 
-            #score-board {
-                font-size: 0.8rem;
-                padding: 10px 12px;
+            .touch-key {
+                height: 64px;
+                font-size: 1rem;
+                border-radius: 14px;
+                background: linear-gradient(180deg, rgba(91, 241, 255, 0.32), rgba(76, 99, 255, 0.18));
+                border: 1px solid rgba(130, 225, 255, 0.4);
+                box-shadow: inset 0 -4px 12px rgba(0,0,0,0.18), 0 8px 18px rgba(77, 249, 255, 0.18);
             }
 
-            #game-area {
-                height: 360px;
+            .touch-key:active,
+            .touch-key.pressed {
+                transform: translateY(1px) scale(0.98);
+                filter: brightness(1.2);
+                box-shadow: 0 0 18px rgba(77, 249, 255, 0.28);
             }
 
-            .song-title {
+            #progress-container {
+                width: 100%;
+                height: 8px;
+                margin-top: 12px;
+                border-radius: 999px;
+            }
+
+            #judgement {
+                top: 44%;
+                font-size: 2.2rem;
+            }
+
+            #combo-display {
+                top: 34%;
                 font-size: 1.5rem;
+            }
+
+            #volume-controls {
+                top: 12px;
+                right: 12px;
+                transform: scale(0.9);
+                transform-origin: top right;
+            }
+
+            #volume-up, #volume-down {
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: rgba(12, 20, 32, 0.8);
+                border: 1px solid rgba(255,255,255,0.12);
+                box-shadow: 0 8px 18px rgba(0,0,0,0.24);
+            }
+
+            .start-card {
+                padding: 22px 16px;
+                border-radius: 24px;
+                border-color: rgba(130, 225, 255, 0.2);
+                background: rgba(9, 15, 25, 0.9);
+                box-shadow: 0 20px 50px rgba(0,0,0,0.42);
+            }
+
+            .start-card h1 {
+                font-size: 2rem;
+                letter-spacing: 0.08em;
+            }
+
+            .start-card p {
+                font-size: 0.82rem;
+            }
+
+            .menu-layout {
+                grid-template-columns: 1fr;
+                gap: 18px;
+                margin-top: 18px;
+            }
+
+            #song-selection {
+                gap: 10px;
+            }
+
+            .song-option {
+                padding: 12px 14px;
+                border-radius: 14px;
+            }
+
+            .song-option-name {
+                font-size: 1rem;
+            }
+
+            .song-option-detail {
+                font-size: 0.72rem;
+            }
+
+            .character-panel {
+                padding: 12px;
+                border-radius: 18px;
+            }
+
+            .character-preview {
+                height: 180px;
+                border-radius: 14px;
+            }
+
+            .start-actions {
+                flex-direction: column;
+                gap: 12px;
+                margin-top: 20px;
+            }
+
+            #start-button,
+            #back-button {
+                width: 100%;
+                min-width: 0;
+                padding: 13px 18px;
+                font-size: 1rem;
+                border-radius: 999px;
             }
         }
     </style>
