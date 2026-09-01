@@ -16,23 +16,54 @@
             --primary: #ff2d7e;
             --secondary: #00b0ff;
             --accent: #ffcc00;
-            --dark: #1a1a2e;
+            --dark: #0b1020;
+            --dark-2: #121a2d;
             --light: #f8f9fa;
             --neon-pink: #ff2d7e;
             --neon-blue: #00eeff;
             --neon-purple: #b388ff;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.14);
+            --text-soft: rgba(224, 232, 255, 0.78);
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            background:
+                radial-gradient(circle at top left, rgba(255, 45, 126, 0.25), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(0, 176, 255, 0.18), transparent 25%),
+                linear-gradient(135deg, #0b1020 0%, #111827 35%, #172554 100%);
             color: white;
             margin: 0;
             padding: 0;
             min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.22;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            background: #ff2d7e;
+            top: -90px;
+            left: -60px;
+        }
+
+        body::after {
+            background: #00d4ff;
+            right: -80px;
+            bottom: -100px;
         }
 
         #preloader {
@@ -41,39 +72,494 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #1a1a2e; 
-            opacity: 70%;
+            background: #0b1020;
+            opacity: 0.96;
             z-index: 9999;
             display: flex;
             justify-content: center;
             align-items: center;
             transition: opacity 0.5s ease;
         }
+
         .glass-card {
-            background: var(--glass-bg);
+            background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.25);
+            border-radius: 22px;
             transition: all 0.3s ease;
         }
 
         .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 176, 255, 0.3);
-            border: 1px solid rgba(0, 240, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 176, 255, 0.16), 0 0 0 1px rgba(0, 240, 255, 0.12);
+            border-color: rgba(0, 240, 255, 0.28);
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: 0 10px 24px rgba(0, 195, 255, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(255, 45, 126, 0.96), rgba(0, 176, 255, 0.96));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.04);
+            color: white;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 18px 32px rgba(0, 176, 255, 0.25);
+        }
+
+        .hero-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 2rem;
+        }
+
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: var(--neon-blue);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
+
+        .hero-kicker::before {
+            content: "";
+            width: 0.55rem;
+            height: 0.55rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+            box-shadow: 0 0 18px rgba(0, 238, 255, 0.7);
+        }
+
+        .hero-title {
+            font-size: clamp(2.7rem, 5vw, 5rem);
+            line-height: 0.96;
+            letter-spacing: -0.06em;
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .hero-subtitle {
+            margin-top: 1rem;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-soft);
+            max-width: 42rem;
+        }
+
+        .hero-quote {
+            margin-top: 1.75rem;
+            padding: 1.15rem 1.25rem;
+            border-left: 2px solid rgba(0, 238, 255, 0.6);
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            color: rgba(255,255,255,0.88);
+            max-width: 42rem;
+            font-size: 1.08rem;
+            font-weight: 500;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(120px, 1fr));
+            gap: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        .stat-box {
+            padding: 1rem 0.85rem;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .stat-box strong {
+            display: block;
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-box span {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 430px;
+        }
+
+        .hero-orb {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 238, 255, 0.35), rgba(255, 45, 126, 0.18), transparent 68%);
+            filter: blur(20px);
+            opacity: 0.8;
+        }
+
+        .hero-card {
+            position: relative;
+            width: min(100%, 360px);
+            padding: 1.2rem;
+            border-radius: 26px;
+            background: linear-gradient(180deg, rgba(15,20,35,0.9), rgba(20,26,45,0.75));
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 25px 50px rgba(2, 6, 23, 0.45);
+        }
+
+        .mini-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--neon-blue);
+            margin-bottom: 0.7rem;
+        }
+
+        .mini-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0 0 0.35rem;
+        }
+
+        .mini-role {
+            color: var(--text-soft);
+            margin: 0 0 1rem;
+        }
+
+        .mini-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .mini-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .mini-list li::before {
+            content: "";
+            width: 0.52rem;
+            height: 0.52rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+            box-shadow: 0 0 14px rgba(0, 238, 255, 0.5);
+        }
+
+        .section-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 5rem;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-kicker {
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            color: var(--neon-blue);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            font-size: clamp(2rem, 4vw, 3.3rem);
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 60%;
+            height: 4px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+        }
+
+        .section-copy {
+            max-width: 40rem;
+            color: rgba(255,255,255,0.72);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .premium-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,45,126,0.25), rgba(0,238,255,0.45), rgba(255,255,255,0.05));
+            margin: 2rem auto 1rem;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 1.5rem;
+            align-items: stretch;
+        }
+
+        .about-card,
+        .info-card,
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(12,17,29,0.78), rgba(22,28,42,0.82));
+            border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 24px;
+            box-shadow: 0 18px 36px rgba(2, 6, 23, 0.28);
+        }
+
+        .about-card {
+            padding: 2rem;
+        }
+
+        .about-card h3,
+        .info-card h3 {
+            margin: 0 0 1rem;
+            font-size: 1.7rem;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        .about-card p,
+        .info-card p,
+        .info-card li {
+            color: rgba(255,255,255,0.72);
+            line-height: 1.8;
+        }
+
+        .info-stack {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .info-card {
+            padding: 1.5rem;
+        }
+
+        .info-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .info-badges span {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.8);
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(0, 238, 255, 0.32);
+        }
+
+        .project-thumb {
+            position: relative;
+            aspect-ratio: 16 / 11;
+            overflow: hidden;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .project-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.35s ease;
+        }
+
+        .project-card:hover .project-thumb img {
+            transform: scale(1.04);
+        }
+
+        .project-body {
+            padding: 1.2rem 1.2rem 1.4rem;
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .project-tag {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: rgba(0, 238, 255, 0.08);
+            color: #aaf6ff;
+            border: 1px solid rgba(0, 238, 255, 0.24);
+        }
+
+        .project-body h3 {
+            margin: 0 0 0.4rem;
+            font-size: 1.2rem;
+        }
+
+        .project-body p {
+            margin: 0;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.7;
+            font-size: 0.92rem;
+        }
+
+        .nav-shell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.5rem;
+            border-radius: 999px;
+            background: rgba(7, 12, 24, 0.72);
+            border: 1px solid rgba(255,255,255,0.10);
+            box-shadow: 0 18px 36px rgba(2, 6, 23, 0.32);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .nav-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 960px) {
+            .hero-layout,
+            .about-grid,
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-shell {
+                gap: 0.3rem;
+                padding: 0.45rem;
+            }
+
+            .nav-btn {
+                width: 42px;
+                height: 42px;
+            }
         }
 
         /* Floating animation */
         @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
         }
 
         .floating {
-            animation: float 6s ease-in-out infinite;
+            animation: float 7s ease-in-out infinite;
         }
 
         /* Pulse animation */
@@ -116,7 +602,7 @@
         }
 
         .tilt-effect:hover {
-            transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.03);
+            transform: perspective(1000px) rotateX(2deg) rotateY(2deg) scale(1.01);
         }
 
         /* Neon glow */
@@ -197,14 +683,15 @@
         }
 
         .experience-details {
-            background: white;
-            opacity: 70%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08));
+            border: 1px solid rgba(255,255,255,0.12);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.14);
             width: 100%;
-            border-left: 3px solid #2c3e50;
+            border-left: 3px solid rgba(0, 194, 255, 0.9);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #ecf6ff;
         }
 
         .experience-details:hover {
@@ -214,20 +701,20 @@
 
         .experience-details h3 {
             margin-top: 0;
-            color: #2c3e50;
+            color: #dff6ff;
             font-size: 1.2rem;
             margin-bottom: 10px;
         }
 
         .experience-details .date {
-            color: #7f8c8d;
+            color: #9fe7ff;
             font-size: 0.9rem;
             margin-bottom: 8px;
             font-weight: 500;
         }
 
         .experience-details .description {
-            color: #34495e;
+            color: #d7ebff;
             line-height: 1.5;
             margin-bottom: 0;
         }
@@ -497,138 +984,110 @@
             Browser Anda tidak mendukung elemen audio.
         </audio>
         <!-- Hero Section -->
-        <section class="flex-grow flex items-center justify-center px-4 py-20">
-            <div class="text-center max-w-4xl">
-                <h2 class="text-4xl md:text-4xl mb-6 gradient-text neon-glow">Ahmad Himawan</h2>
-                <p class="text-1xl font-bold mb-8 text-center gradient-text" id="textContent">Educator & Technology in Education Enthusiast</p>
-                
-                <div class="glass-card inline-block px-8 py-3 mb-12">
-                    <p class="text-3xl text-lg">"Implementing technology in education to create better learning experiences"</p>
-                </div>
-                
-                <div class="flex justify-center gap-4">
-                    <a href="#about" class="btn-primary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:shadow-lg">
-                        Explore Portfolio
-                    </a>
-                    
-                    <a href="#" onclick="showContactModal()" class="btn-secondary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:shadow-lg">
-                        Contact Me
-                    </a>
-                    <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-                        <div class="glass-card bg-gradient-to-br from-gray-800/90 to-gray-900/90 border border-gray-700/50 rounded-xl p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl shadow-blue-500/20">
-                            <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
-                                <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Contact Me</h2>
-                                <button onclick="closeContactModal()" class="text-gray-400 hover:text-cyan-400 transition-colors duration-200 p-1 rounded-full hover:bg-gray-700/50">
-                                    <i class="fas fa-times text-xl"></i>
-                                </button>
+        <section class="flex-grow py-20 px-4">
+            <div class="hero-shell">
+                <div class="hero-layout">
+                    <div>
+                        <div class="hero-kicker">Educator • Researcher • Developer</div>
+                        <h2 class="hero-title gradient-text neon-glow">Ahmad Himawan</h2>
+                        <p class="hero-subtitle" id="textContent">Educator and technology in education enthusiast focused on impactful learning experiences.</p>
+
+                        <div class="hero-quote">
+                            "Implementing technology in education to create better learning experiences."
+                        </div>
+
+                        <div class="hero-actions">
+                            <a href="#about" class="btn-primary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:shadow-lg">
+                                Explore Portfolio
+                            </a>
+                            <a href="#" onclick="showContactModal()" class="btn-secondary px-6 py-3 rounded-full font-medium transition-all duration-300 hover:shadow-lg">
+                                Contact Me
+                            </a>
+                        </div>
+
+                        <div class="hero-stats">
+                            <div class="stat-box">
+                                <strong>3+</strong>
+                                <span>Years study</span>
                             </div>
-                            
-                            <div class="text-gray-300">
-                                <p class="mb-3"><i class="fas fa-envelope mr-2 text-cyan-400"></i> ahmadhimawan16@gmail.com</p>
-                                <div class="home-nav">
-                                    <div class="social-links flex justify-center gap-4 mt-6">
-                                        <a href="https://instagram.com/ahmadhmwn" target="_blank"
-                                            class="social-icon hover:scale-110 transition-transform duration-300">
-                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584] hover:[&>svg]:fill-[#ff2d7e]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                                    <path
-                                                        d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <a href="https://github.com/ahmadhmwn" target="_blank"
-                                            class="social-icon hover:scale-110 transition-transform duration-300">
-                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-gray-800 hover:[&>svg]:fill-[#00b0ff]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2"
-                                                    stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" />
-                                                    <path
-                                                        d="M9 19c-4.286 1.35-4.286-2.55-6-3m12 5v-3.5c0-1 .099-1.405-.5-2 2.791-.3 5.5-1.366 5.5-6.04a4.567 4.567 0 0 0 -1.333 -3.21 4.192 4.192 0 00-.08-3.227s-1.05-.3-3.476 1.267a12.334 12.334 0 0 0 -6.222 0C6.462 2.723 5.413 3.023 5.413 3.023a4.192 4.192 0 0 0 -.08 3.227A4.566 4.566 0 004 9.486c0 4.64 2.709 5.68 5.5 6.014-.591.589-.56 1.183-.5 2V21" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <a href="http://linkedin.com/in/ahmad-himawan-b43a101aa" target="_blank"
-                                            class="social-icon hover:scale-110 transition-transform duration-300">
-                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#0077b5] hover:[&>svg]:fill-[#00f0ff]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                                    <path
-                                                        d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <a href="https://youtube.com/@ahmadhmwn" target="_blank"
-                                            class="social-icon hover:scale-110 transition-transform duration-300">
-                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#ff0000] hover:[&>svg]:fill-[#ff2d7e]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                                                    <path
-                                                        d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <a href="https://twitter.com/ahmadhmwn" target="_blank"
-                                            class="social-icon hover:scale-110 transition-transform duration-300">
-                                            <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-black hover:[&>svg]:fill-[#b388ff]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512">
-                                                    <path
-                                                        d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
+                            <div class="stat-box">
+                                <strong>5+</strong>
+                                <span>Research areas</span>
+                            </div>
+                            <div class="stat-box">
+                                <strong>100%</strong>
+                                <span>Growth mindset</span>
                             </div>
                         </div>
                     </div>
-                    <script>
-                        function showContactModal() {
-                            document.getElementById('contact-modal').classList.remove('hidden');
-                            document.body.style.overflow = 'hidden'; 
-                        }
+                </div>
+            </div>
 
-                        function closeContactModal() {
-                            document.getElementById('contact-modal').classList.add('hidden');
-                            document.body.style.overflow = ''; 
-                        }
-
-                        // Close modal when clicking outside content
-                        document.getElementById('contact-modal').addEventListener('click', function(e) {
-                            if (e.target === this) {
-                                closeContactModal();
-                            }
-                        });
-
-                        // Close modal with Escape key
-                        document.addEventListener('keydown', function(e) {
-                            if (e.key === 'Escape') {
-                                closeContactModal();
-                            }
-                        });
-                    </script>
+            <div id="contact-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+                <div class="glass-card bg-gradient-to-br from-gray-800/90 to-gray-900/90 border border-gray-700/50 rounded-xl p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto shadow-2xl shadow-blue-500/20">
+                    <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-3">
+                        <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Contact Me</h2>
+                        <button onclick="closeContactModal()" class="text-gray-400 hover:text-cyan-400 transition-colors duration-200 p-1 rounded-full hover:bg-gray-700/50">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-gray-300">
+                        <p class="mb-3"><i class="fas fa-envelope mr-2 text-cyan-400"></i> ahmadhimawan16@gmail.com</p>
+                        <div class="home-nav">
+                            <div class="social-links flex justify-center gap-4 mt-6">
+                                <a href="https://instagram.com/ahmadhmwn" target="_blank" class="social-icon hover:scale-110 transition-transform duration-300">
+                                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#c13584] hover:[&>svg]:fill-[#ff2d7e]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>
+                                    </span>
+                                </a>
+                                <a href="https://github.com/ahmadhmwn" target="_blank" class="social-icon hover:scale-110 transition-transform duration-300">
+                                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-gray-800 hover:[&>svg]:fill-[#00b0ff]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" /><path d="M9 19c-4.286 1.35-4.286-2.55-6-3m12 5v-3.5c0-1 .099-1.405-.5-2 2.791-.3 5.5-1.366 5.5-6.04a4.567 4.567 0 0 0 -1.333 -3.21 4.192 4.192 0 00-.08-3.227s-1.05-.3-3.476 1.267a12.334 12.334 0 0 0 -6.222 0C6.462 2.723 5.413 3.023 5.413 3.023a4.192 4.192 0 0 0 -.08 3.227A4.566 4.566 0 004 9.486c0 4.64 2.709 5.68 5.5 6.014-.591.589-.56 1.183-.5 2V21" /></svg>
+                                    </span>
+                                </a>
+                                <a href="http://linkedin.com/in/ahmad-himawan-b43a101aa" target="_blank" class="social-icon hover:scale-110 transition-transform duration-300">
+                                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#0077b5] hover:[&>svg]:fill-[#00f0ff]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M100.3 448H7.4V148.9h92.9zM53.8 108.1C24.1 108.1 0 83.5 0 53.8a53.8 53.8 0 0 1 107.6 0c0 29.7-24.1 54.3-53.8 54.3zM447.9 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448z" /></svg>
+                                    </span>
+                                </a>
+                                <a href="https://youtube.com/@ahmadhmwn" target="_blank" class="social-icon hover:scale-110 transition-transform duration-300">
+                                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-[#ff0000] hover:[&>svg]:fill-[#ff2d7e]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" /></svg>
+                                    </span>
+                                </a>
+                                <a href="https://twitter.com/ahmadhmwn" target="_blank" class="social-icon hover:scale-110 transition-transform duration-300">
+                                    <span class="[&>svg]:h-7 [&>svg]:w-7 [&>svg]:fill-black hover:[&>svg]:fill-[#b388ff]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" /></svg>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Floating Navigation -->
         <nav class="fixed bottom-5 left-0 right-0 flex justify-center z-40">
-            <div class="glass-card flex rounded-full p-2 shadow-xl space-x-2">
-                <!-- Navigation Buttons -->
-                <button onclick="openModal('home')" class="nav-btn bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-blue-500/30">
+            <div class="nav-shell">
+                <button onclick="openModal('home')" class="nav-btn bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-blue-500/20">
                     <i class="fas fa-home"></i>
                 </button>
                 
-                <button onclick="openModal('about')" class="nav-btn bg-gradient-to-br from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-teal-500/30">
+                <button onclick="openModal('about')" class="nav-btn bg-gradient-to-br from-teal-400 to-teal-600 hover:from-teal-500 hover:to-teal-700 shadow-teal-500/20">
                     <i class="fas fa-user"></i>
                 </button>
                 
-                <button onclick="openModal('skills')" class="nav-btn bg-gradient-to-br from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-purple-500/30">
+                <button onclick="openModal('skills')" class="nav-btn bg-gradient-to-br from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 shadow-purple-500/20">
                     <i class="fas fa-code"></i>
                 </button>
                 
-                <button onclick="openModal('projects')" class="nav-btn bg-gradient-to-br from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-pink-500/30">
+                <button onclick="openModal('projects')" class="nav-btn bg-gradient-to-br from-pink-400 to-pink-600 hover:from-pink-500 hover:to-pink-700 shadow-pink-500/20">
                     <i class="fas fa-project-diagram"></i>
                 </button>
                 
-                <a href="game.html" class="nav-btn bg-gradient-to-br from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 text-white rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-cyan-500/30">
+                <a href="game.html" class="nav-btn bg-gradient-to-br from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 shadow-cyan-500/20">
                     <i class="fas fa-gamepad"></i>
                 </a>
             </div>
@@ -839,31 +1298,96 @@
     </div>
 
     <!-- About Section -->
-    <section id="about" class="py-20 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl font-bold mb-16 text-center gradient-text">About Me</h2>
-            
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="glass-card p-8 floating tilt-effect">
-                    <h3 class="text-2xl font-bold mb-4 text-neon-blue">Overview</h3>
-                    <p class="mb-6">Hello! I'm Ahmad Himawan, a educator with a passion for implementing technologies in education.</p>
-                    <p class="mb-6">I finished my studies with cross-major research in the Undergraduate level, I have a dream to study abroad for my future career.</p>
-                    <p>If you want to make collaborative research, you can contact me to email: ahmadhimawan16@gmail.com</p>
-                </div>
-                
-                <div class="glass-card p-8">
-                    <div class="timeline">
-                        <!-- Timeline items here -->
-                        <div class="timeline-item glass-card p-4 mb-4">
-                            <h3 class="text-2xl font-bold mb-4 text-neon-blue">Background</h3>
-                            <h4 class="font-bold text-neon-blue">Undergraduate</h4>
-                            <p class="text-sm text-gray-300">Biology Education 2019-2023</p>
-                            <p>Study Time: 3 years 10 months - Universitas Tanjungpura</p>
-                        </div>
-                        <!-- More timeline items -->
-                    </div>
+    <section id="about" class="section-shell py-20 px-4">
+        <div class="section-header">
+            <span class="section-kicker">Profile</span>
+            <h2 class="section-title gradient-text">About Me</h2>
+            <p class="section-copy">I am an educator and researcher who enjoys turning ideas into meaningful learning experiences through technology, analysis, and communication.</p>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-card floating tilt-effect">
+                <h3 class="text-neon-blue">Overview</h3>
+                <p>Hello! I'm Ahmad Himawan, an educator with a passion for implementing technologies in education.</p>
+                <p>I completed my undergraduate studies with cross-disciplinary research and I am eager to continue growing in research, learning design, and digital education.</p>
+                <p>If you want to collaborate on educational research or meaningful projects, you can contact me at ahmadhimawan16@gmail.com.</p>
+
+                <div class="info-badges">
+                    <span>Research</span>
+                    <span>Education</span>
+                    <span>Digital Learning</span>
+                    <span>Data Analysis</span>
                 </div>
             </div>
+
+            <div class="info-stack">
+                <div class="info-card">
+                    <h3 class="text-neon-blue">Background</h3>
+                    <p class="font-bold text-neon-blue">Undergraduate</p>
+                    <p>Biology Education</p>
+                    <p>2019 - 2023</p>
+                    <p>Universitas Tanjungpura</p>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="text-neon-blue">Focus</h3>
+                    <ul>
+                        <li>Educational technology and digital learning</li>
+                        <li>Research and publication support</li>
+                        <li>Creative learning media and educational design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="premium-divider"></div>
+    </section>
+
+    <section id="projects" class="section-shell py-8 px-4">
+        <div class="section-header">
+            <span class="section-kicker">Work</span>
+            <h2 class="section-title gradient-text">Selected Projects</h2>
+        </div>
+
+        <div class="project-grid">
+            <article class="project-card">
+                <div class="project-thumb">
+                    <img src="assets/img/Project.png" alt="Project 1">
+                </div>
+                <div class="project-body">
+                    <div class="project-meta">
+                        <span class="project-tag">Portfolio</span>
+                    </div>
+                    <h3>Project Showcase</h3>
+                    <p>Visual presentation of selected work and creative digital experiences.</p>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-thumb">
+                    <img src="assets/img/Project_1.png" alt="Project 2">
+                </div>
+                <div class="project-body">
+                    <div class="project-meta">
+                        <span class="project-tag">Design</span>
+                    </div>
+                    <h3>Academic Visual</h3>
+                    <p>Structured creative output for educational and research storytelling.</p>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-thumb">
+                    <img src="assets/img/Project_2.png" alt="Project 3">
+                </div>
+                <div class="project-body">
+                    <div class="project-meta">
+                        <span class="project-tag">Creative</span>
+                    </div>
+                    <h3>Digital Media</h3>
+                    <p>Interactive visual concepts that combine communication and educational value.</p>
+                </div>
+            </article>
         </div>
     </section>
 
@@ -875,345 +1399,266 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://unpkg.com/three@0.132.2/build/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://unpkg.com/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <script>
-        // Initialize AOS animations
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true
-        });
-
-        // Particles.js configuration
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: "#00f0ff" },
-                shape: { type: "circle" },
-                opacity: { value: 0.5, random: true },
-                size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: "#00b0ff", opacity: 0.4, width: 1 },
-                move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "repulse" },
-                    onclick: { enable: true, mode: "push" }
-                }
-            }
-        });
-
-        // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!window.THREE) {
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js';
-                script.onload = () => {
-                    const controlsScript = document.createElement('script');
-                    controlsScript.src = 'https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js';
-                    controlsScript.onload = initMikuViewer;
-                    document.head.appendChild(controlsScript);
-                };
-                document.head.appendChild(script);
-            } else {
-                initMikuViewer();
-            }
-        });
-
-        // Hide preloader when page loads
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('preloader').style.display = 'none';
-                    
-                    // Optional: Enable scrolling after preloader hides
-                    document.body.style.overflow = 'auto';
-                }, 500);
-            }, 1200);
-        });
-
-        // Prevent scrolling during preloader
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', function () {
             document.body.style.overflow = 'hidden';
+
+            if (window.AOS) {
+                AOS.init({
+                    duration: 700,
+                    easing: 'ease-out-cubic',
+                    once: true,
+                    offset: 20
+                });
+            }
+
+            if (window.particlesJS) {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 40, density: { enable: true, value_area: 900 } },
+                        color: { value: '#00f0ff' },
+                        shape: { type: 'circle' },
+                        opacity: { value: 0.4, random: true },
+                        size: { value: 2.5, random: true },
+                        line_linked: { enable: true, distance: 160, color: '#00b0ff', opacity: 0.25, width: 1 },
+                        move: { enable: true, speed: 1.5, direction: 'none', random: true, straight: false, out_mode: 'out' }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: {
+                            onhover: { enable: false },
+                            onclick: { enable: false }
+                        }
+                    }
+                });
+            }
+
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }, 400);
+                }, 800);
+            } else {
+                document.body.style.overflow = 'auto';
+            }
         });
 
-        // Smooth scrolling for navigation
+        function initMikuViewer() {
+            if (!window.THREE || !document.getElementById('scene-container')) return;
+        }
+
+        function init3DViewer() {
+            if (!window.THREE || !document.getElementById('scene-container')) return;
+            if (typeof init === 'function' && !window.__portfolio3DInitialized) {
+                init();
+                window.__portfolio3DInitialized = true;
+            }
+        }
+
+        function cleanup3DViewer() {
+            if (window.__portfolioRenderer && window.__portfolioRenderer.domElement && window.__portfolioRenderer.domElement.parentNode) {
+                window.__portfolioRenderer.domElement.parentNode.removeChild(window.__portfolioRenderer.domElement);
+            }
+            window.__portfolio3DInitialized = false;
+        }
+
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+            anchor.addEventListener('click', function (event) {
+                const targetId = this.getAttribute('href');
+                const target = targetId ? document.querySelector(targetId) : null;
+                if (!target) return;
+
+                event.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
 
-        // 3D Model Viewer
         let scene, camera, renderer, controls;
         let model;
 
-        init();
-        animate();
-
         function init() {
-            // Setup scene
+            const sceneContainer = document.getElementById('scene-container');
+            if (!sceneContainer || !window.THREE) return;
+
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0xf0f0f0);
 
-            // Setup camera - POSISI KAMERA YANG LEBIH BAIK
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.2, 1000);
-            camera.position.set(0, 3.5, 2); // Lebih dekat dan lebih tinggi
+            camera.position.set(0, 3.5, 2);
 
-            // Setup renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
-            document.body.appendChild(renderer.domElement);
+            sceneContainer.appendChild(renderer.domElement);
+            window.__portfolioRenderer = renderer;
 
-            // Setup controls
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.target.set(0, 2.5, -2); // Pusat orbit di tubuh model
+            controls.dampingFactor = 0.04;
+            controls.target.set(0, 2.5, -2);
 
-            // Add lights
             const ambientLight = new THREE.AmbientLight(0x404040, 1);
             scene.add(ambientLight);
 
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
             directionalLight.position.set(3, 5, 5);
-            directionalLight.castShadow = true;
             scene.add(directionalLight);
 
-            // Load model
             loadModel();
-
-            // Handle window resize
             window.addEventListener('resize', onWindowResize);
+            animate();
         }
 
         function loadModel() {
+            if (!window.THREE || !window.THREE.GLTFLoader) return;
+
             const loader = new THREE.GLTFLoader();
+            const modelPath = 'model/rigged-miku.glb';
 
             loader.load(
-                'model/rigged-miku.glb',
+                modelPath,
                 function (gltf) {
                     model = gltf.scene;
                     scene.add(model);
 
-                    // Dapatkan bounding box
                     const box = new THREE.Box3().setFromObject(model);
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
+                    model.position.set(0, -center.y, 0);
+                    model.rotation.set(0, 0, 0);
 
-                    // ⭐⭐ POSISI OPTIMAL HATSUNE MIKU ⭐⭐
-                    model.position.set(0, -center.y, 0); // Letakkan kaki di Y=0
-                    model.rotation.set(0, 0, 0);         // Tidak ada rotasi
-
-                    // Scale model
                     const maxDim = Math.max(size.x, size.y, size.z);
                     const scale = 3.5 / maxDim;
                     model.scale.multiplyScalar(scale);
 
-                    // Update controls target ke posisi model
-                    controls.target.copy(model.position);
-                    controls.update();
+                    if (controls) {
+                        controls.target.copy(model.position);
+                        controls.update();
+                    }
 
-                    // Hide loading text
-                    document.getElementById('loading').style.display = 'none';
-
-                    console.log('Model berhasil dimuat! Posisi:', model.position);
+                    const loadingEl = document.getElementById('loading');
+                    if (loadingEl) loadingEl.style.display = 'none';
                 },
                 function (xhr) {
-                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                    if (xhr.total) {
+                        const progress = (xhr.loaded / xhr.total) * 100;
+                        if (progress < 100) console.log('Model loading:', Math.round(progress) + '%');
+                    }
                 },
                 function (error) {
                     console.error('Error loading model:', error);
-                    document.getElementById('loading').textContent = 'Error memuat model!';
-                }
-            );
-        }
-
-        function loadModel() {
-            const loader = new THREE.GLTFLoader();
-
-            loader.load(
-                'model/hatsune_miku (1).glb', // Ganti dengan path model Anda
-                function (gltf) {
-                    model = gltf.scene;
-                    scene.add(model);
-
-                    // Center model
-                    const box = new THREE.Box3().setFromObject(model);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-
-                    model.position.x += (model.position.x - center.x);
-                    model.position.y += (model.position.y - center.y);
-                    model.position.z += (model.position.z - center.z);
-
-                    // Scale model if needed
-                    const maxDim = Math.max(size.x, size.y, size.z);
-                    const scale = 4 / maxDim;
-                    model.scale.multiplyScalar(scale);
-
-                    // Hide loading text
-                    document.getElementById('loading').style.display = 'none';
-
-                    console.log('Model berhasil dimuat!');
-                },
-                function (xhr) {
-                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-                },
-                function (error) {
-                    console.error('Error loading model:', error);
-                    document.getElementById('loading').textContent = 'Error memuat model!';
+                    const loadingEl = document.getElementById('loading');
+                    if (loadingEl) loadingEl.textContent = 'Error memuat model!';
                 }
             );
         }
 
         function onWindowResize() {
+            if (!camera || !renderer) return;
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
         function animate() {
+            if (!renderer || !scene || !camera) return;
             requestAnimationFrame(animate);
-
-            controls.update();
+            if (controls) controls.update();
             renderer.render(scene, camera);
         }
 
-        // Audio / Music
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const audio = document.getElementById('audio-element');
             const playPauseBtn = document.getElementById('play-pause');
+            if (!audio || !playPauseBtn) return;
+
             const playIcon = playPauseBtn.querySelector('i');
             const volumeSlider = document.querySelector('.volume-slider');
-            const progressBar = document.querySelector('.progress');
             const currentTimeEl = document.querySelector('.time span:first-child');
             const durationEl = document.querySelector('.time span:last-child');
-            
-            // Update waktu total ketika metadata audio dimuat
-            audio.addEventListener('loadedmetadata', function() {
+            const progressBar = document.querySelector('.progress');
+
+            audio.addEventListener('loadedmetadata', function () {
+                if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
                 const duration = audio.duration;
                 const minutes = Math.floor(duration / 60);
                 const seconds = Math.floor(duration % 60);
-                durationEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (durationEl) durationEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             });
-            
-            // Perbarui progress bar
-            audio.addEventListener('timeupdate', function() {
+
+            audio.addEventListener('timeupdate', function () {
+                if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
                 const currentTime = audio.currentTime;
                 const duration = audio.duration;
                 const progressPercent = (currentTime / duration) * 100;
-                progressBar.style.width = `${progressPercent}%`;
-                
+                if (progressBar) progressBar.style.width = `${progressPercent}%`;
+
                 const minutes = Math.floor(currentTime / 60);
                 const seconds = Math.floor(currentTime % 60);
-                currentTimeEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (currentTimeEl) currentTimeEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             });
-            
-            // Tombol play/pause
-            playPauseBtn.addEventListener('click', function() {
+
+            playPauseBtn.addEventListener('click', function () {
                 if (audio.paused) {
-                    audio.play();
-                    playIcon.classList.remove('fa-play');
-                    playIcon.classList.add('fa-pause');
+                    audio.play().catch(() => {});
+                    if (playIcon) {
+                        playIcon.classList.remove('fa-play');
+                        playIcon.classList.add('fa-pause');
+                    }
                 } else {
                     audio.pause();
-                    playIcon.classList.remove('fa-pause');
-                    playIcon.classList.add('fa-play');
+                    if (playIcon) {
+                        playIcon.classList.remove('fa-pause');
+                        playIcon.classList.add('fa-play');
+                    }
                 }
             });
-            
-            // Kontrol volume
-            volumeSlider.addEventListener('input', function() {
-                audio.volume = this.value / 100;
-            });
-            
-            // Klik pada progress bar untuk mengubah posisi pemutaran
-            document.querySelector('.progress-bar').addEventListener('click', function(e) {
-                const progressBar = this;
-                const clickPosition = e.clientX - progressBar.getBoundingClientRect().left;
-                const progressBarWidth = progressBar.offsetWidth;
-                const clickPercentage = clickPosition / progressBarWidth;
-                audio.currentTime = clickPercentage * audio.duration;
-            });
-        });
 
-        // Toggle 3D model viewer in modal
-        document.querySelectorAll('.view-3d-model').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const modal = document.getElementById('model-viewer');
-                modal.style.display = 'flex';
-                
-                // Small delay to allow modal to render before initializing
-                setTimeout(() => {
-                    init3DViewer();
-                }, 50);
-            });
-        });
-
-        document.getElementById('close-model').addEventListener('click', () => {
-            document.getElementById('model-viewer').style.display = 'none';
-            cleanup3DViewer();
-        });
-
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            init3DViewer();
-            cleanup3DViewer(); 
-        });
-
-        // Tooltip functionality
-        document.querySelectorAll('[data-tooltip]').forEach(el => {
-            el.addEventListener('mouseenter', function() {
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip';
-                tooltip.textContent = this.getAttribute('data-tooltip');
-                document.body.appendChild(tooltip);
-                
-                const rect = this.getBoundingClientRect();
-                tooltip.style.left = `${rect.left + rect.width/2 - tooltip.offsetWidth/2}px`;
-                tooltip.style.top = `${rect.top - 40}px`;
-                
-                this.addEventListener('mouseleave', () => {
-                    tooltip.remove();
+            if (volumeSlider) {
+                volumeSlider.addEventListener('input', function () {
+                    audio.volume = this.value / 100;
                 });
+            }
+
+            const progressContainer = document.querySelector('.progress-bar');
+            if (progressContainer) {
+                progressContainer.addEventListener('click', function (event) {
+                    const rect = this.getBoundingClientRect();
+                    const clickPercentage = (event.clientX - rect.left) / rect.width;
+                    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+                        audio.currentTime = clickPercentage * audio.duration;
+                    }
+                });
+            }
+        });
+
+        document.querySelectorAll('.view-3d-model').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const modal = document.getElementById('model-viewer');
+                if (modal) modal.style.display = 'flex';
+                setTimeout(init3DViewer, 50);
             });
         });
 
-        // Interactive cursor effect
-        const cursor = document.createElement('div');
-        cursor.className = 'custom-cursor';
-        document.body.appendChild(cursor);
-        
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = `${e.clientX}px`;
-            cursor.style.top = `${e.clientY}px`;
-        });
-        
-        document.querySelectorAll('a, button, .interactive').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursor.classList.add('cursor-hover');
+        const closeModelBtn = document.getElementById('close-model');
+        if (closeModelBtn) {
+            closeModelBtn.addEventListener('click', function () {
+                const modal = document.getElementById('model-viewer');
+                if (modal) modal.style.display = 'none';
+                cleanup3DViewer();
             });
-            el.addEventListener('mouseleave', () => {
-                cursor.classList.remove('cursor-hover');
-            });
-        });
+        }
+
+        document.addEventListener('DOMContentLoaded', initMikuViewer);
 
         //Modal Navigasi
         function openModal(section) {
