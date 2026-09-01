@@ -6,16 +6,23 @@
     <title>Game Rhythm Hand in Hand</title>
     <style>
         /* CSS yang sudah ada */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #1a1a2e, #16213e);
+            background:
+                radial-gradient(circle at top, rgba(255, 130, 220, 0.25), transparent 30%),
+                radial-gradient(circle at bottom, rgba(98, 204, 255, 0.18), transparent 35%),
+                linear-gradient(to bottom, #1a1a2e 0%, #101a31 30%, #0c1222 100%);
             color: white;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
         }
-        
+
         #preloader {
             position: fixed;
             top: 0;
@@ -29,159 +36,372 @@
             z-index: 1000;
             transition: opacity 0.5s ease;
         }
-        
+
         .loader {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border: 5px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             border-top-color: #4df9ff;
             animation: spin 1s linear infinite;
         }
-        
+
         @keyframes spin {
             100% { transform: rotate(360deg); }
         }
-        
-        #game-container {
+
+        #game-shell {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            padding: 24px;
             width: 100%;
-            height: 100vh;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .side-panel {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .song-card,
+        .character-card,
+        .lyric-card {
+            background: rgba(13, 22, 40, 0.72);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 22px;
+            padding: 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.28);
+            backdrop-filter: blur(8px);
+        }
+
+        .song-card {
+            background: linear-gradient(135deg, rgba(88, 195, 255, 0.14), rgba(255, 109, 204, 0.08));
+        }
+
+        .song-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            background: rgba(77, 249, 255, 0.15);
+            border: 1px solid rgba(77, 249, 255, 0.6);
+            color: #9ef7ff;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .song-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .song-meta {
+            margin-top: 12px;
+            color: #dfeaff;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .character-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 220px;
+            background: linear-gradient(180deg, rgba(255,112,181,0.1), rgba(77,249,255,0.08));
+        }
+
+        .character-avatar {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 30%, #f4d9ff, #98e8ff 30%, rgba(255,255,255,0.1) 31%, rgba(31,42,74,0.88) 37%);
+            box-shadow: inset 0 10px 20px rgba(255,255,255,0.18), 0 0 30px rgba(129,214,255,0.25);
+            overflow: hidden;
+        }
+
+        .character-avatar::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 22%;
+            transform: translateX(-50%);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #ffd7ee;
+            box-shadow: 0 0 20px rgba(255, 209, 238, 0.5);
+        }
+
+        .character-avatar::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 12%;
+            transform: translateX(-50%);
+            width: 96px;
+            height: 88px;
+            border-radius: 18px 18px 26px 26px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(141, 228, 255, 0.7));
+            box-shadow: 0 0 30px rgba(143,219,255,0.25);
+        }
+
+        .lyric-card {
+            min-height: 180px;
+        }
+
+        .lyric-label {
+            color: #8ad8ff;
+            letter-spacing: 0.12em;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        #lyric-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #f6f6ff;
+            font-weight: 600;
+            min-height: 100px;
+            transition: all 0.2s ease;
+        }
+
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-width: 0;
+        }
+
+        #game-container {
+            width: min(100%, 980px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 20px 18px 10px;
+            border-radius: 28px;
+            background: rgba(8, 14, 28, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.25);
         }
-        
+
         #score-board {
             width: 100%;
             display: flex;
             justify-content: space-between;
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            margin-bottom: 20px;
+            align-items: center;
+            padding: 12px 18px;
+            background: rgba(6, 14, 26, 0.7);
+            border-radius: 14px;
+            margin-bottom: 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
         }
-        
+
         #game-area {
-            width: 90%;
-            height: 400px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            width: 92%;
+            height: 430px;
+            background:
+                linear-gradient(to bottom, rgba(18,28,44,0.83), rgba(9,14,26,0.85)),
+                radial-gradient(circle at center, rgba(86, 203, 255, 0.12), transparent 62%);
+            border-radius: 18px;
             position: relative;
             overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 0 16px rgba(255,255,255,0.05);
         }
-        
-        .hit-line {
+
+        #game-area::before {
+            content: "";
             position: absolute;
-            bottom: 100px;
-            width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.5);
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 30%, rgba(77,249,255,0.07));
+            animation: gamePulse 3.8s ease-in-out infinite;
+            pointer-events: none;
         }
-        
-        .lane {
+
+        @keyframes gamePulse {
+            0%, 100% { opacity: 0.35; transform: scaleX(1); }
+            50% { opacity: 0.75; transform: scaleX(1.02); }
+        }
+
+        .lane-glow {
             position: absolute;
+            top: 0;
+            width: 18%;
             height: 100%;
-            width: 16%;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(to bottom, rgba(77, 249, 255, 0.09), rgba(255, 255, 255, 0.02));
+            opacity: 0;
+            transition: opacity 0.15s ease;
         }
-        
+
         .lane-1 { left: 10%; }
         .lane-2 { left: 28%; }
         .lane-3 { left: 46%; }
         .lane-4 { left: 64%; }
         .lane-5 { left: 82%; }
-        
+
+        .hit-line {
+            position: absolute;
+            left: 0;
+            bottom: 100px;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(77, 249, 255, 0.9), rgba(255,255,255,0));
+            box-shadow: 0 0 12px rgba(77, 249, 255, 0.9);
+        }
+
+        .lane {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 18%;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .lane-1 { left: 10%; }
+        .lane-2 { left: 28%; }
+        .lane-3 { left: 46%; }
+        .lane-4 { left: 64%; }
+        .lane-5 { left: 82%; }
+
         .note {
             position: absolute;
-            width: 40px;
-            height: 20px;
-            background: linear-gradient(to bottom, #4facfe, #00f2fe);
-            border-radius: 5px 5px 10px 10px;
+            width: 44px;
+            height: 16px;
+            margin-left: -22px;
+            background: linear-gradient(180deg, #7ae7ff, #4a8dff 60%, #6dffcc 100%);
+            border-radius: 8px 8px 12px 12px;
+            box-shadow: 0 0 12px rgba(74, 141, 255, 0.9), 0 0 26px rgba(122, 231, 255, 0.45);
             transform: translateX(-50%);
             top: -20px;
             cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            box-shadow: 0 0 10px rgba(79, 172, 254, 0.7);
+            transition: opacity 0.15s ease, transform 0.08s ease;
         }
-        
+
         .hold-note {
             height: 0;
-            border-radius: 5px;
-            background: linear-gradient(to bottom, #ff758c, #ff7eb3);
-            box-shadow: 0 0 10px rgba(255, 117, 140, 0.7);
+            background: linear-gradient(180deg, #ff8cc5, #ff6ecf);
+            box-shadow: 0 0 12px rgba(255, 134, 199, 0.8), 0 0 26px rgba(255, 104, 168, 0.42);
+            border-radius: 8px;
         }
-        
+
         .note-effect {
             position: absolute;
             width: 80px;
             height: 80px;
             border-radius: 50%;
             pointer-events: none;
-            z-index: 10;
-            transition: transform 0.3s, opacity 0.3s;
+            z-index: 20;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 70%);
         }
-        
+
         #controls {
-            width: 90%;
+            width: 92%;
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 18px;
+            gap: 12px;
         }
-        
+
         .key {
-            width: 16%;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            width: 18%;
+            min-width: 60px;
+            height: 62px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+            border: 2px solid rgba(255,255,255,0.14);
+            border-radius: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            font-size: 1.5rem;
-            transition: all 0.1s;
-            border: 2px solid transparent;
+            font-weight: 800;
+            font-size: 1.25rem;
+            transition: all 0.12s ease;
+            color: #eaf7ff;
+            user-select: none;
+            box-shadow: inset 0 -4px 12px rgba(0,0,0,0.18);
         }
-        
+
         .key.active {
-            background: rgba(79, 172, 254, 0.3);
-            border-color: #4facfe;
-            transform: scale(0.95);
+            background: linear-gradient(180deg, rgba(77, 249, 255, 0.38), rgba(89, 114, 255, 0.22));
+            border-color: #7ae7ff;
+            transform: scale(0.96);
+            box-shadow: 0 0 20px rgba(77, 249, 255, 0.45);
         }
-        
+
+        #touch-controls {
+            display: none;
+            width: 92%;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .touch-key {
+            flex: 1;
+            height: 72px;
+            border: 0;
+            background: linear-gradient(180deg, rgba(77, 249, 255, 0.28), rgba(59, 93, 255, 0.22));
+            border-radius: 16px;
+            color: white;
+            font-weight: 900;
+            font-size: 1.3rem;
+            box-shadow: 0 8px 18px rgba(77, 249, 255, 0.18);
+            touch-action: manipulation;
+            transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        .touch-key:active,
+        .touch-key.pressed {
+            transform: scale(0.96);
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px rgba(77, 249, 255, 0.4);
+        }
+
         #judgement {
             position: absolute;
-            top: 50%;
+            top: 42%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 3rem;
             font-weight: bold;
             opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
+            transition: opacity 0.25s ease, transform 0.25s ease;
             text-shadow: 0 0 10px currentColor;
+            z-index: 25;
         }
-        
+
         .perfect { color: #ffeb3b; }
         .great { color: #4caf50; }
         .good { color: #2196f3; }
         .bad { color: #ff9800; }
         .miss { color: #f44336; }
-        
+
         #combo-display {
             position: absolute;
-            top: 40%;
+            top: 30%;
             left: 50%;
             transform: translateX(-50%);
             font-size: 2rem;
-            font-weight: bold;
+            font-weight: 800;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.25s ease;
             color: #ffeb3b;
+            z-index: 25;
         }
-        
+
         #start-screen {
             position: fixed;
             top: 0;
@@ -194,29 +414,148 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
+            backdrop-filter: blur(8px);
         }
-        
-        #start-button {
+
+        .start-card {
+            background: rgba(11, 17, 32, 0.86);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 30px;
+            padding: 36px 40px;
+            text-align: center;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+            width: min(900px, 90vw);
+        }
+
+        .start-card h1 {
+            margin: 0;
+            font-size: 3rem;
+            letter-spacing: 0.08em;
+        }
+
+        .start-card p {
+            margin: 12px 0 0;
+            color: #d8e6ff;
+            opacity: 0.85;
+        }
+
+        .menu-layout {
+            display: grid;
+            grid-template-columns: 1.3fr 0.9fr;
+            gap: 28px;
+            margin-top: 24px;
+            align-items: center;
+        }
+
+        #song-selection {
+            display: grid;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .song-option {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 16px 18px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .song-option.active,
+        .song-option:hover {
+            background: linear-gradient(90deg, rgba(77,249,255,0.18), rgba(255,110,207,0.16));
+            border-color: rgba(77,249,255,0.6);
+            transform: translateY(-1px);
+        }
+
+        .song-option-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .song-option-detail {
+            color: #d9e3ff;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .character-panel {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .character-preview {
+            width: 100%;
+            height: 260px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(72, 106, 255, 0.24), rgba(16, 20, 38, 0.9));
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: transparent;
+        }
+
+        #selected-character-name {
+            font-weight: 700;
+            color: #ecf5ff;
+        }
+
+        .start-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        #start-button,
+        #back-button {
             background: linear-gradient(to right, #4facfe, #00f2fe);
             border: none;
-            padding: 15px 40px;
-            font-size: 1.5rem;
+            padding: 15px 38px;
+            font-size: 1.2rem;
             border-radius: 50px;
             color: white;
             cursor: pointer;
-            margin-top: 30px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 170px;
         }
+
         #back-button {
             background: linear-gradient(to right, #ff64e8, #00f2fe);
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            color: white;
-            cursor: pointer;
-            margin-top: 30px;
         }
-        
+
+        @media (max-width: 700px) {
+            .menu-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .start-card {
+                padding: 28px 20px;
+            }
+        }
+
         #volume-controls {
             position: fixed;
             top: 20px;
@@ -224,32 +563,80 @@
             display: flex;
             gap: 10px;
         }
-        
+
         #volume-up, #volume-down {
             background: rgba(255, 255, 255, 0.1);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             color: white;
             font-size: 1.2rem;
             cursor: pointer;
         }
-        
+
         #progress-container {
-            width: 90%;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
+            width: 92%;
+            height: 7px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 999px;
             margin-top: 20px;
             overflow: hidden;
+            cursor: pointer;
+            position: relative;
         }
-        
+
         #progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
-            transition: width 0.1s;
+            background: linear-gradient(to right, #4facfe, #00f2fe, #7cffd6);
+            transition: width 0.1s ease;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow: auto;
+            }
+
+            #game-shell {
+                flex-direction: column;
+                padding: 16px;
+            }
+
+            .side-panel {
+                width: 100%;
+            }
+
+            .main-panel {
+                width: 100%;
+            }
+
+            #game-container {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            #controls {
+                display: none;
+            }
+
+            #touch-controls {
+                display: flex;
+            }
+
+            #score-board {
+                font-size: 0.8rem;
+                padding: 10px 12px;
+            }
+
+            #game-area {
+                height: 360px;
+            }
+
+            .song-title {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -258,142 +645,268 @@
         <div class="loader"></div>
     </div>
     
-    <audio id="music" loop>
+    <audio id="music" loop preload="auto">
         <source src="assets/music/Hand_in_Hand_Magical_Mirai.m4a" type="audio/mpeg">
     </audio>
     
-    <div id="game-container">
-        <div id="score-board">
-            <div>Score: <span id="score-display">0</span></div>
-            <div>Combo: <span id="combo-value">0</span></div>
-            <div>Max Combo: <span id="max-combo">0</span></div>
-        </div>
-        
-        <div id="game-area">
-            <div class="hit-line"></div>
-            <div class="lane lane-1"></div>
-            <div class="lane lane-2"></div>
-            <div class="lane lane-3"></div>
-            <div class="lane lane-4"></div>
-            <div class="lane lane-5"></div>
-            
-            <div id="judgement"></div>
-            <div id="combo-display"></div>
-        </div>
-        
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
-        
-        <div id="controls">
-            <div class="key">D</div>
-            <div class="key">F</div>
-            <div class="key">SPACE</div>
-            <div class="key">J</div>
-            <div class="key">K</div>
-        </div>
+    <div id="game-shell">
+        <aside class="side-panel">
+            <div class="song-card">
+                <div class="song-badge">Live</div>
+                <h2 class="song-title">Hand in Hand</h2>
+                <div class="song-meta">Difficulty 13 • 5 lane • 4k style</div>
+            </div>
+
+            <div class="character-card">
+                <div class="character-avatar" aria-label="Character portrait"></div>
+            </div>
+
+            <div class="lyric-card">
+                <div class="lyric-label">Lyrics</div>
+                <div id="lyric-text">Ready to start the song...</div>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <div id="game-container">
+                <div id="score-board">
+                    <div>Score: <span id="score-display">0</span></div>
+                    <div>Combo: <span id="combo-value">0</span></div>
+                    <div>Max Combo: <span id="max-combo">0</span></div>
+                </div>
+
+                <div id="game-area">
+                    <div class="lane-glow lane-1"></div>
+                    <div class="lane-glow lane-2"></div>
+                    <div class="lane-glow lane-3"></div>
+                    <div class="lane-glow lane-4"></div>
+                    <div class="lane-glow lane-5"></div>
+                    <div class="hit-line"></div>
+                    <div class="lane lane-1"></div>
+                    <div class="lane lane-2"></div>
+                    <div class="lane lane-3"></div>
+                    <div class="lane lane-4"></div>
+                    <div class="lane lane-5"></div>
+
+                    <div id="judgement"></div>
+                    <div id="combo-display"></div>
+                </div>
+
+                <div id="progress-container">
+                    <div id="progress-bar"></div>
+                </div>
+
+                <div id="controls">
+                    <div class="key" data-lane="1">D</div>
+                    <div class="key" data-lane="2">F</div>
+                    <div class="key" data-lane="3">SPACE</div>
+                    <div class="key" data-lane="4">J</div>
+                    <div class="key" data-lane="5">K</div>
+                </div>
+
+                <div id="touch-controls">
+                    <button class="touch-key" data-lane="1">D</button>
+                    <button class="touch-key" data-lane="2">F</button>
+                    <button class="touch-key" data-lane="3">␣</button>
+                    <button class="touch-key" data-lane="4">J</button>
+                    <button class="touch-key" data-lane="5">K</button>
+                </div>
+            </div>
+        </main>
     </div>
-    
+
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
     <div id="volume-controls">
         <button id="volume-up">+</button>
         <button id="volume-down">-</button>
     </div>
-    
+
     <div id="start-screen">
-        <h1>Rhythm Game</h1>
-        <p>This game promoted by Hatsune Miku</p>
-        <button id="start-button">Start Game</button>
-        <a id="back-button" href="index.html">Back</a>
-        
+        <div class="start-card">
+            <h1>Select Song</h1>
+            <p>This game promoted by Hatsune Miku</p>
+
+            <div class="menu-layout">
+                <div id="song-selection"></div>
+
+                <div class="character-panel">
+                    <div class="character-preview">
+                        <model-viewer
+                            id="character-viewer"
+                            src="model/hatsune_miku.glb"
+                            alt="Hatsune Miku"
+                            camera-controls
+                            auto-rotate
+                            shadow-intensity="1"
+                            camera-orbit="0deg 75deg 3.5m"
+                            interaction-prompt="none"
+                            environment-image="neutral"
+                        ></model-viewer>
+                    </div>
+                    <div id="selected-character-name">Hatsune Miku</div>
+                </div>
+            </div>
+
+            <div class="start-actions">
+                <button id="start-button">Start Game</button>
+                <a id="back-button" href="index.html">Back</a>
+            </div>
+        </div>
     </div>
 
     <script>
         // Preloader functionality
         window.addEventListener('load', () => {
-            // Preload music
             const music = document.getElementById('music');
-            music.volume = 0.7;
-            
+            if (music) {
+                music.volume = 0.7;
+            }
+
             setTimeout(() => {
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('preloader').style.display = 'none';
-                }, 500);
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 500);
+                }
             }, 2000);
         });
 
-        // Hand in Hand rhythm chart (BPM: 150, offset: 0)
-        const notes = [
-            { time: 1000, lane: 3, duration: 0 },
-            { time: 1500, lane: 1, duration: 0 },
-            { time: 2000, lane: 5, duration: 0 },
-            
-            // Verse 1
-            { time: 3000, lane: 2, duration: 0 },
-            { time: 3500, lane: 4, duration: 0 },
-            { time: 4000, lane: 3, duration: 0 },
-            { time: 4500, lane: 1, duration: 0 },
-            { time: 5000, lane: 5, duration: 0 },
-            { time: 5500, lane: 2, duration: 0 },
-            { time: 6000, lane: 4, duration: 0 },
-            
-            // Chorus
-            { time: 7000, lane: 1, duration: 0 },
-            { time: 7500, lane: 3, duration: 0 },
-            { time: 8000, lane: 5, duration: 0 },
-            { time: 8500, lane: 2, duration: 0 },
-            { time: 9000, lane: 4, duration: 0 },
-            { time: 9500, lane: 1, duration: 200 },
-            { time: 10000, lane: 3, duration: 0 },
-            { time: 10500, lane: 5, duration: 0 },
-            
-            // Verse 2
-            { time: 12000, lane: 2, duration: 0 },
-            { time: 12500, lane: 4, duration: 0 },
-            { time: 13000, lane: 3, duration: 0 },
-            { time: 13500, lane: 1, duration: 0 },
-            { time: 14000, lane: 5, duration: 0 },
-            { time: 14500, lane: 2, duration: 0 },
-            { time: 15000, lane: 4, duration: 0 },
-            
-            // Chorus repeat with more intensity
-            { time: 16000, lane: 1, duration: 0 },
-            { time: 16500, lane: 3, duration: 0 },
-            { time: 17000, lane: 5, duration: 0 },
-            { time: 17500, lane: 2, duration: 0 },
-            { time: 18000, lane: 4, duration: 0 },
-            { time: 18500, lane: 1, duration: 200 },
-            { time: 19000, lane: 3, duration: 0 },
-            { time: 19500, lane: 5, duration: 0 },
-            { time: 20000, lane: 2, duration: 0 },
-            { time: 20500, lane: 4, duration: 0 },
-            { time: 21000, lane: 1, duration: 0 },
-            { time: 21500, lane: 3, duration: 0 },
-            { time: 22000, lane: 5, duration: 0 },
-            
-            // Final chorus
-            { time: 23000, lane: 1, duration: 0 },
-            { time: 23500, lane: 3, duration: 0 },
-            { time: 24000, lane: 5, duration: 0 },
-            { time: 24500, lane: 2, duration: 0 },
-            { time: 25000, lane: 4, duration: 0 },
-            { time: 25500, lane: 1, duration: 200 },
-            { time: 26000, lane: 3, duration: 0 },
-            { time: 26500, lane: 5, duration: 0 },
-            { time: 27000, lane: 2, duration: 0 },
-            { time: 27500, lane: 4, duration: 0 },
-            { time: 28000, lane: 1, duration: 0 },
-            { time: 28500, lane: 3, duration: 0 },
-            { time: 29000, lane: 5, duration: 0 },
-            
-            // Ending
-            { time: 30000, lane: 3, duration: 0 }
+        const HIT_LINE_Y = 310;
+        const NOTE_TRAVEL_MS = 1800;
+        const PREVIEW_MS = 2200;
+        const MISS_WINDOW_MS = 200;
+        const JUDGEMENT_WINDOWS = {
+            perfect: 60,
+            great: 110,
+            good: 155,
+            bad: 200
+        };
+
+        const songs = [
+            {
+                id: 'hand-in-hand',
+                title: 'Hand in Hand',
+                difficulty: '13',
+                character: 'Hatsune Miku',
+                model: 'model/hatsune_miku.glb',
+                music: 'assets/music/Hand_in_Hand_Magical_Mirai.m4a',
+                duration: 35500,
+                notes: [
+                    { time: 900, lane: 3, duration: 0 },
+                    { time: 1300, lane: 1, duration: 0 },
+                    { time: 1700, lane: 5, duration: 0 },
+                    { time: 2200, lane: 2, duration: 0 },
+                    { time: 2600, lane: 4, duration: 0 },
+                    { time: 3300, lane: 3, duration: 0 },
+                    { time: 3800, lane: 1, duration: 0 },
+                    { time: 4300, lane: 5, duration: 0 },
+                    { time: 4800, lane: 2, duration: 0 },
+                    { time: 5300, lane: 4, duration: 0 },
+                    { time: 5800, lane: 3, duration: 0 },
+                    { time: 6300, lane: 1, duration: 0 },
+                    { time: 6800, lane: 2, duration: 0 },
+                    { time: 7200, lane: 5, duration: 0 },
+                    { time: 7700, lane: 4, duration: 0 },
+                    { time: 8200, lane: 1, duration: 200 },
+                    { time: 9000, lane: 3, duration: 0 },
+                    { time: 9450, lane: 5, duration: 0 },
+                    { time: 9900, lane: 2, duration: 0 },
+                    { time: 10350, lane: 4, duration: 0 },
+                    { time: 10800, lane: 1, duration: 0 },
+                    { time: 11250, lane: 3, duration: 0 },
+                    { time: 11700, lane: 5, duration: 0 },
+                    { time: 12150, lane: 2, duration: 0 },
+                    { time: 12600, lane: 4, duration: 0 },
+                    { time: 13100, lane: 1, duration: 0 },
+                    { time: 13600, lane: 3, duration: 0 },
+                    { time: 14100, lane: 5, duration: 0 },
+                    { time: 14600, lane: 2, duration: 0 },
+                    { time: 15100, lane: 4, duration: 0 },
+                    { time: 15600, lane: 3, duration: 0 },
+                    { time: 16100, lane: 1, duration: 100 },
+                    { time: 16800, lane: 4, duration: 0 },
+                    { time: 17150, lane: 2, duration: 0 },
+                    { time: 17600, lane: 3, duration: 0 },
+                    { time: 18050, lane: 5, duration: 0 },
+                    { time: 18500, lane: 1, duration: 0 },
+                    { time: 19000, lane: 4, duration: 0 },
+                    { time: 19450, lane: 2, duration: 0 },
+                    { time: 19900, lane: 5, duration: 200 },
+                    { time: 20650, lane: 3, duration: 0 },
+                    { time: 21100, lane: 1, duration: 0 },
+                    { time: 21550, lane: 4, duration: 0 },
+                    { time: 22000, lane: 2, duration: 0 },
+                    { time: 22450, lane: 5, duration: 0 },
+                    { time: 22900, lane: 3, duration: 0 },
+                    { time: 23350, lane: 1, duration: 0 },
+                    { time: 23800, lane: 4, duration: 0 },
+                    { time: 24250, lane: 2, duration: 0 },
+                    { time: 24700, lane: 5, duration: 0 },
+                    { time: 25150, lane: 3, duration: 0 },
+                    { time: 25600, lane: 1, duration: 0 },
+                    { time: 26050, lane: 4, duration: 0 },
+                    { time: 26500, lane: 2, duration: 150 },
+                    { time: 27200, lane: 3, duration: 0 },
+                    { time: 27650, lane: 1, duration: 0 },
+                    { time: 28100, lane: 5, duration: 0 },
+                    { time: 28550, lane: 2, duration: 0 },
+                    { time: 29000, lane: 4, duration: 0 },
+                    { time: 29450, lane: 3, duration: 0 },
+                    { time: 29900, lane: 1, duration: 0 },
+                    { time: 30350, lane: 5, duration: 0 },
+                    { time: 30800, lane: 2, duration: 0 },
+                    { time: 31250, lane: 4, duration: 0 },
+                    { time: 31700, lane: 3, duration: 0 },
+                    { time: 32300, lane: 1, duration: 0 },
+                    { time: 32650, lane: 5, duration: 0 },
+                    { time: 33100, lane: 2, duration: 0 },
+                    { time: 33550, lane: 4, duration: 0 },
+                    { time: 34000, lane: 3, duration: 0 },
+                    { time: 34550, lane: 1, duration: 0 },
+                    { time: 35000, lane: 5, duration: 0 },
+                    { time: 35500, lane: 3, duration: 0 }
+                ],
+                lyricTimeline: [
+                    { time: 1000, text: 'In the morning light, we sing together' },
+                    { time: 3500, text: 'Our voices become one dream' },
+                    { time: 6500, text: 'Even the lonely night can shine' },
+                    { time: 9000, text: 'Hand in hand, we walk ahead' },
+                    { time: 13000, text: 'The future whispers in our hearts' },
+                    { time: 17000, text: 'Feel the rhythm across the sky' },
+                    { time: 21000, text: 'One step, one breath, forever' },
+                    { time: 25000, text: 'The song reaches every light' },
+                    { time: 29000, text: 'Smile with me, we are never alone' },
+                    { time: 33000, text: 'This feeling will stay with us' }
+                ]
+            },
+            {
+                id: 'miku-showtime',
+                title: 'Soon to be Released',
+                difficulty: '-',
+                character: 'Miku Expo',
+                model: 'model/rigged-miku.glb',
+                music: 'assets/music/#',
+                duration: 40000,
+                notes: [
+                    
+                ],
+                lyricTimeline: [
+                    
+                ]
+            }
         ];
-        
-        const APPROACH_RATE = 1.5; 
-        const HIT_POSITION = 100; 
-        const NOTE_SPEED = 2.5; 
-        
+
+        const notes = [];
+        const PLAY_LIMIT_MS = 120000;
+
+        let selectedSongId = 'hand-in-hand';
+        let currentSong = songs[0];
+        let activeNotesData = [...currentSong.notes];
+        let lyricTimeline = [...currentSong.lyricTimeline];
+
         let score = 0;
         let combo = 0;
         let maxCombo = 0;
@@ -401,44 +914,81 @@
         let gameStarted = false;
         let startTime = 0;
         let activeNotes = [];
-        let songDuration = 35000; // 35 seconds
+        let songDuration = 35000;
         let animationFrameId = null;
         let keyState = {};
         let musicVolume = 0.7;
-        
+        let lastBeatPulse = -1;
+
+        function clamp(value, min, max) {
+            return Math.min(Math.max(value, min), max);
+        }
+
+        function getLaneX(laneNumber) {
+            const laneIndex = laneNumber - 1;
+            return 10 + laneIndex * 18 + 7;
+        }
+
+        function getCurrentSongTime() {
+            const music = document.getElementById('music');
+            if (music && Number.isFinite(music.currentTime) && music.duration > 0) {
+                return music.currentTime * 1000;
+            }
+            return performance.now() - startTime;
+        }
+
+        function pulseBeatGlow() {
+            const beatIndex = Math.floor(getCurrentSongTime() / 500) % 5;
+            if (beatIndex === lastBeatPulse) return;
+            lastBeatPulse = beatIndex;
+
+            const laneGlow = document.querySelector(`.lane-glow.lane-${beatIndex + 1}`);
+            if (laneGlow) {
+                laneGlow.style.opacity = '0.95';
+                setTimeout(() => {
+                    laneGlow.style.opacity = '0';
+                }, 110);
+            }
+        }
+
+        function getNoteY(currentGameTime, noteTime) {
+            const startY = -30;
+            const endY = HIT_LINE_Y;
+            const progress = clamp((currentGameTime - (noteTime - NOTE_TRAVEL_MS)) / NOTE_TRAVEL_MS, 0, 1);
+            return startY + progress * (endY - startY);
+        }
+
         function createNote(noteData) {
             const note = document.createElement('div');
-            note.className = `note lane-${noteData.lane}`;
-            if (noteData.duration > 0) note.classList.add('hold-note');
-            
-            // Position based on lane
-            const laneIndex = noteData.lane - 1;
-            const lanePos = 10 + (laneIndex * 18); // Calculate lane position
-            note.style.left = `${lanePos}%`;
-            
-            // For hold notes
+            note.className = 'note';
+            note.style.left = `${getLaneX(noteData.lane)}%`;
+            note.style.top = '-30px';
+
             if (noteData.duration > 0) {
-                note.style.height = `${(noteData.duration / 1000) * 200}px`;
+                note.classList.add('hold-note');
+                note.style.height = `${Math.max(18, (noteData.duration / 1000) * 180)}px`;
             }
-            
-            note.dataset.time = noteData.time;
-            note.dataset.lane = noteData.lane;
-            note.dataset.duration = noteData.duration;
-            
+
+            note.dataset.time = String(noteData.time);
+            note.dataset.lane = String(noteData.lane);
+            note.dataset.duration = String(noteData.duration);
             note.addEventListener('click', () => handleNoteClick(note));
-            
+
             document.getElementById('game-area').appendChild(note);
+
             activeNotes.push({
+                id: `${noteData.time}-${noteData.lane}-${performance.now()}`,
                 element: note,
                 time: noteData.time,
                 lane: noteData.lane,
                 duration: noteData.duration,
-                hit: false
+                hit: false,
+                judged: false
             });
-            
+
             return note;
         }
-        
+
         function createNoteEffect(x, y, color) {
             const effect = document.createElement('div');
             effect.className = 'note-effect';
@@ -446,120 +996,235 @@
             effect.style.top = `${y - 40}px`;
             effect.style.background = `radial-gradient(circle, ${color} 0%, rgba(255,255,255,0) 70%)`;
             document.getElementById('game-area').appendChild(effect);
-            
-            // Animate effect
+
             setTimeout(() => {
                 effect.style.transform = 'scale(1.5)';
                 effect.style.opacity = '0.8';
             }, 10);
-            
+
             setTimeout(() => {
                 effect.style.transform = 'scale(2.5)';
                 effect.style.opacity = '0';
                 setTimeout(() => effect.remove(), 300);
-            }, 100);
+            }, 120);
         }
-        
-        function handleNoteClick(note) {
-            if (!gameStarted) return;
-            
-            const noteTime = parseInt(note.dataset.time);
-            const currentGameTime = performance.now() - startTime;
-            const diff = Math.abs(currentGameTime - noteTime);
-            
-            let judgement = '';
-            let points = 0;
-            let judgementClass = '';
-            
-            if (diff < 50) {
-                judgement = 'PERFECT';
-                judgementClass = 'perfect';
-                points = 300;
-                combo++;
-            } else if (diff < 100) {
-                judgement = 'GREAT';
-                judgementClass = 'great';
-                points = 200;
-                combo++;
-            } else if (diff < 150) {
-                judgement = 'GOOD';
-                judgementClass = 'good';
-                points = 100;
-                combo++;
-            } else if (diff < 200) {
-                judgement = 'BAD';
-                judgementClass = 'bad';
-                points = 50;
-                combo = 0;
+
+        function updateScore() {
+            document.getElementById('score-display').textContent = score.toLocaleString();
+        }
+
+        function showJudgement(judgement, judgementClass) {
+            const judgementEl = document.getElementById('judgement');
+            const comboEl = document.getElementById('combo-display');
+
+            judgementEl.textContent = judgement;
+            judgementEl.className = judgementClass;
+            judgementEl.style.opacity = '1';
+            judgementEl.style.transform = 'translateX(-50%) scale(1.2)';
+
+            if (combo > 0) {
+                comboEl.textContent = `${combo} COMBO!`;
+                comboEl.style.opacity = '1';
             } else {
-                // Too early or too late - miss
-                return;
+                comboEl.style.opacity = '0';
             }
-            
-            score += points;
-            if (combo > maxCombo) maxCombo = combo;
-            
-            updateScore();
-            showJudgement(judgement, judgementClass);
-            
-            // Create tap effect
-            const rect = note.getBoundingClientRect();
-            const color = getComputedStyle(note).backgroundImage;
-            createNoteEffect(rect.left + rect.width/2, rect.top + rect.height/2, color);
-            
-            // Remove the note
-            const noteIndex = activeNotes.findIndex(n => n.element === note);
-            if (noteIndex !== -1) {
-                activeNotes[noteIndex].hit = true;
-                animateNoteRemoval(note);
-            }
+
+            document.getElementById('combo-value').textContent = combo;
+            document.getElementById('max-combo').textContent = maxCombo;
+
+            setTimeout(() => {
+                judgementEl.style.opacity = '0';
+                judgementEl.style.transform = 'translateX(-50%) scale(1)';
+                if (combo === 0) {
+                    comboEl.style.opacity = '0';
+                }
+            }, 500);
         }
-        
+
+        function resolveJudgement(diff) {
+            if (diff <= JUDGEMENT_WINDOWS.perfect) return { name: 'PERFECT', className: 'perfect', points: 300 };
+            if (diff <= JUDGEMENT_WINDOWS.great) return { name: 'GREAT', className: 'great', points: 200 };
+            if (diff <= JUDGEMENT_WINDOWS.good) return { name: 'GOOD', className: 'good', points: 100 };
+            if (diff <= JUDGEMENT_WINDOWS.bad) return { name: 'BAD', className: 'bad', points: 50 };
+            return null;
+        }
+
         function animateNoteRemoval(note) {
-            note.style.transform = 'scale(1.2)';
+            note.style.transform = 'scale(1.15)';
             note.style.opacity = '0';
             setTimeout(() => {
                 if (note.parentNode) {
                     note.remove();
                 }
-            }, 200);
+            }, 150);
         }
-        
-        function showJudgement(judgement, judgementClass) {
-            const judgementEl = document.getElementById('judgement');
-            judgementEl.textContent = judgement;
-            judgementEl.className = judgementClass;
-            judgementEl.style.opacity = '1';
-            judgementEl.style.transform = 'translateX(-50%) scale(1.2)';
-            
-            // Show combo if > 0
-            if (combo > 0) {
-                const comboEl = document.getElementById('combo-display');
-                comboEl.textContent = `${combo} COMBO!`;
-                comboEl.style.opacity = '1';
-                
-                // Update combo value display
-                document.getElementById('combo-value').textContent = combo;
-                document.getElementById('max-combo').textContent = maxCombo;
+
+        function handleNoteClick(noteElement) {
+            if (!gameStarted) return;
+
+            const lane = Number(noteElement.dataset.lane);
+            const noteTime = Number(noteElement.dataset.time);
+            const currentGameTime = getCurrentSongTime();
+            const diff = Math.abs(currentGameTime - noteTime);
+            const result = resolveJudgement(diff);
+
+            if (!result || diff > MISS_WINDOW_MS) {
+                return;
             }
-            
-            setTimeout(() => {
-                judgementEl.style.opacity = '0';
-                judgementEl.style.transform = 'translateX(-50%) scale(1)';
-                
-                if (combo === 0) {
-                    document.getElementById('combo-display').style.opacity = '0';
+
+            const matchingNote = activeNotes.find((n) => n.element === noteElement && !n.hit);
+            if (!matchingNote) return;
+
+            matchingNote.hit = true;
+            matchingNote.judged = true;
+
+            if (result.name === 'BAD') {
+                combo = 0;
+            } else {
+                combo += 1;
+            }
+
+            if (combo > maxCombo) maxCombo = combo;
+            score += result.points;
+            updateScore();
+            showJudgement(result.name, result.className);
+
+            const rect = noteElement.getBoundingClientRect();
+            const areaRect = document.getElementById('game-area').getBoundingClientRect();
+            const x = rect.left - areaRect.left + rect.width / 2;
+            const y = rect.top - areaRect.top + rect.height / 2;
+            createNoteEffect(x, y, '#4df9ff');
+            animateNoteRemoval(noteElement);
+        }
+
+        function registerMiss(note) {
+            if (note.hit) return;
+            note.hit = true;
+            combo = 0;
+            document.getElementById('combo-value').textContent = '0';
+            showJudgement('MISS', 'miss');
+            if (note.element.parentNode) {
+                animateNoteRemoval(note.element);
+            }
+        }
+
+        function spawnNotes() {
+            if (!gameStarted) return;
+
+            const currentGameTime = getCurrentSongTime();
+            while (currentNote < notes.length && notes[currentNote].time <= currentGameTime + PREVIEW_MS) {
+                const nextNote = notes[currentNote];
+                const duplicate = activeNotes.some((n) => n.time === nextNote.time && n.lane === nextNote.lane && !n.hit);
+                if (!duplicate) {
+                    createNote(nextNote);
                 }
-            }, 500);
+                currentNote += 1;
+            }
         }
-        
-        function updateScore() {
-            document.getElementById('score-display').textContent = score.toLocaleString();
+
+        function updateActiveNotes() {
+            const currentGameTime = getCurrentSongTime();
+
+            activeNotes.forEach((note) => {
+                if (note.hit) return;
+
+                const noteElement = note.element;
+                noteElement.style.top = `${getNoteY(currentGameTime, note.time)}px`;
+
+                const laneGlow = document.querySelector(`.lane-glow.lane-${note.lane}`);
+                if (laneGlow) {
+                    const diff = Math.abs(currentGameTime - note.time);
+                    if (diff < 250) {
+                        laneGlow.style.opacity = '0.9';
+                        setTimeout(() => {
+                            laneGlow.style.opacity = '0';
+                        }, 80);
+                    }
+                }
+
+                const diff = currentGameTime - note.time;
+                if (diff > MISS_WINDOW_MS) {
+                    registerMiss(note);
+                }
+            });
+
+            activeNotes = activeNotes.filter((note) => !note.hit);
         }
-        
+
+        function updateLyrics() {
+            const currentGameTime = getCurrentSongTime();
+            let activeLyric = 'Ready to start the song...';
+
+            for (let i = lyricTimeline.length - 1; i >= 0; i--) {
+                if (currentGameTime >= lyricTimeline[i].time) {
+                    activeLyric = lyricTimeline[i].text;
+                    break;
+                }
+            }
+
+            document.getElementById('lyric-text').textContent = activeLyric;
+        }
+
+        function setSongSelection(songId) {
+            selectedSongId = songId;
+            currentSong = songs.find((song) => song.id === songId) || songs[0];
+            activeNotesData = [...currentSong.notes];
+            lyricTimeline = [...currentSong.lyricTimeline];
+
+            const viewer = document.getElementById('character-viewer');
+            if (viewer) {
+                viewer.src = currentSong.model;
+            }
+
+            document.getElementById('selected-character-name').textContent = currentSong.character;
+            document.querySelector('.song-title').textContent = currentSong.title;
+            document.querySelector('.song-meta').textContent = `Difficulty ${currentSong.difficulty} • 5 lane • 4k style`;
+            const music = document.getElementById('music');
+            if (music) {
+                const targetSrc = currentSong.music;
+                if (music.dataset.songSrc !== targetSrc) {
+                    music.pause();
+                    music.currentTime = 0;
+                    music.src = targetSrc;
+                    music.dataset.songSrc = targetSrc;
+                    music.load();
+                }
+                music.volume = musicVolume;
+            }
+        }
+
+        function seekSongToTime(targetMs) {
+            if (!gameStarted) return;
+
+            const clampedMs = clamp(targetMs, 0, PLAY_LIMIT_MS);
+            const music = document.getElementById('music');
+            if (music) {
+                music.currentTime = clamp(clampedMs / 1000, 0, Math.max(0, Math.min((music.duration || 0), PLAY_LIMIT_MS / 1000)));
+            }
+
+            startTime = performance.now() - clampedMs;
+            currentNote = 0;
+            while (currentNote < notes.length && notes[currentNote].time < clampedMs) {
+                currentNote += 1;
+            }
+
+            activeNotes = [];
+            const gameArea = document.getElementById('game-area');
+            if (gameArea) {
+                gameArea.querySelectorAll('.note, .note-effect').forEach((el) => el.remove());
+            }
+
+            spawnNotes();
+        }
+
         function startGame() {
+            const selectedSong = songs.find((song) => song.id === selectedSongId) || songs[0];
+            currentSong = selectedSong;
+            activeNotesData = [...currentSong.notes];
+            lyricTimeline = [...currentSong.lyricTimeline];
+
             document.getElementById('start-screen').style.display = 'none';
-            
+
             score = 0;
             combo = 0;
             maxCombo = 0;
@@ -567,116 +1232,81 @@
             gameStarted = true;
             startTime = performance.now();
             activeNotes = [];
-            
-            // Clear existing notes
+            notes.length = 0;
+            notes.push(...currentSong.notes);
+            songDuration = Math.min(currentSong.duration, PLAY_LIMIT_MS);
+            lastBeatPulse = -1;
+
             const gameArea = document.getElementById('game-area');
-            const notesToRemove = gameArea.querySelectorAll('.note');
-            notesToRemove.forEach(note => note.remove());
-            
+            gameArea.querySelectorAll('.note, .note-effect').forEach((el) => el.remove());
+
             updateScore();
             document.getElementById('combo-value').textContent = '0';
             document.getElementById('max-combo').textContent = '0';
             document.getElementById('progress-bar').style.width = '0%';
             document.getElementById('combo-display').textContent = '0';
             document.getElementById('combo-display').style.opacity = '0';
-            
-            // Start music
+
             const music = document.getElementById('music');
-            music.currentTime = 0;
-            music.play().catch(error => {
-                console.log('Audio play failed:', error);
-                // Continue game even if audio fails
-                gameLoop();
-            });
-            
-            // MODIFIKASI: Panggil spawnNotes untuk menampilkan not yang sudah seharusnya muncul
+            if (music) {
+                const targetSrc = currentSong.music;
+                if (music.dataset.songSrc !== targetSrc) {
+                    music.src = targetSrc;
+                    music.dataset.songSrc = targetSrc;
+                    music.load();
+                }
+                music.pause();
+                music.currentTime = 0;
+                music.volume = musicVolume;
+                music.play().catch(() => {
+                    console.log('Audio play failed, continuing without sound.');
+                });
+            }
+
             spawnNotes();
             gameLoop();
         }
-        
-        // MODIFIKASI: Fungsi baru untuk menampilkan not yang sudah seharusnya muncul
-        function spawnNotes() {
-            if (!gameStarted) return;
-            
-            const currentGameTime = performance.now() - startTime;
-            
-            // Spawn new notes
-            while (currentNote < notes.length && notes[currentNote].time <= currentGameTime + 2000) {
-                if (!activeNotes.some(n => n.time === notes[currentNote].time && n.lane === notes[currentNote].lane)) {
-                    const note = createNote(notes[currentNote]);
-                    
-                    // Atur posisi awal not berdasarkan waktu saat ini
-                    const noteTopPos = ((currentGameTime - notes[currentNote].time) / 1000) * 300;
-                    note.style.top = `${400 - noteTopPos}px`;
-                }
-                currentNote++;
-            }
-        }
-        
+
         function gameLoop() {
             if (!gameStarted) return;
-            
-            const currentGameTime = performance.now() - startTime;
-            
-            // Update progress bar
-            const progress = Math.min(100, (currentGameTime / songDuration) * 100);
+
+            const currentGameTime = getCurrentSongTime();
+            const effectiveDuration = Math.min(songDuration, PLAY_LIMIT_MS);
+            const progress = Math.min(100, (currentGameTime / effectiveDuration) * 100);
             document.getElementById('progress-bar').style.width = `${progress}%`;
-            
-            // MODIFIKASI: Pindahkan spawn notes ke fungsi terpisah yang sudah dipanggil di startGame
-            // Panggil spawnNotes untuk menampilkan not-not baru
+            pulseBeatGlow();
+
             spawnNotes();
-            
-            // Move notes from top to bottom
-            activeNotes.forEach(note => {
-                if (!note.hit) {
-                    const noteElement = note.element;
-                    const noteTopPos = ((currentGameTime - note.time) / 1000) * 300;
-                    
-                    if (note.duration > 0) {
-                        // Hold note
-                        noteElement.style.top = `${400 - noteTopPos}px`;
-                    } else {
-                        // Regular note
-                        noteElement.style.top = `${400 - noteTopPos}px`;
-                    }
-                    
-                    // Remove notes that are past the hit line without being hit
-                    if (400 - noteTopPos > 500 && !note.hit) {
-                        note.hit = true;
-                        combo = 0;
-                        document.getElementById('combo-value').textContent = '0';
-                        updateScore();
-                        showJudgement('MISS', 'miss');
-                        animateNoteRemoval(noteElement);
-                    }
-                }
-            });
-            
-            // Clean up hit notes
-            activeNotes = activeNotes.filter(n => !n.hit);
-            
-            // Check game end condition
-            if (currentGameTime >= songDuration && activeNotes.length === 0) {
-                endGame();
-            } else {
-                animationFrameId = requestAnimationFrame(gameLoop);
+            updateActiveNotes();
+            updateLyrics();
+
+            const music = document.getElementById('music');
+            if (music && music.currentTime >= effectiveDuration / 1000) {
+                music.pause();
             }
+
+            if (currentGameTime >= effectiveDuration && activeNotes.length === 0) {
+                endGame();
+                return;
+            }
+
+            animationFrameId = requestAnimationFrame(gameLoop);
         }
-        
+
         function endGame() {
             gameStarted = false;
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-            
-            // Stop music
+
             const music = document.getElementById('music');
-            music.pause();
-            
+            if (music) {
+                music.pause();
+            }
+
+            const accuracy = notes.length > 0 ? Math.round((score / (notes.length * 300)) * 100) : 0;
+
             setTimeout(() => {
-                const accuracy = notes.length > 0 ? Math.round((score / (notes.length * 300)) * 100) : 0;
-                
-                // Create a custom alert/result screen
                 const resultScreen = document.createElement('div');
                 resultScreen.style.position = 'fixed';
                 resultScreen.style.top = '0';
@@ -690,7 +1320,7 @@
                 resultScreen.style.alignItems = 'center';
                 resultScreen.style.zIndex = '1000';
                 resultScreen.style.color = 'white';
-                
+
                 resultScreen.innerHTML = `
                     <h2 style="font-size: 3rem; margin-bottom: 30px; color: #4df9ff;">Song Complete!</h2>
                     <div style="font-size: 1.5rem; margin-bottom: 15px;">Final Score: ${score.toLocaleString()}</div>
@@ -698,74 +1328,119 @@
                     <div style="font-size: 1.5rem; margin-bottom: 30px;">Accuracy: ${accuracy}%</div>
                     <button id="restart-button" style="background: linear-gradient(to right, #4facfe, #00f2fe); border: none; padding: 15px 40px; font-size: 1.2rem; border-radius: 50px; color: white; cursor: pointer;">Play Again</button>
                 `;
-                
+
                 document.body.appendChild(resultScreen);
-                
+
                 document.getElementById('restart-button').addEventListener('click', () => {
                     resultScreen.remove();
                     document.getElementById('start-screen').style.display = 'flex';
                 });
-            }, 1000);
+            }, 300);
         }
-        
-        // Initialize game
+
         document.addEventListener('DOMContentLoaded', () => {
+            const songSelectionContainer = document.getElementById('song-selection');
+            songs.forEach((song) => {
+                const option = document.createElement('button');
+                option.type = 'button';
+                option.className = 'song-option';
+                if (song.id === selectedSongId) option.classList.add('active');
+                option.innerHTML = `
+                    <div>
+                        <div class="song-option-name">${song.title}</div>
+                        <div class="song-option-detail">${song.character} • Lv.${song.difficulty}</div>
+                    </div>
+                    <div class="song-option-detail">${song.notes.length} notes</div>
+                `;
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.song-option').forEach((item) => item.classList.remove('active'));
+                    option.classList.add('active');
+                    setSongSelection(song.id);
+                });
+                songSelectionContainer.appendChild(option);
+            });
+
+            setSongSelection(selectedSongId);
             document.getElementById('start-button').addEventListener('click', startGame);
-            
-            // Volume controls
-            document.getElementById('volume-up').addEventListener('click', () => {
-                const music = document.getElementById('music');
-                musicVolume = Math.min(1, musicVolume + 0.1);
-                music.volume = musicVolume;
-            });
-            
-            document.getElementById('volume-down').addEventListener('click', () => {
-                const music = document.getElementById('music');
-                musicVolume = Math.max(0, musicVolume - 0.1);
-                music.volume = musicVolume;
-            });
-            
-            // Add keyboard controls
-            document.addEventListener('keydown', (e) => {
+
+            const progressContainer = document.getElementById('progress-container');
+            progressContainer.addEventListener('click', (event) => {
                 if (!gameStarted) return;
-                
-                // Prevent key repeat
-                if (keyState[e.key]) return;
-                keyState[e.key] = true;
-                
-                let lane = 0;
-                switch(e.key) {
-                    case 'd': lane = 1; break;
-                    case 'f': lane = 2; break;
-                    case ' ': lane = 3; break;
-                    case 'j': lane = 4; break;
-                    case 'k': lane = 5; break;
-                    default: return;
-                }
-                
-                // Visual feedback for key press
+
+                const rect = progressContainer.getBoundingClientRect();
+                const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+                const targetMs = ratio * songDuration;
+
+                seekSongToTime(targetMs);
+            });
+
+            document.getElementById('volume-up').addEventListener('click', () => {
+                musicVolume = Math.min(1, musicVolume + 0.1);
+                const music = document.getElementById('music');
+                if (music) music.volume = musicVolume;
+            });
+
+            document.getElementById('volume-down').addEventListener('click', () => {
+                musicVolume = Math.max(0, musicVolume - 0.1);
+                const music = document.getElementById('music');
+                if (music) music.volume = musicVolume;
+            });
+
+            document.querySelectorAll('.touch-key').forEach((button) => {
+                const lane = Number(button.dataset.lane);
+                button.addEventListener('pointerdown', (event) => {
+                    event.preventDefault();
+                    if (!gameStarted) return;
+                    const currentGameTime = getCurrentSongTime();
+                    const closestNote = activeNotes
+                        .filter((n) => !n.hit && n.lane === lane)
+                        .sort((a, b) => Math.abs(a.time - currentGameTime) - Math.abs(b.time - currentGameTime))[0];
+
+                    if (closestNote) {
+                        const diff = Math.abs(currentGameTime - closestNote.time);
+                        if (diff <= MISS_WINDOW_MS) {
+                            handleNoteClick(closestNote.element);
+                        }
+                    }
+
+                    button.classList.add('pressed');
+                    setTimeout(() => button.classList.remove('pressed'), 120);
+                });
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (!gameStarted) return;
+
+                const key = event.key.toLowerCase();
+                if (keyState[key]) return;
+                keyState[key] = true;
+
+                const keyMap = { d: 1, f: 2, ' ': 3, j: 4, k: 5 };
+                const lane = keyMap[key] || keyMap[event.code === 'Space' ? ' ' : ''];
+                if (!lane) return;
+
                 const keys = document.querySelectorAll('.key');
-                if (lane > 0) {
-                    keys[lane-1].classList.add('active');
-                }
-                
-                // Find the closest note in this lane
-                const currentGameTime = performance.now() - startTime;
+                keys[lane - 1].classList.add('active');
+
+                const currentGameTime = getCurrentSongTime();
                 const closestNote = activeNotes
-                    .filter(n => !n.hit && n.lane === lane)
+                    .filter((n) => !n.hit && n.lane === lane)
                     .sort((a, b) => Math.abs(a.time - currentGameTime) - Math.abs(b.time - currentGameTime))[0];
-                
+
                 if (closestNote) {
-                    handleNoteClick(closestNote.element);
+                    const diff = Math.abs(currentGameTime - closestNote.time);
+                    if (diff <= MISS_WINDOW_MS) {
+                        handleNoteClick(closestNote.element);
+                    }
                 }
             });
-            
-            document.addEventListener('keyup', (e) => {
-                keyState[e.key] = false;
-                
-                // Remove visual feedback
+
+            document.addEventListener('keyup', (event) => {
+                const key = event.key.toLowerCase();
+                keyState[key] = false;
+
                 const keys = document.querySelectorAll('.key');
-                keys.forEach(key => key.classList.remove('active'));
+                keys.forEach((keyEl) => keyEl.classList.remove('active'));
             });
         });
     </script>
