@@ -8,14 +8,16 @@
 <title>Ahmad Himawan – Educator & Researcher</title>
 <meta name="description" content="Ahmad Himawan is a biology educator and researcher implementing technology in education.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{--bg:#07100e;--text:#e9f1ed;--soft:rgba(233,241,237,.62);--line:rgba(233,241,237,.14);--leaf:#a7c99a;--c1:#b3d89c;--c2:#8fd1b5;--c3:#8cc7d8;--peach:#8fd1b5;--lav:#b3d89c;--sky:#8cc7d8;--butter:#e6dc8c;--apricot:#f0c391;--grad:linear-gradient(90deg,var(--c3),var(--c2),var(--c1),var(--butter));--grad-warm:linear-gradient(90deg,var(--c1),var(--butter),var(--apricot));--display:'Space Grotesk',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace}
+:root{--bg:#07100e;--text:#e9f1ed;--soft:rgba(233,241,237,.62);--line:rgba(233,241,237,.14);--leaf:#a7c99a;--c1:#b3d89c;--c2:#8fd1b5;--c3:#8cc7d8;--peach:#8fd1b5;--lav:#b3d89c;--sky:#8cc7d8;--butter:#e6dc8c;--apricot:#f0c391;--grad:linear-gradient(90deg,var(--c3),var(--c2),var(--c1),var(--butter));--grad-warm:linear-gradient(90deg,var(--c1),var(--butter),var(--apricot));--head:'Outfit',system-ui,sans-serif;--display:'Source Sans 3',system-ui,sans-serif;--mono:'Source Sans 3',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font:400 1rem/1.7 var(--display);overflow-x:hidden}
 body.lock{overflow:hidden}
+/* Heading: Outfit  |  Body & sub text: Source Sans 3 */
+h1,h2,h3,.logo,#pct,.big-mail{font-family:var(--head)}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--leaf);outline-offset:3px}
 
@@ -63,12 +65,12 @@ body.reading #glow{opacity:.7}
 @media(max-width:820px){#glow{width:30rem;height:30rem}#ambient{width:26rem;height:26rem}}
 @media(prefers-reduced-motion:reduce){#ambient{animation:none}}
 main,aside,footer{position:relative;z-index:2}
-.mono{font-family:var(--mono);font-size:.8rem;letter-spacing:.04em}
+.mono{font-family:var(--mono);font-size:.88rem;letter-spacing:.04em}
 
 /* loader */
 #loader{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;justify-content:space-between;padding:2rem;transition:opacity .8s,visibility .8s}
 #loader.done{opacity:0;visibility:hidden;pointer-events:none}
-#loader h1{font:500 .85rem var(--mono);letter-spacing:.2em;color:var(--leaf)}
+#loader h1{font:500 .85rem var(--head);letter-spacing:.2em;color:var(--leaf)}
 .l-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 #pct{font-size:clamp(5rem,22vw,14rem);font-weight:700;line-height:.85;letter-spacing:-.05em}
 .l-actions{display:flex;flex-direction:column;gap:.6rem;align-items:flex-start}
@@ -76,7 +78,7 @@ main,aside,footer{position:relative;z-index:2}
 .l-actions.ready button{opacity:1;pointer-events:auto}
 .l-actions button:hover{color:var(--leaf);border-color:var(--leaf)}
 .l-actions{gap:1rem;align-items:flex-end}
-.l-actions button.start{background:#fff;color:#0e1a14;border:0;border-radius:999px;padding:1rem 2.4rem;font:700 1.1rem var(--display);letter-spacing:.12em;display:flex;gap:.8rem;align-items:center}
+.l-actions button.start{background:#fff;color:#0e1a14;border:0;border-radius:999px;padding:1rem 2.4rem;font:700 1.1rem var(--head);letter-spacing:.12em;display:flex;gap:.8rem;align-items:center}
 .l-actions button.start:hover{background:#e9f1ed;color:#0e1a14;transform:scale(1.05)}
 .l-actions.ready button.start{animation:beat 1.8s ease-in-out infinite}
 @keyframes beat{50%{box-shadow:0 0 0 12px rgba(255,255,255,.12)}}
@@ -622,12 +624,12 @@ img{max-width:100%}
         </div>
         <div class="panel" id="t-about" role="tabpanel" aria-labelledby="tb-about">
           <div class="about-grid">
-          <!-- FOTO PROFIL (card flip) -->
+          <!-- FOTO PROFIL (card flip): letakkan fotomu di assets/img/profile.jpg (rasio 4:5 / potret paling pas) -->
           <div class="flip" id="photo" tabindex="0" role="button" aria-pressed="false" aria-label="Balik kartu foto">
             <div class="flip-inner">
               <div class="flip-face flip-front">
-                <img src="assets/img/personal.jpeg" alt="Foto Ahmad Himawan" draggable="false" onerror="this.parentElement.classList.add('empty');this.remove()">
-                <div class="photo-ph"><i class="fas fa-user"></i></div>
+                <img src="assets/img/profile.jpg" alt="Foto Ahmad Himawan" draggable="false" onerror="this.parentElement.classList.add('empty');this.remove()">
+                <div class="photo-ph"><i class="fas fa-user"></i><span class="mono">taruh fotomu di<br>assets/img/profile.jpg</span></div>
                 <span class="flip-hint mono"><i class="fas fa-rotate"></i> klik untuk balik</span>
               </div>
               <div class="flip-face flip-back">
@@ -638,7 +640,7 @@ img{max-width:100%}
           </div>
           <div class="about-txt">
           <p>Hello! I'm <span class="hl name">Ahmad Himawan</span>, an <span class="hl sky">educator</span> with a passion for implementing <span class="hl butter">technology in education</span>.</p>
-          <p>I completed my undergraduate studies in <span class="hl leaf">Biology Education</span> at <span class="hl apricot">Universitas Tanjungpura</span> <span class="hl sky">(2019–2023)</span> with cross-disciplinary research, and I want to keep growing in research, learning design, and digital education. Now, I'm a master's student at <span class="hl apricot">Universitas Pendidikan Indonesia</span></p>
+          <p>I completed my undergraduate studies in <span class="hl leaf">Biology Education</span> at <span class="hl apricot">Universitas Tanjungpura</span> <span class="hl sky">(2019–2023)</span> with cross-disciplinary research, and I want to keep growing in <span class="hl mint">research</span>, <span class="hl butter">learning design</span>, and <span class="hl apricot">digital education</span>.</p>
           <div class="chips"><span>Indonesian (native)</span><span>English</span><span>Japanese (N3)</span></div>
           </div>
           </div>
@@ -646,7 +648,7 @@ img{max-width:100%}
         <div class="panel" id="t-skills" role="tabpanel" aria-labelledby="tb-skills" hidden>
           <div class="filters mono"><button class="on" data-f="all">all</button><button data-f="web">web</button><button data-f="research">research</button><button data-f="media">media</button></div>
           <div class="chips big" id="skillChips">
-            <span data-c="web">JavaScript</span><span data-c="web">HTML</span><span data-c="web">CSS</span><span data-c="web">PHP</span><span data-c="web">Python</span>
+            <span data-c="web">JavaScript</span><span data-c="web">HTML</span><span data-c="web">CSS</span><span data-c="web">PHP</span>
             <span data-c="media">Blender</span><span data-c="media">3D modeling</span><span data-c="media">Digital design</span><span data-c="media">Video editing</span>
             <span data-c="research">R-Studio</span><span data-c="research">SPSS</span><span data-c="research">Bibliometrix</span><span data-c="research">VOSviewer</span><span data-c="research">Mendeley</span><span data-c="research">Publish or Perish</span><span data-c="research">MS Office</span>
           </div>
@@ -802,6 +804,21 @@ img{max-width:100%}
   $('enterMusic').onclick=()=>enter(true);
   $('enterQuiet').onclick=()=>enter(false);
   musicBtn.onclick=()=>setMusic(audio.paused);
+
+  /* Musik hanya berjalan saat portfolio sedang dibuka:
+     berhenti saat pindah tab / minimize / layar terkunci / keluar halaman,
+     lanjut otomatis kalau pengunjung kembali (hanya jika sebelumnya memang menyala) */
+  let resumeOnReturn=false;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){
+      if(!audio.paused){resumeOnReturn=true;audio.pause()}
+    }else if(resumeOnReturn){
+      resumeOnReturn=false;
+      const p=audio.play();
+      if(p&&p.catch)p.catch(()=>{});
+    }
+  });
+  addEventListener('pagehide',()=>{resumeOnReturn=false;audio.pause()});
 
   /* Nav */
   const nav=$('nav');
