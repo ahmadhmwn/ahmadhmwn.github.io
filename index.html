@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07100e">
 <link rel="icon" href="assets/img/icon.jpg">
 <title>Ahmad Himawan – Educator & Researcher</title>
 <meta name="description" content="Ahmad Himawan is a biology educator and researcher implementing technology in education.">
@@ -17,7 +18,50 @@ body{background:var(--bg);color:var(--text);font:400 1rem/1.7 var(--display);ove
 body.lock{overflow:hidden}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--leaf);outline-offset:3px}
-#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* ===== NO TEXT SELECTION / NO BLOCK HURUF ===== */
+html,body,body *{
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+::selection{background:transparent;color:inherit}
+::-moz-selection{background:transparent;color:inherit}
+img,a{-webkit-user-drag:none;user-drag:none}
+input,textarea,[contenteditable="true"]{
+  -webkit-user-select:text;
+  user-select:text;
+}
+
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55;transition:opacity .8s ease}
+/* saat pembaca scroll ke konten, DNA diredupkan agar teks mudah dibaca */
+body.reading #bg{opacity:.16}
+@media(max-width:820px){
+  #bg{opacity:.3}
+  body.reading #bg{opacity:.1}
+}
+
+/* ===== SUMBER CAHAYA ===== */
+#glow,#ambient{position:fixed;border-radius:50%;pointer-events:none;z-index:1;mix-blend-mode:screen}
+/* cahaya yang mengikuti kursor (di HP bergerak sendiri) */
+#glow{
+  left:0;top:0;width:44rem;height:44rem;will-change:transform;
+  background:radial-gradient(circle,rgba(179,216,156,.20) 0%,rgba(143,209,181,.11) 30%,rgba(140,199,216,.05) 52%,transparent 70%);
+  transform:translate3d(70vw,30vh,0) translate(-50%,-50%);
+}
+/* cahaya ambient hangat di sudut, berdenyut pelan */
+#ambient{
+  right:-12rem;top:-14rem;width:40rem;height:40rem;
+  background:radial-gradient(circle,rgba(240,195,145,.16) 0%,rgba(230,220,140,.08) 38%,transparent 68%);
+  animation:glowPulse 7s ease-in-out infinite;
+}
+@keyframes glowPulse{50%{opacity:.55;transform:scale(1.12)}}
+body.reading #glow{opacity:.7}
+@media(max-width:820px){#glow{width:30rem;height:30rem}#ambient{width:26rem;height:26rem}}
+@media(prefers-reduced-motion:reduce){#ambient{animation:none}}
 main,aside,footer{position:relative;z-index:2}
 .mono{font-family:var(--mono);font-size:.8rem;letter-spacing:.04em}
 
@@ -316,6 +360,44 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 #music:hover{border-color:var(--c2)}
 /* extra warm accents (soft yellow + apricot), no purple */
 .pj:nth-child(3){--a:var(--butter)}.pj:nth-child(4){--a:var(--apricot)}
+.pj:nth-child(5){--a:var(--c2)}.pj:nth-child(6){--a:var(--sky)}.pj:nth-child(7){--a:var(--butter)}
+
+/* ===== FOTO PROFIL (CARD FLIP) ===== */
+#t-about{max-width:none}
+.about-grid{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:2.5rem;align-items:center}
+.about-txt{max-width:40rem}
+.flip{position:relative;justify-self:center;width:min(100%,220px);aspect-ratio:4/5;perspective:1000px;cursor:pointer;outline-offset:6px}
+.flip-inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .6s ease}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;border-radius:24px;overflow:hidden;background:#0b1a16;border:1px solid rgba(167,201,154,.35);-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.flip-front img{width:100%;height:100%;object-fit:cover;display:block}
+.flip-front::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 65%,rgba(7,16,14,.6));pointer-events:none}
+.flip-hint{position:absolute;left:50%;bottom:.9rem;transform:translateX(-50%);z-index:2;padding:.3rem .8rem;border-radius:999px;background:rgba(7,16,14,.72);color:var(--text);font-size:.7rem;white-space:nowrap;border:1px solid var(--line)}
+.photo-ph{display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;color:var(--soft);z-index:1}
+.photo-ph i{font-size:3.2rem;color:var(--leaf)}
+.flip-front.empty .photo-ph{display:flex}
+.flip-back{transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;gap:.6rem;padding:1.2rem;background:linear-gradient(160deg,#10211b,#0a1512)}
+.flip-back h3{font-size:1.3rem;letter-spacing:-.02em;line-height:1.1;font-weight:700;color:#fff}
+.flip-back p{margin:0;color:var(--soft);font-size:.9rem}
+.flip-back .role{color:var(--leaf)}
+.flip-back .msg{font-size:.92rem;line-height:1.6;color:var(--text)}
+.flip-back .chips{margin-top:.4rem}
+.flip-back .chips span{font-size:.75rem;padding:.2rem .65rem}
+/* ===== Sorot warna pada teks About ===== */
+.about-txt p{font-size:1.05rem;line-height:1.85;color:rgba(233,241,237,.72)}
+.hl{font-weight:500;color:var(--hc);background:linear-gradient(transparent 64%,var(--hb) 64%);padding:0 .12em;border-radius:3px}
+.hl.leaf{--hc:var(--leaf);--hb:rgba(167,201,154,.20)}
+.hl.sky{--hc:var(--sky);--hb:rgba(140,199,216,.20)}
+.hl.butter{--hc:var(--butter);--hb:rgba(230,220,140,.20)}
+.hl.apricot{--hc:var(--apricot);--hb:rgba(240,195,145,.20)}
+.hl.mint{--hc:var(--c2);--hb:rgba(143,209,181,.20)}
+.hl.name{font-weight:700;color:#fff;background:linear-gradient(transparent 58%,rgba(167,201,154,.35) 58%)}
+@media(max-width:760px){
+  .about-grid{grid-template-columns:1fr;gap:2.2rem;justify-items:center}
+  .flip{width:min(52vw,200px)}
+  .about-txt{max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){.flip-inner{transition:none}}
 #skillChips span[data-c=media]{border-color:rgba(230,220,140,.45)}
 #skillChips span[data-c=research]{border-color:rgba(240,195,145,.45)}
 #skillChips span[data-c=media]:hover{color:var(--butter);border-color:var(--butter)}
@@ -334,11 +416,115 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   0%{background-position:0% 50%}
   100%{background-position:300% 50%}
 }
+
+/* =====================================================
+   RESPONSIVE: menyesuaikan perangkat pengunjung
+   ===================================================== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+img{max-width:100%}
+
+/* ---- Layar besar (monitor lebar / TV) ---- */
+@media(min-width:1500px){
+  html{font-size:112.5%}
+  .wrap{max-width:1280px}
+}
+@media(min-width:2000px){
+  html{font-size:125%}
+  .wrap{max-width:1500px}
+}
+
+/* ---- Laptop kecil / tablet landscape ---- */
+@media(max-width:1180px){
+  aside.social{display:none}           /* link sosial tetap ada di bagian contact */
+  .wrap{padding:0 1.6rem}
+  nav.top{gap:1.4rem}
+}
+
+/* ---- Tablet ---- */
+@media(max-width:1024px){
+  .scroll-hint{display:none}
+  .now-playing{bottom:calc(1.4rem + env(safe-area-inset-bottom));right:1.4rem}
+  section{padding:6rem 0}
+  .pj-b>div{grid-template-columns:minmax(0,260px) 1fr}
+}
+
+/* ---- Mobile ---- */
+@media(max-width:820px){
+  header{
+    padding:calc(.8rem + env(safe-area-inset-top)) 1.2rem .8rem;
+    background:rgba(7,16,14,.6);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  }
+  .logo{font-size:1.1rem}
+  nav.top{height:100vh;height:100dvh;overflow-y:auto;gap:1.3rem;padding:5rem 1.5rem 2rem}
+  #home{padding-top:6rem;padding-bottom:3rem}
+  .hero-quote{max-width:100%}
+  .cta{gap:.8rem}
+  .cta .btn{flex:1 1 140px;text-align:center}
+  .sec-h{flex-wrap:wrap;margin-bottom:2rem}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-left:-1.2rem;margin-right:-1.2rem;padding:0 1.2rem}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{white-space:nowrap;flex:0 0 auto}
+  .filters{flex-wrap:wrap}
+  .pj-h{padding:1.2rem 0}
+  .pj-h h3{font-size:clamp(1.2rem,5.4vw,1.7rem)}
+  .big-mail{font-size:clamp(1.3rem,7.2vw,2.6rem);word-break:break-word}
+  .c-links{gap:1rem 1.4rem}
+  footer{flex-direction:column;align-items:center;gap:.4rem;text-align:center;padding:1.6rem 1.2rem calc(5rem + env(safe-area-inset-bottom))}
+  #loader{padding:calc(1.4rem + env(safe-area-inset-top)) 1.2rem calc(1.4rem + env(safe-area-inset-bottom))}
+
+  /* now playing versi ringkas di HP */
+  .now-playing{display:flex;left:1rem;right:auto;bottom:calc(1rem + env(safe-area-inset-bottom));max-width:210px;padding:.4rem .85rem .4rem .4rem;gap:.55rem}
+  .np-cover{width:34px;height:34px}
+  .np-title{max-width:115px;font-size:.78rem}
+  .np-label{display:none}
+  #toast{bottom:calc(5rem + env(safe-area-inset-bottom))}
+}
+
+/* ---- HP kecil ---- */
+@media(max-width:420px){
+  .wrap{padding:0 1rem}
+  section{padding:4rem 0}
+  .hero-name{font-size:clamp(2.7rem,15vw,4.4rem)}
+  .hero-role{font-size:.95rem}
+  .btn{padding:.75rem 1.2rem}
+  .l-actions button.start{padding:.9rem 1.6rem;font-size:1rem}
+  .tabs{margin-left:-1rem;margin-right:-1rem;padding:0 1rem}
+  .chips.big span{font-size:.9rem;padding:.35rem .85rem}
+  .tl time{font-size:.7rem}
+}
+
+/* ---- HP landscape / layar pendek ---- */
+@media(max-height:520px) and (orientation:landscape){
+  #home{min-height:auto;padding:5.5rem 0 3rem}
+  .hero-name{font-size:clamp(2.4rem,9vw,4.6rem)}
+  .hero-role{margin-top:1rem}
+  .cta{margin-top:1.2rem}
+  #pct{font-size:clamp(3rem,16vh,6rem)}
+  nav.top{justify-content:flex-start;font-size:1.5rem;padding-top:4rem}
+  .now-playing{display:none}
+}
+
+/* ---- Perangkat sentuh: tanpa efek hover yang "menempel", target tap lebih besar ---- */
+@media(hover:none){
+  .pj-h:hover h3{transform:none}
+  aside.social a:hover{transform:none;box-shadow:none}
+  .l-actions button.start:hover{transform:none}
+  .proj:hover{padding-left:0}
+}
+@media(pointer:coarse){
+  .tabs button,.filters button,.btn,#music,.pj-h{min-height:44px}
+  .burger{min-width:44px;min-height:44px}
+  nav.top a{padding:.5rem 0}
+}
 </style>
 </head>
 <body class="lock">
 
 <canvas id="bg" aria-hidden="true"></canvas>
+<div id="ambient" aria-hidden="true"></div>
+<div id="glow" aria-hidden="true"></div>
 
 <div id="loader" role="status">
   <h1>INITIALIZING</h1>
@@ -380,7 +566,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 </aside>
 
 <div class="now-playing" id="nowPlaying" aria-live="polite">
-  <img src="assets/img/lany.webp" alt="Sound of Rain – LANY" class="np-cover">
+  <img src="assets/img/lany.webp" alt="Sound of Rain – LANY" class="np-cover" draggable="false">
   <div class="np-info">
     <span class="np-label mono">now playing</span>
     <span class="np-title">Sound of Rain</span>
@@ -407,19 +593,19 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       <div class="sec-h rv"><h2>projects<span>.</span></h2><span class="mono hint">click to open</span></div>
       <div class="rv" id="pjList">
         <article class="pj open"><button class="pj-h" aria-expanded="true"><span class="n mono">01</span><h3>Academic Project</h3><span class="tag mono">crud</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/Project.png" alt="Project showcase" loading="lazy"><p>Academic project demonstrating CRUD operations for laboratory management</p><a href="#" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/Project.png" alt="Project showcase" loading="lazy" draggable="false"><p>Academic project demonstrating CRUD operations for laboratory management</p><a href="#" class="mono">open project ↗</a></div></div></article>
         <article class="pj"><button class="pj-h" aria-expanded="false"><span class="n mono">02</span><h3>Academic System</h3><span class="tag mono">repository</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/Project_1.png" alt="Academic visual" loading="lazy"><p>Academic system for managing research repositories</p><a href="#" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/Project_1.png" alt="Academic visual" loading="lazy" draggable="false"><p>Academic system for managing research repositories</p><a href="#" class="mono">open project ↗</a></div></div></article>
         <article class="pj"><button class="pj-h" aria-expanded="false"><span class="n mono">03</span><h3>Assessment System</h3><span class="tag mono">platform</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/Project_2.png" alt="Digital media" loading="lazy"><p>Assessment platform for evaluating student performance</p><a href="#" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/Project_2.png" alt="Digital media" loading="lazy" draggable="false"><p>Assessment platform for evaluating student performance</p><a href="#" class="mono">open project ↗</a></div></div></article>
         <article class="pj"><button class="pj-h" aria-expanded="false"><span class="n mono">04</span><h3>Learning system</h3><span class="tag mono">learning</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/Project_3.png" alt="Learning System" loading="lazy"><p>Educational system for teacher's learning media</p><a href="#" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/Project_3.png" alt="Learning System" loading="lazy" draggable="false"><p>Educational system for teacher's learning media</p><a href="#" class="mono">open project ↗</a></div></div></article>
         <article class="pj"><button class="pj-h" aria-expanded="false"><span class="n mono">05</span><h3>Learning Analysis</h3><span class="tag mono">analysis</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/edutone.png" alt="Learning Analysis" loading="lazy"><p>Learning analysis platform for educational research</p><a href="edutone.my.id" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/edutone.png" alt="Learning Analysis" loading="lazy" draggable="false"><p>Learning analysis platform for educational research</p><a href="https://edutone.my.id" target="_blank" rel="noopener" class="mono">open project ↗</a></div></div></article>
         <article class="pj"><button class="pj-h" aria-expanded="false"><span class="n mono">06</span><h3>Learning Management</h3><span class="tag mono">learning</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/study.png" alt="Study System" loading="lazy"><p>Learning management system for study mandarin</p><a href="studymanda.my.id" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/study.png" alt="Study System" loading="lazy" draggable="false"><p>Learning management system for study mandarin</p><a href="https://studymanda.my.id" target="_blank" rel="noopener" class="mono">open project ↗</a></div></div></article>
         <article class="pj"><button class="pj-h" aria-expanded="false"><span class="n mono">07</span><h3>Gamification System</h3><span class="tag mono">learning</span><i class="fas fa-plus"></i></button>
-          <div class="pj-b"><div><img src="assets/img/bioverse.png" alt="Gamification" loading="lazy"><p>Gamification system for enhancing Junior-High student engagement in Biology Subject</p><a href="bioverse-game.netlify.app" class="mono">open project ↗</a></div></div></article>
+          <div class="pj-b"><div><img src="assets/img/bioverse.png" alt="Gamification" loading="lazy" draggable="false"><p>Gamification system for enhancing Junior-High student engagement in Biology Subject</p><a href="https://bioverse-game.netlify.app" target="_blank" rel="noopener" class="mono">open project ↗</a></div></div></article>
       </div>
     </div>
   </section>
@@ -435,14 +621,32 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
           <button role="tab" aria-selected="false" aria-controls="t-exp" id="tb-exp" tabindex="-1">experience</button>
         </div>
         <div class="panel" id="t-about" role="tabpanel" aria-labelledby="tb-about">
-          <p>Hello! I'm Ahmad Himawan, an educator with a passion for implementing technology in education.</p>
-          <p>I completed my undergraduate studies in Biology Education at Universitas Tanjungpura (2019–2023) with cross-disciplinary research, and I want to keep growing in research, learning design, and digital education.</p>
+          <div class="about-grid">
+          <!-- FOTO PROFIL (card flip) -->
+          <div class="flip" id="photo" tabindex="0" role="button" aria-pressed="false" aria-label="Balik kartu foto">
+            <div class="flip-inner">
+              <div class="flip-face flip-front">
+                <img src="assets/img/personal.jpeg" alt="Foto Ahmad Himawan" draggable="false" onerror="this.parentElement.classList.add('empty');this.remove()">
+                <div class="photo-ph"><i class="fas fa-user"></i></div>
+                <span class="flip-hint mono"><i class="fas fa-rotate"></i> klik untuk balik</span>
+              </div>
+              <div class="flip-face flip-back">
+                <h3>Hi there!</h3>
+                <p class="msg">this is me, hope you interest with my page</p>
+              </div>
+            </div>
+          </div>
+          <div class="about-txt">
+          <p>Hello! I'm <span class="hl name">Ahmad Himawan</span>, an <span class="hl sky">educator</span> with a passion for implementing <span class="hl butter">technology in education</span>.</p>
+          <p>I completed my undergraduate studies in <span class="hl leaf">Biology Education</span> at <span class="hl apricot">Universitas Tanjungpura</span> <span class="hl sky">(2019–2023)</span> with cross-disciplinary research, and I want to keep growing in research, learning design, and digital education. Now, I'm a master's student at <span class="hl apricot">Universitas Pendidikan Indonesia</span></p>
           <div class="chips"><span>Indonesian (native)</span><span>English</span><span>Japanese (N3)</span></div>
+          </div>
+          </div>
         </div>
         <div class="panel" id="t-skills" role="tabpanel" aria-labelledby="tb-skills" hidden>
           <div class="filters mono"><button class="on" data-f="all">all</button><button data-f="web">web</button><button data-f="research">research</button><button data-f="media">media</button></div>
           <div class="chips big" id="skillChips">
-            <span data-c="web">JavaScript</span><span data-c="web">HTML</span><span data-c="web">CSS</span><span data-c="web">PHP</span>
+            <span data-c="web">JavaScript</span><span data-c="web">HTML</span><span data-c="web">CSS</span><span data-c="web">PHP</span><span data-c="web">Python</span>
             <span data-c="media">Blender</span><span data-c="media">3D modeling</span><span data-c="media">Digital design</span><span data-c="media">Video editing</span>
             <span data-c="research">R-Studio</span><span data-c="research">SPSS</span><span data-c="research">Bibliometrix</span><span data-c="research">VOSviewer</span><span data-c="research">Mendeley</span><span data-c="research">Publish or Perish</span><span data-c="research">MS Office</span>
           </div>
@@ -458,8 +662,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
         <div class="panel" id="t-exp" role="tabpanel" aria-labelledby="tb-exp" hidden>
           <ol class="tl">
             <li><time>Aug 2026 – Present</time><b>Layout Manager OJS</b><span>Biology Education, Universitas Tanjungpura</span></li>
-            <li><time>Jan 2024 – Jul 2026</time><b>Assistant Researcher & Task Force Accreditation</b><span>Biology Education, Universitas Tanjungpura</span></li>
-            <li><time>Jan 2025 – Aug 2026</time><b>Natural Science, Math & English Tutor</b><span>Focus Bimbingan Belajar</span></li>
+            <li><time>Jan 2024 – Jul 2026</time><b>Assistant Researcher &amp; Task Force Accreditation</b><span>Biology Education, Universitas Tanjungpura</span></li>
+            <li><time>Jan 2025 – Aug 2026</time><b>Natural Science, Math &amp; English Tutor</b><span>Focus Bimbingan Belajar</span></li>
             <li><time>Jul 2022 – Jan 2023</time><b>UI GreenMetrics Team</b><span>Journal data analyst, Universitas Tanjungpura</span></li>
             <li><time>Aug – Nov 2022</time><b>Teaching Assistant</b><span>MBKM, Ministry of Education</span></li>
             <li><time>2021 – 2022</time><b>Lab Assistant</b><span>Introduction to Biology I, Mycology, Biochemistry</span></li>
@@ -499,6 +703,51 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   const $=id=>document.getElementById(id);
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const audio=$('audio'),musicBtn=$('music'),musicLbl=$('musicLbl'),nowPlaying=$('nowPlaying');
+
+  /* ===== Blok teks / seleksi huruf dinonaktifkan ===== */
+  const allowed=el=>el&&el.closest&&el.closest('input,textarea,[contenteditable="true"]');
+  ['selectstart','dragstart','copy','cut','contextmenu'].forEach(ev=>{
+    document.addEventListener(ev,e=>{ if(!allowed(e.target)) e.preventDefault(); });
+  });
+  /* Batalkan seleksi yang lolos (mis. double-click / Ctrl+A) */
+  document.addEventListener('selectionchange',()=>{
+    const s=getSelection();
+    if(s&&!s.isCollapsed&&!allowed(document.activeElement))s.removeAllRanges();
+  });
+  /* Blokir Ctrl/Cmd + A (select all) */
+  document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='a'&&!allowed(e.target))e.preventDefault();
+  });
+
+  /* Redupkan DNA saat membaca konten (setelah melewati hero) */
+  const checkReading=()=>document.body.classList.toggle('reading',scrollY>innerHeight*.45);
+  addEventListener('scroll',checkReading,{passive:true});
+  checkReading();
+
+  /* Sumber cahaya: mengikuti kursor, atau bergerak sendiri di layar sentuh */
+  const glow=$('glow');
+  const finePointer=matchMedia('(pointer:fine)').matches;
+  let gx=innerWidth*.7,gy=innerHeight*.3,tx=gx,ty=gy;
+  addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){tx=e.clientX;ty=e.clientY}});
+  (function glowLoop(t){
+    if(!reduce){
+      if(!finePointer){
+        tx=innerWidth*(.5+.3*Math.sin(t/4000));
+        ty=innerHeight*(.35+.2*Math.cos(t/5300));
+      }
+      gx+=(tx-gx)*.06;gy+=(ty-gy)*.06;
+      glow.style.transform='translate3d('+gx+'px,'+gy+'px,0) translate(-50%,-50%)';
+    }
+    requestAnimationFrame(glowLoop);
+  })(0);
+
+  /* Foto profil: kartu balik (klik / tap / Enter / Spasi) */
+  const flip=$('photo');
+  if(flip){
+    const toggle=()=>{const on=flip.classList.toggle('flipped');flip.setAttribute('aria-pressed',on)};
+    flip.addEventListener('click',toggle);
+    flip.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
+  }
 
   /* Loader */
   let progress=0,loaded=document.readyState==='complete';
@@ -609,7 +858,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
     document.querySelectorAll('#skillChips span').forEach(c=>c.classList.toggle('dim',b.dataset.f!=='all'&&c.dataset.c!==b.dataset.f));
   }));
 
-  /* Copy email */
+  /* Copy email (tombol tetap berfungsi walau seleksi teks dinonaktifkan) */
   const toast=$('toast');
   $('copyMail').onclick=async()=>{
     const m='ahmadhimawan16@gmail.com';
@@ -649,7 +898,9 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   if(!window.THREE)return;
   let renderer;
   try{renderer=new THREE.WebGLRenderer({canvas:$('bg'),antialias:true,alpha:true})}catch(e){return}
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  /* Mode ringan untuk HP / layar sentuh agar tetap mulus */
+  const lite=matchMedia('(max-width:820px)').matches||!matchMedia('(pointer:fine)').matches;
+  renderer.setPixelRatio(Math.min(devicePixelRatio,lite?1.5:2));
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(55,1,.1,100);
   camera.position.set(0,0,14);
@@ -667,8 +918,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   const strand=(pts,c)=>new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:c,transparent:true,opacity:.55}));
   helix.add(strand(A,0x8cc7d8),strand(B,0xe6dc8c));
 
-  const dust=[];for(let i=0;i<260;i++)dust.push(new THREE.Vector3((Math.random()-.5)*40,(Math.random()-.5)*28,(Math.random()-.5)*20-6));
-  scene.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(dust),new THREE.PointsMaterial({color:0xe9f1ed,size:.05,transparent:true,opacity:.5})));
+  const dust=[];for(let i=0;i<(lite?110:260);i++)dust.push(new THREE.Vector3((Math.random()-.5)*40,(Math.random()-.5)*28,(Math.random()-.5)*20-6));
+  scene.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(dust),new THREE.PointsMaterial({color:0xe9f1ed,size:.05,transparent:true,opacity:.3})));
 
   let mx=0,my=0,sy=0;
   addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
@@ -676,7 +927,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   function resize(){
     const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);
     camera.aspect=w/h;camera.updateProjectionMatrix();
-    helix.position.x=w>820?4.2:0;helix.scale.setScalar(w>820?1:.7);
+    helix.position.x=w>1100?5.6:w>820?4:0;
+    helix.scale.setScalar(w>1100?.9:w>820?.8:w>520?.6:.5);
   }
   addEventListener('resize',resize);resize();
 
