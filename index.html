@@ -1443,6 +1443,54 @@ footer {
   .flip-inner, .ed-strip, .ed-strip img, .ed-strip::before, .ed-strip-overlay,
   .ed-strip-overlay > *, .swap, .panel { transition: none !important; animation: none !important; }
 }
+/* ===== FIX: performa & flash carousel ===== */
+#glow, #ambient { mix-blend-mode: normal; }
+
+.ed-strip {
+  contain: layout paint;
+  isolation: isolate;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+  transition:
+    flex-grow .6s var(--ease-out),
+    flex-basis .6s var(--ease-out),
+    border-color .3s ease;
+}
+
+/* Lebar gambar dikunci: saat kartu melebar, gambar hanya tersingkap */
+.ed-strip img {
+  left: 50%;
+  right: auto;
+  width: var(--open, 100%);
+  max-width: none;
+  transform: translateX(-50%) scale(1.06);
+  transition: transform .6s var(--ease-out);
+  will-change: auto;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+}
+.ed-strip.active img { transform: translateX(-50%) scale(1); }
+
+/* Lebar teks dikunci agar tidak turun baris berulang saat animasi */
+.ed-strip-overlay {
+  left: 50%;
+  right: auto;
+  width: var(--open, 100%);
+  transform: translateX(-50%);
+}
+
+.swap { transition: opacity .18s ease, transform .18s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-strip, .ed-strip img, .swap { transition: none !important; }
+}
+/* ===== FIX: toggle menu ===== */
+.burger.active .fa-bars { opacity: 1; background: transparent; }
+.burger.active .fa-bars::before,
+.burger.active .fa-bars::after { top: 0; bottom: auto; }
+.burger.active .fa-bars::before { transform: rotate(45deg); }
+.burger.active .fa-bars::after { transform: rotate(-45deg); }
+body.menu-open header .burger { filter: none; }
 </style>
 </head>
 <body class="lock" oncontextmenu="return false;" onselectstart="return false;" oncopy="return false;" oncut="return false;" onpaste="return false" style="-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
@@ -1873,16 +1921,18 @@ footer {
 
   const nav = $('nav');
   const burger = $('burger');
-  burger.addEventListener('click', () => {
-    nav.classList.toggle('open');
-    document.body.classList.toggle('menu-open');
-    burger.classList.toggle('active');
-  });
-  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    nav.classList.remove('open');
-    document.body.classList.remove('menu-open');
-    burger.classList.remove('active');
-  }));
+  function setMenu(open) {
+    nav.classList.toggle('open', open);
+    burger.classList.toggle('active', open);
+    document.body.classList.toggle('menu-open', open);
+    burger.setAttribute('aria-expanded', open);
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  burger.setAttribute('aria-expanded', 'false');
+  burger.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  matchMedia('(max-width: 820px)').addEventListener('change', e => { if (!e.matches) setMenu(false); });
 
   addEventListener('load', () => loaded = true);
   const t0 = performance.now();
@@ -1935,6 +1985,30 @@ footer {
   $('enterQuiet').onclick = () => enter(false);
   musicBtn.onclick = () => setMusic(audio.paused);
 
+  /* Jeda musik saat tab ditinggalkan, lanjutkan saat kembali */
+  let resumeOnReturn = false;
+
+  function pauseWhenAway() {
+    if (!audio.paused) {
+      resumeOnReturn = true;
+      audio.pause();
+    }
+  }
+
+  function resumeWhenBack() {
+    if (resumeOnReturn && !document.hidden) {
+      resumeOnReturn = false;
+      setMusic(true);
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) pauseWhenAway();
+    else resumeWhenBack();
+  });
+  addEventListener('pagehide', pauseWhenAway);
+  addEventListener('pageshow', resumeWhenBack);
+
   const spy = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) {
       nav.querySelectorAll('a[href^="#"]').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id));
@@ -1982,12 +2056,12 @@ footer {
   const edActionSlot = $('edActionSlot');
   const edShowcase = $('edShowcase');
   const swapEls = [edBigNum, edTitle, edDetail, edSummary, edActionSlot];
-  const SWAP_MS = 220;
-  const STRIP_W = 36, STRIP_GAP = 8;
+  const SWAP_MS = 190; // sedikit lebih lama dari transisi .swap (180ms)
+  const mobile = matchMedia('(max-width: 820px)');
   let activeIdx = 0, swapTimer = 0, firstRun = true;
 
   if (strips.length) {
-    strips.forEach((strip, i) => {
+    const numBtns = strips.map((strip, i) => {
       const li = document.createElement('li');
       const btn = document.createElement('button');
       btn.textContent = strip.dataset.num;
@@ -1995,13 +2069,31 @@ footer {
       btn.addEventListener('click', () => setActiveProject(i));
       li.appendChild(btn);
       edNumList.appendChild(li);
-
-      strip.addEventListener('click', () => {
-        if (activeIdx !== i) setActiveProject(i);
-      });
+      strip.addEventListener('click', () => setActiveProject(i));
+      return btn;
     });
 
-    const numBtns = [...edNumList.querySelectorAll('button')];
+    /* Muat & decode semua gambar lebih awal agar tidak berkedip */
+    strips.forEach(strip => {
+      const img = strip.querySelector('img');
+      if (!img) return;
+      img.loading = 'eager';
+      if (img.decode) img.decode().catch(() => {});
+    });
+
+    /* Hitung lebar kartu saat terbuka */
+    function openWidth() {
+      const boxW = stripBox.clientWidth;
+      if (mobile.matches) return boxW * 0.74;
+      const css = getComputedStyle(stripBox);
+      const w = parseFloat(css.getPropertyValue('--w')) || 54;
+      const gap = parseFloat(css.columnGap) || 0;
+      return boxW - (strips.length - 1) * (w + gap);
+    }
+
+    function measure() {
+      stripBox.style.setProperty('--open', Math.max(0, openWidth() - 2) + 'px');
+    }
 
     function applyContent() {
       const current = strips[activeIdx];
@@ -2011,16 +2103,16 @@ footer {
       edSummary.textContent = current.dataset.summary;
 
       const url = current.dataset.url;
-      if (url) {
-        edActionSlot.innerHTML = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ed-more-link">OPEN PROJECT ↗</a>`;
-      } else {
-        edActionSlot.innerHTML = `<span class="ed-more-status">INTERNAL SYSTEM</span>`;
-      }
+      edActionSlot.innerHTML = url
+        ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ed-more-link">OPEN PROJECT ↗</a>`
+        : `<span class="ed-more-status">INTERNAL SYSTEM</span>`;
     }
 
     function centerOnMobile() {
-      const activeW = stripBox.clientWidth * 0.74;
-      const left = activeIdx * (STRIP_W + STRIP_GAP) - (stripBox.clientWidth - activeW) / 2;
+      const css = getComputedStyle(stripBox);
+      const w = parseFloat(css.getPropertyValue('--w')) || 36;
+      const gap = parseFloat(css.columnGap) || 8;
+      const left = activeIdx * (w + gap) - (stripBox.clientWidth - openWidth()) / 2;
       stripBox.scrollTo({ left: Math.max(0, left), behavior: reduce ? 'auto' : 'smooth' });
     }
 
@@ -2042,9 +2134,9 @@ footer {
           swapEls.forEach(el => el.classList.remove('swap-out'));
         }, SWAP_MS);
       }
-      firstRun = false;
 
-      if (innerWidth <= 820) centerOnMobile();
+      if (mobile.matches && !firstRun) centerOnMobile();
+      firstRun = false;
     }
 
     $('edPrev').addEventListener('click', () => setActiveProject(activeIdx - 1));
@@ -2058,11 +2150,15 @@ footer {
     let touchStartX = 0;
     stripBox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
     stripBox.addEventListener('touchend', e => {
-      if (innerWidth <= 820) return;
+      if (mobile.matches) return;
       const dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 45) setActiveProject(dx < 0 ? activeIdx + 1 : activeIdx - 1);
+      if (Math.abs(dx) > 45) setActiveProject(activeIdx + (dx < 0 ? 1 : -1));
     }, { passive: true });
 
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(stripBox);
+    else addEventListener('resize', measure);
+
+    measure();
     setActiveProject(0);
   }
 
@@ -2210,11 +2306,12 @@ footer {
   addEventListener('resize', resize);
   resize();
 
-  let rot = 0;
+  let rot = 0, frame = 0;
   (function loop() {
     requestAnimationFrame(loop);
     if (document.hidden) return;
     if (!reduce) rot += 0.003;
+    if (document.body.classList.contains('reading') && (frame++ & 1)) return;
     helix.rotation.y = rot + sy * Math.PI * 2;
     helix.rotation.z = 0.25 + mx * 0.2;
     helix.position.y += ((sy * 4 - my * 1.2) - helix.position.y) * 0.05;
